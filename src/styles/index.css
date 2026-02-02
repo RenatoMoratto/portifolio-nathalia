@@ -6,6 +6,7 @@
 @theme {
   --font-family-sans: 'Inter', system-ui, sans-serif;
 
+  /* Refined color palette */
   --color-primary-50: #eef2ff;
   --color-primary-100: #e0e7ff;
   --color-primary-200: #c7d2fe;
@@ -22,21 +23,40 @@
   --color-accent-500: #8b5cf6;
   --color-accent-600: #7c3aed;
 
-  --color-dark-bg: #0f172a;
-  --color-dark-surface: #1e293b;
-  --color-dark-border: #334155;
+  /* Refined dark mode - softer, not pure black */
+  --color-dark-bg: #0c0f1a;
+  --color-dark-surface: #161b2e;
+  --color-dark-surface-elevated: #1e2438;
+  --color-dark-border: #2a3349;
+  --color-dark-border-subtle: #232942;
 
-  --color-light-bg: #fafafa;
+  /* Refined light mode */
+  --color-light-bg: #fafbfc;
   --color-light-surface: #ffffff;
-  --color-light-border: #e2e8f0;
+  --color-light-surface-elevated: #ffffff;
+  --color-light-border: #e5e7eb;
+  --color-light-border-subtle: #f1f3f5;
 
-  --animate-fade-in: fadeIn 0.6s ease-out forwards;
-  --animate-slide-up: slideUp 0.6s ease-out forwards;
+  /* Motion tokens */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+  --duration-entrance: 700ms;
+
+  /* Refined animations */
+  --animate-fade-in: fadeIn 0.6s var(--ease-out-expo) forwards;
+  --animate-slide-up: slideUp 0.7s var(--ease-out-expo) forwards;
+  --animate-fade-slide-up: fadeSlideUp 0.7s var(--ease-out-expo) forwards;
+  --animate-scale-in: scaleIn 0.5s var(--ease-out-expo) forwards;
   --animate-float: float 6s ease-in-out infinite;
   --animate-glow: glow 2s ease-in-out infinite alternate;
   --animate-spin-slow: spin 20s linear infinite;
 }
 
+/* Keyframes */
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -49,11 +69,33 @@
 @keyframes slideUp {
   0% {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(16px);
   }
   100% {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes fadeSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -76,6 +118,18 @@
   }
 }
 
+@keyframes expandWidth {
+  0% {
+    width: 0;
+    opacity: 0;
+  }
+  100% {
+    width: 5rem;
+    opacity: 1;
+  }
+}
+
+/* Base styles */
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
@@ -84,13 +138,28 @@ html {
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
-  transition: background-color 0.3s, color 0.3s;
+  transition:
+    background-color 0.4s var(--ease-out-quart),
+    color 0.3s var(--ease-out-quart);
 }
 
 ::selection {
-  background-color: rgba(99, 102, 241, 0.3);
+  background-color: rgba(99, 102, 241, 0.25);
 }
 
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Utility classes */
 @utility section-container {
   max-width: 72rem;
   margin-left: auto;
@@ -100,30 +169,33 @@ body {
 }
 
 @utility section-padding {
-  padding-top: 5rem;
-  padding-bottom: 5rem;
+  padding-top: 6rem;
+  padding-bottom: 6rem;
 }
 
 @utility heading-1 {
-  font-size: 2.25rem;
+  font-size: 2.5rem;
   font-weight: 700;
-  letter-spacing: -0.025em;
-  line-height: 1.2;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
 }
 
 @utility heading-2 {
   font-size: 1.875rem;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.025em;
+  line-height: 1.2;
 }
 
 @utility heading-3 {
   font-size: 1.25rem;
   font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
 }
 
 @utility text-gradient {
-  background-image: linear-gradient(to right, #6366f1, #8b5cf6, #818cf8);
+  background-image: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -131,10 +203,19 @@ body {
 
 @utility input-field {
   width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: 0.75rem;
-  border: 1px solid #e2e8f0;
-  transition: all 0.2s;
+  padding: 0.875rem 1rem;
+  border-radius: 0.875rem;
+  border: 1px solid var(--color-light-border);
+  background-color: var(--color-light-surface);
+  transition: all 0.25s var(--ease-out-quart);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--color-primary-400);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
 }
 
 @utility skill-badge {
@@ -143,33 +224,76 @@ body {
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   border-radius: 9999px;
-  background-color: #eef2ff;
-  color: #4f46e5;
+  background-color: rgba(99, 102, 241, 0.08);
+  color: var(--color-primary-600);
   font-size: 0.875rem;
   font-weight: 500;
-  transition: all 0.2s;
+  transition: all 0.25s var(--ease-out-quart);
 }
 
+.skill-badge:hover {
+  background-color: rgba(99, 102, 241, 0.12);
+  transform: translateY(-1px);
+}
+
+/* Animation delay utilities */
 @utility animate-delay-100 {
   animation-delay: 100ms;
 }
-
 @utility animate-delay-200 {
   animation-delay: 200ms;
 }
-
 @utility animate-delay-300 {
   animation-delay: 300ms;
 }
-
 @utility animate-delay-400 {
   animation-delay: 400ms;
 }
-
 @utility animate-delay-500 {
   animation-delay: 500ms;
 }
+@utility animate-delay-600 {
+  animation-delay: 600ms;
+}
+@utility animate-delay-700 {
+  animation-delay: 700ms;
+}
+@utility animate-delay-800 {
+  animation-delay: 800ms;
+}
 
+/* Stagger animation utility */
+.stagger-children > * {
+  opacity: 0;
+  animation: fadeSlideUp 0.6s var(--ease-out-expo) forwards;
+}
+
+.stagger-children > *:nth-child(1) {
+  animation-delay: 0ms;
+}
+.stagger-children > *:nth-child(2) {
+  animation-delay: 75ms;
+}
+.stagger-children > *:nth-child(3) {
+  animation-delay: 150ms;
+}
+.stagger-children > *:nth-child(4) {
+  animation-delay: 225ms;
+}
+.stagger-children > *:nth-child(5) {
+  animation-delay: 300ms;
+}
+.stagger-children > *:nth-child(6) {
+  animation-delay: 375ms;
+}
+.stagger-children > *:nth-child(7) {
+  animation-delay: 450ms;
+}
+.stagger-children > *:nth-child(8) {
+  animation-delay: 525ms;
+}
+
+/* Scrollbar utilities */
 @utility scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -179,9 +303,11 @@ body {
   display: none;
 }
 
+/* Responsive typography */
 @media (min-width: 768px) {
   .heading-1 {
-    font-size: 3rem;
+    font-size: 3.25rem;
+    letter-spacing: -0.04em;
   }
   .heading-2 {
     font-size: 2.25rem;
@@ -190,8 +316,8 @@ body {
     font-size: 1.5rem;
   }
   .section-padding {
-    padding-top: 7rem;
-    padding-bottom: 7rem;
+    padding-top: 8rem;
+    padding-bottom: 8rem;
   }
   .section-container {
     padding-left: 1.5rem;
@@ -201,11 +327,12 @@ body {
 
 @media (min-width: 1024px) {
   .heading-1 {
-    font-size: 3.75rem;
+    font-size: 4rem;
+    letter-spacing: -0.045em;
   }
   .section-padding {
-    padding-top: 8rem;
-    padding-bottom: 8rem;
+    padding-top: 10rem;
+    padding-bottom: 10rem;
   }
   .section-container {
     padding-left: 2rem;
@@ -213,18 +340,38 @@ body {
   }
 }
 
-/* Dark mode overrides */
+/* Dark mode refinements */
 .dark .skill-badge {
-  background-color: rgba(99, 102, 241, 0.2);
-  color: #a5b4fc;
+  background-color: rgba(99, 102, 241, 0.15);
+  color: var(--color-primary-300);
+}
+
+.dark .skill-badge:hover {
+  background-color: rgba(99, 102, 241, 0.22);
 }
 
 .dark .input-field {
-  background-color: #1e293b;
-  border-color: #334155;
-  color: white;
+  background-color: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
+  color: #f1f5f9;
+}
+
+.dark .input-field:focus {
+  border-color: var(--color-primary-500);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
 
 .dark .input-field::placeholder {
   color: #64748b;
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+/* Smooth link transitions */
+a {
+  transition: color 0.2s var(--ease-out-quart);
 }

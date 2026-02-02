@@ -19,17 +19,30 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       disabled,
       ...props
     },
-    ref
+    ref,
   ) => {
     const variants = {
-      primary:
-        'bg-primary-500 text-white hover:bg-primary-600 hover:shadow-lg hover:shadow-primary-500/25',
-      secondary:
-        'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-700',
-      outline:
-        'border-2 border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white',
-      ghost:
-        'text-slate-600 dark:text-slate-400 hover:text-primary-500 dark:hover:text-primary-400 hover:bg-primary-50 dark:hover:bg-primary-900/20',
+      primary: cn(
+        'bg-primary-500 text-white',
+        'hover:bg-primary-600 hover:shadow-lg hover:shadow-primary-500/20',
+        'active:bg-primary-700',
+      ),
+      secondary: cn(
+        'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white',
+        'hover:bg-slate-200 dark:hover:bg-slate-700',
+        'active:bg-slate-300 dark:active:bg-slate-600',
+      ),
+      outline: cn(
+        'border-2 border-primary-500 text-primary-500',
+        'hover:bg-primary-500 hover:text-white',
+        'active:bg-primary-600',
+      ),
+      ghost: cn(
+        'text-slate-600 dark:text-slate-400',
+        'hover:text-primary-500 dark:hover:text-primary-400',
+        'hover:bg-primary-50 dark:hover:bg-primary-900/20',
+        'active:bg-primary-100 dark:active:bg-primary-900/30',
+      ),
     };
 
     const sizes = {
@@ -42,12 +55,15 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={cn(
-          'inline-flex items-center justify-center gap-2 font-medium rounded-xl transition-all duration-300',
-          'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500',
-          'active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed',
+          'inline-flex items-center justify-center gap-2 font-medium rounded-xl',
+          'transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)]',
+          'focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary-500',
+          'dark:focus-visible:ring-offset-dark-bg',
+          'hover:scale-[1.02] active:scale-[0.98]',
+          'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100',
           variants[variant],
           sizes[size],
-          className
+          className,
         )}
         disabled={disabled || isLoading}
         {...props}
@@ -73,7 +89,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {children}
       </button>
     );
-  }
+  },
 );
 
 Button.displayName = 'Button';

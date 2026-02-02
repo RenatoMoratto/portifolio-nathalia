@@ -6,40 +6,61 @@ export function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-light-bg dark:bg-dark-bg transition-colors duration-300"
+      className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-light-bg dark:bg-dark-bg transition-colors duration-500"
     >
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-linear-to-b from-transparent via-light-bg/50 to-light-bg dark:via-dark-bg/50 dark:to-dark-bg pointer-events-none" />
+      {/* Subtle gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-light-bg/30 to-light-bg dark:via-dark-bg/30 dark:to-dark-bg pointer-events-none" />
+
+      {/* Decorative gradient orb */}
+      <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-br from-primary-500/10 to-accent-500/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* Content */}
       <div className="relative z-10 section-container text-center">
-        <div className="max-w-4xl mx-auto flex flex-col items-center">
-          {/* Title */}
-          <h1 className="heading-1 mb-4 animate-slide-up text-slate-900 dark:text-white">
+        <div className="max-w-3xl mx-auto flex flex-col items-center">
+          {/* Name */}
+          <h1
+            className="heading-1 mb-6 text-slate-900 dark:text-white opacity-0 animate-fade-slide-up"
+            style={{ animationDelay: '100ms', animationFillMode: 'forwards' }}
+          >
             {t('title')}
           </h1>
 
-          {/* Headline */}
-          <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-400 mb-12 animate-slide-up animate-delay-100 max-w-2xl">
+          {/* Role/Headline */}
+          <p
+            className="text-xl md:text-2xl text-slate-500 dark:text-slate-400 mb-14 max-w-2xl opacity-0 animate-fade-slide-up"
+            style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}
+          >
             {t('role')}
           </p>
 
           {/* Manifest */}
-          <div className="mb-12 animate-slide-up animate-delay-200">
-            <blockquote className="text-lg md:text-xl font-medium text-primary-600 dark:text-primary-400 leading-relaxed">
-              {t('manifest')
-                .split('\n')
-                .map((line, i) => (
-                  <span key={i} className="block">
-                    {i === 0 ? (
-                      <strong className="font-semibold">{line}</strong>
-                    ) : (
-                      <span className="text-base md:text-lg opacity-90 block mt-2">
-                        {line}
-                      </span>
-                    )}
-                  </span>
-                ))}
+          <div
+            className="opacity-0 animate-fade-slide-up"
+            style={{ animationDelay: '350ms', animationFillMode: 'forwards' }}
+          >
+            <blockquote className="relative max-w-xl mx-auto">
+              {/* Decorative quote mark */}
+              <span
+                className="absolute -top-4 -left-2 text-6xl text-primary-200 dark:text-primary-800/50 font-serif leading-none select-none"
+                aria-hidden="true"
+              >
+                "
+              </span>
+              <div className="text-lg md:text-xl font-medium text-primary-600 dark:text-primary-400 leading-relaxed pl-4">
+                {t('manifest')
+                  .split('\n')
+                  .map((line, i) => (
+                    <span key={i} className="block">
+                      {i === 0 ? (
+                        <span className="font-semibold">{line}</span>
+                      ) : (
+                        <span className="text-base md:text-lg text-primary-500/80 dark:text-primary-400/80 block mt-3">
+                          {line}
+                        </span>
+                      )}
+                    </span>
+                  ))}
+              </div>
             </blockquote>
           </div>
         </div>
