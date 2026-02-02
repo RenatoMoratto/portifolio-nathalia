@@ -11,8 +11,33 @@ export function Hero() {
       {/* Subtle gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-light-bg/30 to-light-bg dark:via-dark-bg/30 dark:to-dark-bg pointer-events-none" />
 
-      {/* Decorative gradient orb */}
-      <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-br from-primary-500/10 to-accent-500/10 rounded-full blur-3xl pointer-events-none" />
+      {/* Decorative gradient orbs - animated with reduced-motion support */}
+      {/* Orb 1 - Rose tones, top right */}
+      <div
+        className="absolute top-1/4 right-1/4 w-80 h-80 md:w-96 md:h-96 rounded-full pointer-events-none blur-3xl opacity-[0.15] dark:opacity-[0.12] motion-safe:animate-orb-float-1"
+        style={{
+          background:
+            'radial-gradient(circle, rgba(223, 80, 104, 0.6) 0%, rgba(192, 122, 128, 0.3) 50%, transparent 70%)',
+        }}
+      />
+
+      {/* Orb 2 - Warm taupe tones, bottom left */}
+      <div
+        className="absolute bottom-1/3 left-1/5 w-72 h-72 md:w-80 md:h-80 rounded-full pointer-events-none blur-3xl opacity-[0.12] dark:opacity-[0.10] motion-safe:animate-orb-float-2"
+        style={{
+          background:
+            'radial-gradient(circle, rgba(154, 138, 122, 0.5) 0%, rgba(125, 109, 93, 0.25) 50%, transparent 70%)',
+        }}
+      />
+
+      {/* Orb 3 - Soft rose/gray, center-right */}
+      <div
+        className="absolute top-1/2 right-1/3 w-64 h-64 md:w-72 md:h-72 rounded-full pointer-events-none blur-3xl opacity-[0.10] dark:opacity-[0.08] motion-safe:animate-orb-float-3"
+        style={{
+          background:
+            'radial-gradient(circle, rgba(232, 180, 184, 0.5) 0%, rgba(212, 148, 153, 0.2) 50%, transparent 70%)',
+        }}
+      />
 
       {/* Content */}
       <div className="relative z-10 section-container text-center">

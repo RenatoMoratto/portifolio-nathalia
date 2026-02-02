@@ -6,36 +6,44 @@
 @theme {
   --font-family-sans: 'Inter', system-ui, sans-serif;
 
-  /* Refined color palette */
-  --color-primary-50: #eef2ff;
-  --color-primary-100: #e0e7ff;
-  --color-primary-200: #c7d2fe;
-  --color-primary-300: #a5b4fc;
-  --color-primary-400: #818cf8;
-  --color-primary-500: #6366f1;
-  --color-primary-600: #4f46e5;
-  --color-primary-700: #4338ca;
-  --color-primary-800: #3730a3;
-  --color-primary-900: #312e81;
-  --color-primary-950: #1e1b4b;
+  /* Feminine rose-based color palette */
+  --color-primary-50: #fdf2f4;
+  --color-primary-100: #fce7ea;
+  --color-primary-200: #f9d0d7;
+  --color-primary-300: #f4a9b6;
+  --color-primary-400: #ec7a8e;
+  --color-primary-500: #df5068;
+  --color-primary-600: #cb3150;
+  --color-primary-700: #ab2441;
+  --color-primary-800: #8f213c;
+  --color-primary-900: #7a2039;
+  --color-primary-950: #440d1b;
 
-  --color-accent-400: #a78bfa;
-  --color-accent-500: #8b5cf6;
-  --color-accent-600: #7c3aed;
+  /* Rose accent tones */
+  --color-accent-300: #e8b4b8;
+  --color-accent-400: #d49499;
+  --color-accent-500: #c07a80;
+  --color-accent-600: #a65d64;
 
-  /* Refined dark mode - softer, not pure black */
-  --color-dark-bg: #0c0f1a;
-  --color-dark-surface: #161b2e;
-  --color-dark-surface-elevated: #1e2438;
-  --color-dark-border: #2a3349;
-  --color-dark-border-subtle: #232942;
+  /* Warm taupe neutrals */
+  --color-taupe-200: #d4ccc4;
+  --color-taupe-300: #b8aca0;
+  --color-taupe-400: #9a8a7a;
+  --color-taupe-500: #7d6d5d;
+
+  /* Warm dark mode - elegant brown/charcoal, no pure black */
+  --color-dark-bg: #1a1614;
+  --color-dark-surface: #241f1c;
+  --color-dark-surface-elevated: #2d2724;
+  --color-dark-border: #3d3530;
+  --color-dark-border-subtle: #322b27;
 
   /* Refined light mode */
-  --color-light-bg: #fafbfc;
+  --color-light-bg: #fdfbfa;
   --color-light-surface: #ffffff;
   --color-light-surface-elevated: #ffffff;
-  --color-light-border: #e5e7eb;
-  --color-light-border-subtle: #f1f3f5;
+  --color-light-border: #e8e4e1;
+  --color-light-border-subtle: #f5f2f0;
 
   /* Motion tokens */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -54,6 +62,9 @@
   --animate-float: float 6s ease-in-out infinite;
   --animate-glow: glow 2s ease-in-out infinite alternate;
   --animate-spin-slow: spin 20s linear infinite;
+  --animate-orb-float-1: orbFloat1 12s ease-in-out infinite;
+  --animate-orb-float-2: orbFloat2 15s ease-in-out infinite;
+  --animate-orb-float-3: orbFloat3 10s ease-in-out infinite;
 }
 
 /* Keyframes */
@@ -111,10 +122,59 @@
 
 @keyframes glow {
   0% {
-    box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 0 20px rgba(223, 80, 104, 0.3);
   }
   100% {
-    box-shadow: 0 0 40px rgba(99, 102, 241, 0.6);
+    box-shadow: 0 0 40px rgba(223, 80, 104, 0.6);
+  }
+}
+
+/* Orb floating animations - organic, slow movement */
+@keyframes orbFloat1 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(30px, -20px) scale(1.05);
+  }
+  50% {
+    transform: translate(-10px, -35px) scale(0.95);
+  }
+  75% {
+    transform: translate(-25px, -10px) scale(1.02);
+  }
+}
+
+@keyframes orbFloat2 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(-25px, 20px) scale(1.03);
+  }
+  66% {
+    transform: translate(20px, 30px) scale(0.97);
+  }
+}
+
+@keyframes orbFloat3 {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  20% {
+    transform: translate(15px, 25px) scale(0.98);
+  }
+  40% {
+    transform: translate(-20px, 15px) scale(1.04);
+  }
+  60% {
+    transform: translate(-10px, -20px) scale(0.96);
+  }
+  80% {
+    transform: translate(25px, -15px) scale(1.02);
   }
 }
 
@@ -195,7 +255,7 @@ body {
 }
 
 @utility text-gradient {
-  background-image: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a78bfa 100%);
+  background-image: linear-gradient(135deg, #df5068 0%, #c07a80 50%, #e8b4b8 100%);
   background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
@@ -215,7 +275,7 @@ body {
 .input-field:focus {
   outline: none;
   border-color: var(--color-primary-400);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 0 0 3px rgba(223, 80, 104, 0.15);
 }
 
 @utility skill-badge {
@@ -342,12 +402,12 @@ body {
 
 /* Dark mode refinements */
 .dark .skill-badge {
-  background-color: rgba(99, 102, 241, 0.15);
+  background-color: rgba(223, 80, 104, 0.12);
   color: var(--color-primary-300);
 }
 
 .dark .skill-badge:hover {
-  background-color: rgba(99, 102, 241, 0.22);
+  background-color: rgba(223, 80, 104, 0.2);
 }
 
 .dark .input-field {
