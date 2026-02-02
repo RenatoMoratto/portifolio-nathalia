@@ -28,7 +28,7 @@ export function Hero() {
 
           {/* Role/Headline */}
           <p
-            className="text-xl md:text-2xl text-slate-500 dark:text-slate-400 mb-14 max-w-2xl opacity-0 animate-fade-slide-up"
+            className="text-xl md:text-2xl text-slate-700 dark:text-slate-400 mb-14 max-w-2xl opacity-0 animate-fade-slide-up"
             style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}
           >
             {t('role')}
