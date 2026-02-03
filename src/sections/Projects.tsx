@@ -12,7 +12,7 @@ export function Projects() {
   return (
     <section
       id="projects"
-      className="section-padding bg-slate-50/50 dark:bg-slate-900/30"
+      className="section-padding bg-slate-200/50 dark:bg-slate-900/30 relative shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.05)] dark:shadow-none"
     >
       <div className="section-container">
         <SectionHeading title={t('nav.projects')} subtitle="Coming soon" />
@@ -24,7 +24,7 @@ export function Projects() {
               to={`/projects/${project.id}`}
               className={cn(
                 'block h-full',
-                'transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]',
+                'transition-all duration-700 ease-out-expo',
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8',
               )}
               style={{ transitionDelay: isVisible ? `${index * 100}ms` : '0ms' }}
@@ -36,7 +36,7 @@ export function Projects() {
                 )}
               >
                 {/* Image placeholder */}
-                <div className="h-48 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 rounded-xl mb-5 flex items-center justify-center overflow-hidden">
+                <div className="h-48 bg-linear-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 rounded-xl mb-5 flex items-center justify-center overflow-hidden">
                   <span className="text-slate-400 dark:text-slate-500 text-sm">
                     Project Image Placeholder
                   </span>

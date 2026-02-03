@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { ThemeToggle } from './ThemeToggle';
 import { LanguageToggle } from './LanguageToggle';
+import { ResumeButton } from './ResumeButton';
 import { cn } from '../utils/cn';
 
 export function Navbar() {
@@ -29,9 +30,9 @@ export function Navbar() {
     <nav
       className={cn(
         'fixed top-0 left-0 right-0 z-50',
-        'transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]',
+        'transition-all duration-500 ease-out-quart',
         isScrolled
-          ? 'bg-white/85 dark:bg-dark-bg/85 backdrop-blur-xl shadow-sm shadow-slate-900/5 dark:shadow-black/10'
+          ? 'bg-white/70 dark:bg-dark-bg/70 backdrop-blur-xl shadow-sm shadow-slate-900/5 dark:shadow-black/10'
           : 'bg-transparent',
       )}
     >
@@ -69,7 +70,7 @@ export function Navbar() {
                 <span
                   className={cn(
                     'absolute -bottom-0.5 left-0 h-0.5 bg-primary-500 rounded-full',
-                    'transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)]',
+                    'transition-all duration-300 ease-out-quart',
                     location.pathname === link.href
                       ? 'w-full opacity-100'
                       : 'w-0 opacity-0',
@@ -80,13 +81,14 @@ export function Navbar() {
             <div className="flex items-center gap-2 border-l border-slate-200/80 dark:border-slate-700/50 pl-4 ml-2">
               <ThemeToggle />
               <LanguageToggle />
+              <ResumeButton className="ml-2" />
             </div>
           </div>
 
-          {/* Mobile Menu Button */}
           <div className="flex items-center gap-3 md:hidden">
             <ThemeToggle />
             <LanguageToggle />
+            <ResumeButton className="hidden sm:block" />
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className={cn(
@@ -129,7 +131,7 @@ export function Navbar() {
         <div
           className={cn(
             'md:hidden overflow-hidden',
-            'transition-all duration-400 ease-[cubic-bezier(0.25,1,0.5,1)]',
+            'transition-all duration-400 ease-out-quart',
             isMobileMenuOpen ? 'max-h-64 pb-4 opacity-100' : 'max-h-0 opacity-0',
           )}
         >

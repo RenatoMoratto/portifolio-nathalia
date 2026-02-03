@@ -19,7 +19,7 @@ i18n.use(initReactI18next).init({
               'Post-graduate <strong>User Experience and Beyond</strong>. PUCRS — <em>Ongoing</em>',
             item2:
               '<strong>Google UX Design Professional Certificate</strong>. Google — Coursera',
-            item3: '<strong>User Experience</strong>. FIAP',
+            item3: '<strong>Bachelor of Law</strong>. Faculdade Pitágoras',
           },
           courses: {
             title: 'Complementary Courses',
@@ -27,7 +27,7 @@ i18n.use(initReactI18next).init({
               'Course “Create High-Fidelity Designs and Prototypes in Figma”. Google — Coursera',
             item2:
               'Course “Conduct UX Research and Test Early Concepts”. Google — Coursera',
-            item3: '<strong>Bachelor of Law</strong>. Faculdade Pitágoras',
+            item3: '<strong>User Experience</strong>. FIAP',
           },
           tools: {
             title: 'Tools',
@@ -98,7 +98,7 @@ i18n.use(initReactI18next).init({
               'Pós-graduação <strong>User Experience and Beyond</strong>. PUCRS — <em>Cursando</em>',
             item2:
               '<strong>Google UX Design Professional Certificate</strong>. Google — Coursera',
-            item3: '<strong>User Experience</strong>. FIAP',
+            item3: '<strong>Bacharel em Direito</strong>. Faculdade Pitágoras',
           },
           courses: {
             title: 'Cursos complementares',
@@ -106,7 +106,7 @@ i18n.use(initReactI18next).init({
               'Curso “Create High-Fidelity Designs and Prototypes in Figma”. Google — Coursera',
             item2:
               'Curso “Conduct UX Research and Test Early Concepts”. Google — Coursera',
-            item3: '<strong>Bacharel em Direito</strong>. Faculdade Pitágoras',
+            item3: '<strong>User Experience</strong>. FIAP',
           },
           tools: {
             title: 'Ferramentas',

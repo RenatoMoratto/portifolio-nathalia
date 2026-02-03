@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { personalInfo } from '../data/portfolio';
 import { cn } from '../utils/cn';
 
@@ -41,24 +42,44 @@ export function SocialIcons({ className, size = 'md' }: SocialIconsProps) {
 
   return (
     <div className={cn('flex items-center gap-3', className)}>
-      {socialLinks.map((link) => (
-        <a
-          key={link.name}
-          href={link.href}
-          target={link.name !== 'Email' ? '_blank' : undefined}
-          rel={link.name !== 'Email' ? 'noopener noreferrer' : undefined}
-          className={cn(
-            sizes[size],
-            'flex items-center justify-center rounded-xl',
-            'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400',
-            'hover:bg-primary-500 hover:text-white hover:scale-110',
-            'transition-all duration-300',
-          )}
-          aria-label={link.name}
-        >
-          {link.icon}
-        </a>
-      ))}
+      {socialLinks.map((link) => {
+        const isInternal = link.name === 'Email';
+        const href = isInternal ? '/contact' : link.href;
+
+        const commonClasses = cn(
+          sizes[size],
+          'flex items-center justify-center rounded-xl',
+          'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400',
+          'hover:bg-primary-500 hover:text-white hover:scale-110',
+          'transition-all duration-300',
+        );
+
+        if (isInternal) {
+          return (
+            <Link
+              key={link.name}
+              to={href}
+              className={commonClasses}
+              aria-label={link.name}
+            >
+              {link.icon}
+            </Link>
+          );
+        }
+
+        return (
+          <a
+            key={link.name}
+            href={href}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={commonClasses}
+            aria-label={link.name}
+          >
+            {link.icon}
+          </a>
+        );
+      })}
     </div>
   );
 }

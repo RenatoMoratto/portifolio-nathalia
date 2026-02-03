@@ -7,10 +7,10 @@ export function Hero() {
   return (
     <section
       id="hero"
-      className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-light-bg dark:bg-dark-bg transition-colors duration-500"
+      className="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-slate-50 dark:bg-dark-bg transition-colors duration-500"
     >
       {/* Subtle gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-light-bg/30 to-light-bg dark:via-dark-bg/30 dark:to-dark-bg pointer-events-none" />
+      <div className="absolute inset-0 bg-linear-to-b from-transparent via-light-bg/30 to-light-bg dark:via-dark-bg/30 dark:to-dark-bg pointer-events-none" />
 
       {/* 3D Organic Orbs Background */}
       <OrganicOrbs />

@@ -17,7 +17,7 @@ export function HowIWork() {
   ];
 
   return (
-    <section className="section-padding bg-light-surface dark:bg-dark-surface">
+    <section className="section-padding bg-slate-50/50 dark:bg-dark-surface">
       <div className="section-container">
         <SectionHeading
           title={t('howIWork.title', 'Como eu trabalho')}
@@ -30,7 +30,7 @@ export function HowIWork() {
           <div
             className={cn(
               'absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2',
-              'bg-gradient-to-b from-primary-300/50 via-primary-400/30 to-transparent',
+              'bg-linear-to-b from-primary-300/50 via-primary-400/30 to-transparent',
               'dark:from-primary-500/40 dark:via-primary-600/20 dark:to-transparent',
               'hidden md:block',
             )}
@@ -40,7 +40,7 @@ export function HowIWork() {
           <div
             className={cn(
               'absolute left-4 top-0 bottom-0 w-px',
-              'bg-gradient-to-b from-primary-300/50 via-primary-400/30 to-transparent',
+              'bg-linear-to-b from-primary-300/50 via-primary-400/30 to-transparent',
               'dark:from-primary-500/40 dark:via-primary-600/20 dark:to-transparent',
               'md:hidden',
             )}
@@ -55,7 +55,7 @@ export function HowIWork() {
                   key={index}
                   className={cn(
                     'relative flex items-start gap-4 md:gap-0',
-                    'transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)]',
+                    'transition-all duration-700 ease-out-quart',
                     isVisible ? 'opacity-100' : 'opacity-0',
                     // Mobile: always left-aligned with padding for line
                     'pl-12 md:pl-0',
@@ -86,7 +86,7 @@ export function HowIWork() {
                       'border border-light-border dark:border-dark-border',
                       'hover:border-primary-200 dark:hover:border-primary-800/50',
                       'hover:shadow-lg hover:shadow-primary-500/5',
-                      'transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)]',
+                      'transition-all duration-300 ease-out-quart',
                       // Slide animation from alternating sides
                       isVisible
                         ? 'translate-x-0'
