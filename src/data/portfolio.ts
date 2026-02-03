@@ -13,7 +13,8 @@ export interface Experience {
   id: number;
   company: string;
   role: string;
-  period: string;
+  startDate: string;
+  endDate?: string;
   description: string;
   highlights: string[];
 }
@@ -23,7 +24,8 @@ export const experiences: Experience[] = [
     id: 1,
     company: 'Kiwano Tecnologia',
     role: 'Product Designer',
-    period: 'Dec 2023 – Present',
+    startDate: '2023-12',
+    endDate: undefined, // Present
     description:
       'End-to-end product designer working from discovery to delivery, closely collaborating with multidisciplinary teams to align user needs, business goals, and technical constraints.',
     highlights: [
@@ -38,7 +40,8 @@ export const experiences: Experience[] = [
     id: 2,
     company: 'Kiwano Tecnologia',
     role: 'Product Designer — Project: New Maps',
-    period: '2024',
+    startDate: '2024-01',
+    endDate: '2024-12',
     description:
       'Led the redesign and unification of mobile navigation systems across Android and iOS into a single scalable Flutter architecture.',
     highlights: [
@@ -54,7 +57,8 @@ export const experiences: Experience[] = [
     id: 3,
     company: 'DBV Pioneiros do Paraná',
     role: 'UX Designer & UX Researcher',
-    period: 'Apr 2022 – Jun 2022',
+    startDate: '2022-04',
+    endDate: '2022-06',
     description:
       'UX Designer and Researcher working with a social impact organization to improve operational processes and information management.',
     highlights: [

@@ -363,6 +363,10 @@ body {
   display: none;
 }
 
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 /* Responsive typography */
 @media (min-width: 768px) {
   .heading-1 {

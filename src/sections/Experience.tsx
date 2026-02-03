@@ -1,133 +1,312 @@
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from '../components';
 import { experiences } from '../data/portfolio';
-import { useScrollAnimation } from '../hooks';
 import { cn } from '../utils/cn';
+import { ChevronRight, ChevronDown } from 'lucide-react';
 
-function ExperienceItem({
-  experience,
-  index,
-  isVisible,
-}: {
-  experience: (typeof experiences)[0];
-  index: number;
-  isVisible: boolean;
-}) {
-  const isEven = index % 2 === 0;
+const CARD_WIDTH = 320;
+const HALF_CARD = CARD_WIDTH / 2;
 
-  return (
-    <div
-      className={cn(
-        'relative flex items-start gap-8 md:gap-0 transition-all duration-700',
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8',
-        isEven ? 'md:flex-row' : 'md:flex-row-reverse',
-      )}
-      style={{ transitionDelay: isVisible ? `${(index + 1) * 150}ms` : '0ms' }}
-    >
-      {/* Timeline Node */}
-      <div
-        className={cn(
-          'absolute left-4 md:left-1/2 -translate-x-1/2 top-8 z-10',
-          'w-4 h-4 rounded-full border-4 border-white dark:border-dark-bg transition-all duration-500',
-          isVisible
-            ? 'bg-primary-500 scale-100'
-            : 'bg-slate-200 dark:bg-slate-700 scale-0',
-        )}
-      />
+/* --------------------------------------------
+ * HELPERS
+ * ------------------------------------------ */
+const formatPeriod = (startDate: string, endDate?: string) => {
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    year: 'numeric',
+  });
 
-      {/* Content Card */}
-      <div
-        className={cn(
-          'w-full md:w-[45%] pl-12 md:pl-0',
-          isEven ? 'md:pr-12' : 'md:pl-12',
-        )}
-      >
-        <Card
-          className={cn(
-            'p-6 relative transition-all duration-300',
-            'hover:shadow-xl hover:-translate-y-1',
-          )}
-        >
-          {/* Period - Desktop */}
-          <div
-            className={cn(
-              'hidden md:block absolute top-1/2 -translate-y-1/2 text-sm font-semibold text-primary-500 whitespace-nowrap',
-              isEven ? 'left-[calc(100%+2.5rem)]' : 'right-[calc(100%+2.5rem)]',
-            )}
-          >
-            {experience.period}
-          </div>
+  const start = new Date(startDate);
+  const end = endDate ? new Date(endDate) : null;
 
-          {/* Period - Mobile */}
-          <span className="md:hidden inline-block px-3 py-1 text-xs font-semibold text-primary-500 bg-primary-50 dark:bg-primary-900/30 rounded-full mb-3">
-            {experience.period}
-          </span>
-
-          <div className="mb-4">
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-1">
-              {experience.role}
-            </h3>
-            <p className="text-primary-600 dark:text-primary-400 font-medium">
-              {experience.company}
-            </p>
-          </div>
-
-          <p className="text-slate-600 dark:text-slate-400 mb-6 text-sm leading-relaxed">
-            {experience.description}
-          </p>
-
-          <ul className="space-y-3">
-            {experience.highlights.map((highlight, i) => (
-              <li
-                key={i}
-                className="text-sm text-slate-500 dark:text-slate-400 flex items-start gap-3"
-              >
-                <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary-400 dark:bg-primary-600 shrink-0" />
-                <span className="leading-relaxed">{highlight}</span>
-              </li>
-            ))}
-          </ul>
-        </Card>
-      </div>
-
-      {/* Spacer for alternating layout */}
-      <div className="hidden md:block md:w-[45%]" />
-    </div>
-  );
-}
+  return `${formatter.format(start)} – ${end ? formatter.format(end) : 'Present'}`;
+};
 
 export function Experience() {
   const { t } = useTranslation();
-  const [ref, isVisible] = useScrollAnimation<HTMLDivElement>();
+  const [expandedId, setExpandedId] = useState<number | null>(null);
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const cardsRef = useRef<Map<number, HTMLDivElement>>(new Map());
+
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const scrollLeft = useRef(0);
+
+  const snapTimeout = useRef<number | null>(null);
+
+  /* --------------------------------------------
+   * ORDENAR EXPERIÊNCIAS (antigas → recentes)
+   * ------------------------------------------ */
+  const orderedExperiences = useMemo(() => {
+    return [...experiences].sort((a, b) => {
+      const aEnd = a.endDate ? new Date(a.endDate).getTime() : Infinity;
+      const bEnd = b.endDate ? new Date(b.endDate).getTime() : Infinity;
+
+      return aEnd - bEnd;
+    });
+  }, []);
+
+  /* --------------------------------------------
+   * SNAP
+   * ------------------------------------------ */
+  const scheduleSnap = () => {
+    if (snapTimeout.current) window.clearTimeout(snapTimeout.current);
+
+    snapTimeout.current = window.setTimeout(() => {
+      snapToClosest();
+    }, 180);
+  };
+
+  /* --------------------------------------------
+   * DRAG HORIZONTAL NATIVO
+   * ------------------------------------------ */
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const onPointerDown = (e: PointerEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('[data-card]')) return;
+
+      isDragging.current = true;
+      startX.current = e.pageX;
+      scrollLeft.current = el.scrollLeft;
+
+      if (snapTimeout.current) {
+        clearTimeout(snapTimeout.current);
+        snapTimeout.current = null;
+      }
+
+      el.setPointerCapture(e.pointerId);
+    };
+
+    const onPointerMove = (e: PointerEvent) => {
+      if (!isDragging.current) return;
+      const dx = e.pageX - startX.current;
+      el.scrollLeft = scrollLeft.current - dx;
+    };
+
+    const onPointerUp = () => {
+      if (!isDragging.current) return;
+      isDragging.current = false;
+      if (expandedId === null) scheduleSnap();
+    };
+
+    el.addEventListener('pointerdown', onPointerDown);
+    el.addEventListener('pointermove', onPointerMove);
+    el.addEventListener('pointerup', onPointerUp);
+    el.addEventListener('pointerleave', onPointerUp);
+
+    return () => {
+      el.removeEventListener('pointerdown', onPointerDown);
+      el.removeEventListener('pointermove', onPointerMove);
+      el.removeEventListener('pointerup', onPointerUp);
+      el.removeEventListener('pointerleave', onPointerUp);
+    };
+  }, [expandedId]);
+
+  /* --------------------------------------------
+   * SNAP AUTOMÁTICO
+   * ------------------------------------------ */
+  const snapToClosest = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const containerCenter = el.scrollLeft + el.offsetWidth / 2;
+
+    let closestId: number | null = null;
+    let minDistance = Infinity;
+
+    cardsRef.current.forEach((card, id) => {
+      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+      const dist = Math.abs(containerCenter - cardCenter);
+
+      if (dist < minDistance) {
+        minDistance = dist;
+        closestId = id;
+      }
+    });
+
+    if (closestId !== null) {
+      centerCard(closestId);
+    }
+  };
+
+  /* --------------------------------------------
+   * CENTRALIZAR CARD
+   * ------------------------------------------ */
+  const centerCard = (id: number) => {
+    const el = scrollRef.current;
+    const card = cardsRef.current.get(id);
+    if (!el || !card) return;
+
+    const left = card.offsetLeft - el.offsetWidth / 2 + card.offsetWidth / 2;
+    el.scrollTo({ left, behavior: 'smooth' });
+  };
+
+  /* --------------------------------------------
+   * SCROLL INICIAL NO MAIS RECENTE
+   * ------------------------------------------ */
+  useEffect(() => {
+    if (!scrollRef.current || orderedExperiences.length === 0) return;
+
+    const last = orderedExperiences[orderedExperiences.length - 1];
+    requestAnimationFrame(() => {
+      centerCard(last.id);
+    });
+  }, [orderedExperiences]);
+
+  /* --------------------------------------------
+   * CLICK FORA FECHA CARD
+   * ------------------------------------------ */
+  useEffect(() => {
+    if (expandedId === null) return;
+
+    const onClickOutside = (e: MouseEvent) => {
+      const card = cardsRef.current.get(expandedId);
+      if (card && !card.contains(e.target as Node)) {
+        setExpandedId(null);
+      }
+    };
+
+    document.addEventListener('mousedown', onClickOutside);
+    return () => document.removeEventListener('mousedown', onClickOutside);
+  }, [expandedId]);
+
+  /* --------------------------------------------
+   * CENTRALIZA AO ABRIR
+   * ------------------------------------------ */
+  useEffect(() => {
+    if (expandedId !== null) {
+      centerCard(expandedId);
+    }
+  }, [expandedId]);
 
   return (
-    <section id="experience" className="mb-24 scroll-mt-24">
-      <div ref={ref}>
-        <h2 className="heading-2 mb-12 text-slate-900 dark:text-white">
+    <section id="experience" className="py-32">
+      <div className="pt-24 pb-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="heading-2 text-slate-900 dark:text-white mb-16">
           {t('nav.experience')}
         </h2>
 
         <div className="relative">
-          {/* Timeline Line */}
-          <div
-            className={cn(
-              'absolute left-4 md:left-1/2 top-0 bottom-0 w-px -translate-x-1/2',
-              'bg-linear-to-b from-primary-200 via-primary-400 to-transparent',
-              'dark:from-primary-900/50 dark:via-primary-700/30 dark:to-transparent',
-              'transition-all duration-1000 origin-top',
-              isVisible ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0',
-            )}
-          />
+          {/* Timeline */}
+          <div className="absolute top-10 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-400/50 to-transparent" />
 
-          <div className="space-y-12 md:space-y-16">
-            {experiences.map((experience, index) => (
-              <ExperienceItem
-                key={experience.id}
-                experience={experience}
-                index={index}
-                isVisible={isVisible}
-              />
-            ))}
+          <div
+            ref={scrollRef}
+            className="
+              flex gap-12
+              overflow-x-auto
+              overscroll-x-contain
+              scroll-smooth
+              pt-20 pb-32
+              -mx-4 sm:-mx-6 lg:-mx-8
+              cursor-grab active:cursor-grabbing
+              scrollbar-hide
+            "
+            style={{
+              paddingLeft: HALF_CARD,
+              paddingRight: HALF_CARD,
+            }}
+          >
+            {orderedExperiences.map((exp) => {
+              const isExpanded = expandedId === exp.id;
+
+              return (
+                <div
+                  key={exp.id}
+                  data-card
+                  ref={(el) => {
+                    if (el) cardsRef.current.set(exp.id, el);
+                  }}
+                  className={cn(
+                    'shrink-0 transition-[width] duration-500 ease-out',
+                    isExpanded ? 'w-[520px]' : 'w-[320px]',
+                  )}
+                >
+                  <button
+                    type="button"
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={() => setExpandedId(isExpanded ? null : exp.id)}
+                    className={cn(
+                      'w-full text-left rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
+                      isExpanded
+                        ? 'bg-white dark:bg-slate-800 shadow-xl'
+                        : 'bg-white/70 dark:bg-white/10 hover:bg-white',
+                    )}
+                  >
+                    <Card className="p-6 border-0 bg-transparent shadow-none relative">
+                      {/* Node */}
+                      <div className="absolute -top-8 left-1/2 -translate-x-1/2">
+                        <div
+                          className={cn(
+                            'w-3 h-3 rounded-full border-2',
+                            isExpanded
+                              ? 'bg-primary-500 border-primary-500'
+                              : 'bg-primary-300 border-primary-400/50',
+                          )}
+                        />
+                      </div>
+
+                      <span className="block text-xs font-bold uppercase tracking-wider text-primary-500 mb-2">
+                        {formatPeriod(exp.startDate, exp.endDate)}
+                      </span>
+
+                      <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                        {exp.role}
+                      </h3>
+
+                      <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+                        {exp.company}
+                      </p>
+
+                      <div className="mt-4 flex items-center gap-2 text-xs font-semibold text-primary-500/70">
+                        {isExpanded ? (
+                          <ChevronDown size={14} />
+                        ) : (
+                          <ChevronRight size={14} />
+                        )}
+                        <span>{isExpanded ? 'Show less' : 'Show details'}</span>
+                      </div>
+
+                      <AnimatePresence>
+                        {isExpanded && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: 'auto', opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.35 }}
+                            className="overflow-hidden"
+                          >
+                            <div className="pt-6">
+                              <p className="text-sm text-slate-600 dark:text-slate-300 mb-6 leading-relaxed border-t border-slate-200 dark:border-slate-700 pt-6">
+                                {exp.description}
+                              </p>
+
+                              <ul className="space-y-3">
+                                {exp.highlights.map((h, i) => (
+                                  <li
+                                    key={i}
+                                    className="flex gap-3 text-sm text-slate-500 dark:text-slate-400"
+                                  >
+                                    <span className="mt-2 w-1.5 h-1.5 rounded-full bg-primary-500 shrink-0" />
+                                    <span>{h}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </Card>
+                  </button>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
