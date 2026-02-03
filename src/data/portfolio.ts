@@ -5,39 +5,8 @@ export const personalInfo = {
   experience: '2+ years',
   tagline:
     'DESIGN COMO FERRAMENTA DE DECISÃO para produtos claros, usáveis e sustentáveis',
-  email: 'nathaliascaldeira@example.com', // Placeholder or need to ask user? Prompt didn't provide email. I'll leave placeholder or empty.
-  // Actually prompt didn't provide email. But Contact form needs one to send TO?
-  // No, the contact form sends TO the owner (via EmailJS service config).
-  // The email in personalInfo is usually for "mailto" links.
-  // I will put a placeholder or remove it if not provided. Prompt says "Display a link to LinkedIn", doesn't mention email link display.
-  // But Contact page usually has email. I'll put a placeholder.
-  github: '#', // Not provided
+  email: 'nathaliascaldeira@gmail.com',
   linkedin: 'https://www.linkedin.com/in/nathaliascaldeira/',
-};
-
-export const skills = {
-  // Placeholder structure, will be filled in About page
-  product: {
-    title: 'Product & UX',
-    icon: '🎨',
-    items: [
-      'Pesquisa e descoberta',
-      'Definição de problemas e requisitos',
-      'Arquitetura da informação e fluxos',
-      'Prototipação e validação',
-      'Colaboração e comunicação',
-    ],
-  },
-  process: {
-    title: 'Processo',
-    icon: '⚙️',
-    items: [
-      'Decisão baseada em dados',
-      'Escuta ativa e empatia',
-      'Planejamento e documentação',
-      'Entrega em contextos complexos',
-    ],
-  },
 };
 
 export interface Experience {
@@ -50,7 +19,52 @@ export interface Experience {
 }
 
 export const experiences: Experience[] = [
-  // Will be filled in About page content
+  {
+    id: 1,
+    company: 'Kiwano Tecnologia',
+    role: 'Product Designer',
+    period: 'Dec 2023 – Present',
+    description:
+      'End-to-end product designer working from discovery to delivery, closely collaborating with multidisciplinary teams to align user needs, business goals, and technical constraints.',
+    highlights: [
+      'Led user research, stakeholder interviews, and usability testing, translating insights into validated product solutions.',
+      'Conducted market and competitor analysis to identify product opportunities and influence roadmap decisions.',
+      'Designed high-fidelity interfaces, interactive prototypes, and UX documentation to support engineering and product teams.',
+      'Collaborated closely with developers during implementation and QA to ensure design consistency and usability.',
+      'Contributed to the launch of multiple products, including a vehicle tracking mobile app and a professional training scheduling platform.',
+    ],
+  },
+  {
+    id: 2,
+    company: 'Kiwano Tecnologia',
+    role: 'Product Designer — Project: New Maps',
+    period: '2024',
+    description:
+      'Led the redesign and unification of mobile navigation systems across Android and iOS into a single scalable Flutter architecture.',
+    highlights: [
+      'Unified Android and iOS navigation into a single Flutter-based architecture, reducing total screens by ~32%.',
+      'Reduced average navigation depth from 5 to 3 levels, improving task efficiency in critical flows.',
+      'Simplified core product flows (reports, commands, map actions), cutting interaction steps by up to 50%.',
+      'Eliminated 100% of duplicated flows between platforms by consolidating experiences into scalable Flutter patterns.',
+      'Standardized navigation patterns across platforms, reducing inconsistent interactions by ~70%.',
+      'Optimized information architecture to support future feature scalability and faster development cycles.',
+    ],
+  },
+  {
+    id: 3,
+    company: 'DBV Pioneiros do Paraná',
+    role: 'UX Designer & UX Researcher',
+    period: 'Apr 2022 – Jun 2022',
+    description:
+      'UX Designer and Researcher working with a social impact organization to improve operational processes and information management.',
+    highlights: [
+      'Identified critical operational gaps through in-depth interviews and desk research with volunteers and coordinators.',
+      'Synthesized research insights into clear design decisions focused on organization, traceability, and continuity.',
+      'Designed and delivered an end-to-end system to register, organize, and maintain activity histories for children and adolescents.',
+      'Reduced reliance on informal and manual processes, improving long-term information accessibility.',
+      'Delivered a scalable hybrid solution (digital + printed materials) aligned with real-world workflows.',
+    ],
+  },
 ];
 
 export const projects = [

@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { SectionHeading, Card } from '../components';
 import { useScrollAnimation } from '../hooks';
 import { cn } from '../utils/cn';
+import { Experience } from '../sections';
 
 export function About() {
   const { t } = useTranslation();
@@ -36,6 +37,8 @@ export function About() {
           />
         </div>
       </section>
+
+      <Experience />
 
       {/* Formation */}
       <section

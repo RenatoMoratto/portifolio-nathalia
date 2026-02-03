@@ -97,7 +97,7 @@ export function Contact() {
           ref={ref}
           className={cn(
             'max-w-xl mx-auto',
-            'transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]',
+            'transition-all duration-700 ease-out-expo',
             isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8',
           )}
         >

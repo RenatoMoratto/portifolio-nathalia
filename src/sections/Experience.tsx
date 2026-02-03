@@ -1,118 +1,132 @@
-import { SectionHeading } from '../components';
+import { useTranslation } from 'react-i18next';
+import { Card } from '../components';
 import { experiences } from '../data/portfolio';
 import { useScrollAnimation } from '../hooks';
 import { cn } from '../utils/cn';
 
-function TimelineItem({
+function ExperienceItem({
   experience,
   index,
+  isVisible,
 }: {
   experience: (typeof experiences)[0];
   index: number;
+  isVisible: boolean;
 }) {
-  const [ref, isVisible] = useScrollAnimation<HTMLDivElement>();
   const isEven = index % 2 === 0;
 
   return (
     <div
-      ref={ref}
       className={cn(
-        'relative flex items-center transition-all duration-700',
+        'relative flex items-start gap-8 md:gap-0 transition-all duration-700',
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8',
-        'md:justify-center'
+        isEven ? 'md:flex-row' : 'md:flex-row-reverse',
       )}
-      style={{ transitionDelay: `${index * 150}ms` }}
+      style={{ transitionDelay: isVisible ? `${(index + 1) * 150}ms` : '0ms' }}
     >
-      {/* Timeline line - visible on md+ */}
-      <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary-500 to-accent-500" />
-
-      {/* Content */}
+      {/* Timeline Node */}
       <div
         className={cn(
-          'w-full md:w-5/12',
-          isEven ? 'md:pr-12 md:text-right' : 'md:pl-12 md:ml-auto'
+          'absolute left-4 md:left-1/2 -translate-x-1/2 top-8 z-10',
+          'w-4 h-4 rounded-full border-4 border-white dark:border-dark-bg transition-all duration-500',
+          isVisible
+            ? 'bg-primary-500 scale-100'
+            : 'bg-slate-200 dark:bg-slate-700 scale-0',
+        )}
+      />
+
+      {/* Content Card */}
+      <div
+        className={cn(
+          'w-full md:w-[45%] pl-12 md:pl-0',
+          isEven ? 'md:pr-12' : 'md:pl-12',
         )}
       >
-        <div
+        <Card
           className={cn(
-            'p-6 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700',
-            'shadow-lg shadow-slate-900/5 dark:shadow-slate-900/20',
-            'hover:shadow-xl hover:-translate-y-1 transition-all duration-300',
-            'relative'
+            'p-6 relative transition-all duration-300',
+            'hover:shadow-xl hover:-translate-y-1',
           )}
         >
-          {/* Dot on timeline */}
+          {/* Period - Desktop */}
           <div
             className={cn(
-              'hidden md:flex absolute top-8 w-4 h-4 rounded-full bg-primary-500 border-4 border-white dark:border-slate-900',
-              'items-center justify-center',
-              isEven ? '-right-[2.1rem]' : '-left-[2.1rem]'
+              'hidden md:block absolute top-1/2 -translate-y-1/2 text-sm font-semibold text-primary-500 whitespace-nowrap',
+              isEven ? 'left-[calc(100%+2.5rem)]' : 'right-[calc(100%+2.5rem)]',
             )}
           >
-            <div className="w-2 h-2 rounded-full bg-white" />
+            {experience.period}
           </div>
 
-          {/* Period badge */}
-          <span className="inline-block px-3 py-1 text-sm font-medium text-primary-500 bg-primary-50 dark:bg-primary-900/30 rounded-full mb-3">
+          {/* Period - Mobile */}
+          <span className="md:hidden inline-block px-3 py-1 text-xs font-semibold text-primary-500 bg-primary-50 dark:bg-primary-900/30 rounded-full mb-3">
             {experience.period}
           </span>
 
-          <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-1">
-            {experience.role}
-          </h3>
+          <div className="mb-4">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-1">
+              {experience.role}
+            </h3>
+            <p className="text-primary-600 dark:text-primary-400 font-medium">
+              {experience.company}
+            </p>
+          </div>
 
-          <p className="text-primary-500 font-medium mb-3">{experience.company}</p>
-
-          <p className="text-slate-600 dark:text-slate-400 mb-4">
+          <p className="text-slate-600 dark:text-slate-400 mb-6 text-sm leading-relaxed">
             {experience.description}
           </p>
 
-          <ul className={cn('space-y-2', isEven ? 'md:text-right' : '')}>
+          <ul className="space-y-3">
             {experience.highlights.map((highlight, i) => (
               <li
                 key={i}
-                className={cn(
-                  'text-sm text-slate-500 dark:text-slate-500 flex items-start gap-2',
-                  isEven ? 'md:flex-row-reverse' : ''
-                )}
+                className="text-sm text-slate-500 dark:text-slate-400 flex items-start gap-3"
               >
-                <svg
-                  className="w-4 h-4 text-primary-500 flex-shrink-0 mt-0.5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span>{highlight}</span>
+                <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary-400 dark:bg-primary-600 shrink-0" />
+                <span className="leading-relaxed">{highlight}</span>
               </li>
             ))}
           </ul>
-        </div>
+        </Card>
       </div>
+
+      {/* Spacer for alternating layout */}
+      <div className="hidden md:block md:w-[45%]" />
     </div>
   );
 }
 
 export function Experience() {
+  const { t } = useTranslation();
+  const [ref, isVisible] = useScrollAnimation<HTMLDivElement>();
+
   return (
-    <section id="experience" className="section-padding bg-white dark:bg-dark-bg">
-      <div className="section-container">
-        <SectionHeading
-          title="Experience"
-          subtitle="My professional journey and the impact I've made"
-        />
+    <section id="experience" className="mb-24 scroll-mt-24">
+      <div ref={ref}>
+        <h2 className="heading-2 mb-12 text-slate-900 dark:text-white">
+          {t('nav.experience')}
+        </h2>
 
-        <div className="relative max-w-5xl mx-auto">
-          {/* Mobile timeline line */}
-          <div className="md:hidden absolute left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary-500 to-accent-500" />
+        <div className="relative">
+          {/* Timeline Line */}
+          <div
+            className={cn(
+              'absolute left-4 md:left-1/2 top-0 bottom-0 w-px -translate-x-1/2',
+              'bg-linear-to-b from-primary-200 via-primary-400 to-transparent',
+              'dark:from-primary-900/50 dark:via-primary-700/30 dark:to-transparent',
+              'transition-all duration-1000 origin-top',
+              isVisible ? 'scale-y-100 opacity-100' : 'scale-y-0 opacity-0',
+            )}
+          />
 
-          <div className="space-y-8 md:space-y-12">
+          <div className="space-y-12 md:space-y-16">
             {experiences.map((experience, index) => (
-              <TimelineItem key={experience.id} experience={experience} index={index} />
+              <ExperienceItem
+                key={experience.id}
+                experience={experience}
+                index={index}
+                isVisible={isVisible}
+              />
             ))}
           </div>
         </div>
