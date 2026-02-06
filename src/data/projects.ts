@@ -1,4 +1,5 @@
 import coverRegistroClasses from '../assets/images/registro-classes.png';
+import coverAppRastreioVeicular from '../assets/images/registro-classes.png';
 
 // Section = one heading + one or more content blocks (paragraphs / lists)
 export type ProjectSection = { heading: string; content: string[] };
@@ -27,12 +28,13 @@ export function getAllProjects(): Project[] {
   return projects;
 }
 
-// Project data extracted from PDF - "Registro de Classes"
-// Left column = Slow Lane (detailed), Right column = Fast Lane (concise)
 const projects: Project[] = [
   {
     slug: 'registro-de-classes',
     title: 'Registro de Classes',
+    role: 'Product Designer, QA',
+    platform: 'iOS and Android',
+    designTools: 'Figma, Balsamiq',
     shortDescription:
       'Sistema híbrido (físico + digital) para organizar atividades, presença e evidências de classes progressivas no Clube de Desbravadores Pioneiros do Paraná.',
     coverImage: coverRegistroClasses,
@@ -234,6 +236,160 @@ const projects: Project[] = [
         content: [
           'Este projeto consolidou princípios que hoje guiam minha atuação como Product Designer: Design precisa se adaptar ao contexto, não o contrário, especialmente em ambientes com baixa infraestrutura, MVP bem definido gera impacto real mais rápido do que soluções complexas e difíceis de adotar, Soluções híbridas (físico + digital) podem ser mais eficazes do que produtos exclusivamente digitais, Envolver desenvolvimento desde o início reduz desperdício, aumenta viabilidade e acelera entrega.',
           'Esse projeto reforçou minha capacidade de conectar pesquisa, decisão de produto e execução de design para resolver problemas reais, mesmo em cenários de alta restrição.',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'app-rastreio-veicular',
+    title: 'Aplicativo de Rastreio Veicular',
+    shortDescription:
+      'Reestruturação completa da arquitetura de informação e da experiência mobile de um sistema de rastreamento e gestão de frotas durante a migração para Flutter.',
+    coverImage: coverAppRastreioVeicular,
+    role: 'Product Designer, UX Researcher, QA',
+    platform: 'iOS and Android',
+    designTools: 'Figma, Balsamiq',
+    fastLane: [
+      {
+        heading: 'CONTEXTO',
+        content: [
+          'Projeto desenvolvido para um sistema mobile de rastreamento e gestão de frotas utilizado por empresas para monitorar veículos, enviar comandos e acompanhar operações em tempo real.',
+          'O produto principal da empresa era um software desktop robusto, enquanto os aplicativos móveis funcionavam como uma extensão operacional.',
+          'Com o tempo, os apps cresceram de forma reativa, acumulando funcionalidades sem uma visão clara de arquitetura.',
+        ],
+      },
+      {
+        heading: 'PROBLEMA',
+        content: [
+          'Android e iOS evoluíram de formas diferentes, acumulando regras conflitantes, navegação inconsistente e múltiplos caminhos para as mesmas ações.',
+          'A migração para Flutter deixou claro que não era possível apenas recriar telas sem reorganizar o sistema.',
+          'Qualquer erro de UX impactaria diretamente operações reais dos clientes.',
+        ],
+      },
+      {
+        heading: 'MEU PAPEL',
+        content: [
+          'Atuei como única Product Designer, responsável por pesquisa, arquitetura de informação, fluxos, prototipação e validação.',
+          'Trabalhei em parceria com um Product Manager e dois desenvolvedores, apresentando decisões diretamente ao cliente.',
+        ],
+      },
+      {
+        heading: 'PESQUISA',
+        content: [
+          'Combinei desk research com avaliações da App Store e Play Store e entrevistas de profundidade com usuários de empresas de diferentes portes.',
+          'Os dados mostraram que o problema não era falta de funcionalidades, mas excesso de complexidade mal organizada.',
+        ],
+      },
+      {
+        heading: 'ARQUITETURA',
+        content: [
+          'Criei sitemaps completos de Android e iOS para tornar a complexidade visível.',
+          'A partir disso, desenvolvi um novo sitemap unificado, organizado por objetivos do usuário.',
+        ],
+      },
+      {
+        heading: 'SOLUÇÃO',
+        content: [
+          'Redução de profundidade de navegação, eliminação de redundâncias e criação de padrões reutilizáveis.',
+          'Nova base de UX preparada para crescimento contínuo.',
+        ],
+      },
+      {
+        heading: 'RESULTADOS',
+        content: [
+          'Redução de aproximadamente 32% no número total de telas.',
+          'Redução da profundidade média de navegação de 5 para 3 níveis.',
+          'Unificação dos fluxos entre Android e iOS.',
+        ],
+      },
+    ],
+    slowLane: [
+      {
+        heading: 'CONTEXTO DO PRODUTO',
+        content: [
+          'O projeto foi desenvolvido para um sistema mobile de rastreamento e gestão de frotas, utilizado por empresas para monitorar veículos, enviar comandos e analisar dados operacionais em tempo real.',
+          'O produto principal era um software desktop estável, enquanto os aplicativos móveis funcionavam como extensão operacional.',
+          'Ao longo dos anos, os apps cresceram de forma reativa, recebendo funcionalidades conforme pedidos de clientes, sem uma visão clara de arquitetura.',
+        ],
+      },
+      {
+        heading: 'PROBLEMA DE PRODUTO',
+        content: [
+          'Android e iOS possuíam estruturas de navegação diferentes, regras inconsistentes e múltiplos caminhos para as mesmas ações.',
+          'O mobile passou a concentrar lógica própria, porém fragmentada e difícil de manter.',
+          'A migração para Flutter evidenciou que o sistema precisava ser reorganizado sem quebrar o que já funcionava.',
+        ],
+      },
+      {
+        heading: 'MEU PAPEL NO TIME',
+        content: [
+          'Atuei como única Product Designer, responsável por toda a estratégia de UX: pesquisa, arquitetura de informação, definição de fluxos, prototipação e validação.',
+          'Trabalhei em conjunto com um Product Manager e dois desenvolvedores, apresentando mapas e decisões diretamente ao cliente.',
+        ],
+      },
+      {
+        heading: 'ENTENDENDO O LEGADO',
+        content: [
+          'Criei dois sitemaps completos, um para Android e outro para iOS, mapeando todas as telas, caminhos e dependências.',
+          'Quando analisados lado a lado, ficou claro que o mesmo produto possuía duas arquiteturas diferentes.',
+          'Esses mapas revelaram fluxos duplicados, telas redundantes, regras conflitantes e pontos de alta carga cognitiva.',
+        ],
+      },
+      {
+        heading: 'PESQUISA COM USUÁRIOS',
+        content: [
+          'Combinei desk research com avaliações da App Store e Play Store e entrevistas de profundidade com usuários.',
+          'Foram entrevistados usuários de empresas de grande porte, com uso intenso do sistema, e de menor porte, com uso mais leve.',
+          'Os feedbacks foram agrupados em temas como mapas, comandos, relatórios, jornada do motorista, permissões e desempenho.',
+        ],
+      },
+      {
+        heading: 'SÍNTESE E PRIORIZAÇÃO',
+        content: [
+          'Os problemas foram organizados por frequência, impacto operacional e risco para o negócio.',
+          'O MVP focou nos fluxos críticos: localizar veículos, enviar comandos, acessar relatórios e navegar no mapa.',
+          'Funcionalidades periféricas foram mapeadas, mas ficaram fora do escopo inicial.',
+        ],
+      },
+      {
+        heading: 'NOVA ARQUITETURA DE INFORMAÇÃO',
+        content: [
+          'Desenhei um novo sitemap unificado, estruturado por objetivos do usuário, e não pela herança do legado.',
+          'A nova arquitetura reduziu profundidade de navegação, eliminou redundâncias e criou padrões reutilizáveis.',
+          'Essa estrutura foi validada com o cliente antes do início do design visual.',
+        ],
+      },
+      {
+        heading: 'PROTOTIPAÇÃO',
+        content: [
+          'Os fluxos foram inicialmente trabalhados em wireframes de baixa fidelidade no Balsamiq.',
+          'Essa etapa permitiu validar regras, exceções e navegação sem que decisões visuais mascarassem problemas estruturais.',
+          'Com os fluxos aprovados, o projeto seguiu para prototipação em alta fidelidade no Figma.',
+        ],
+      },
+      {
+        heading: 'DESIGN DA INTERFACE',
+        content: [
+          'Sem um design system formal, analisei o software desktop, o site institucional e a identidade da marca.',
+          'Criei uma base visual consistente que respeitava o legado, mas organizava a interface de forma mais clara e hierárquica.',
+          'O foco foi reduzir ruído cognitivo em um sistema com alta densidade de dados.',
+        ],
+      },
+      {
+        heading: 'RESULTADOS',
+        content: [
+          'Redução de aproximadamente 32% no número total de telas.',
+          'Redução da profundidade média de navegação de 5 para 3 níveis nos fluxos principais.',
+          'Eliminação de fluxos duplicados entre Android e iOS.',
+          'Criação de uma base de UX preparada para crescimento contínuo.',
+        ],
+      },
+      {
+        heading: 'APRENDIZADOS',
+        content: [
+          'Arquitetura da informação é uma decisão de produto, não apenas organização de telas.',
+          'Pedidos isolados de usuários precisam ser traduzidos em soluções sistêmicas.',
+          'Escalabilidade começa no design: quando a base é sólida, o produto pode crescer sem voltar ao caos.',
         ],
       },
     ],
