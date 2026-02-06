@@ -1,14 +1,25 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { ScrollToTop } from './components/ScrollToTop';
 import { Home, About, Contact, ProjectPage } from './pages';
 import { ThemeProvider } from './hooks';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { premiumEasing } from './utils/projectMotion';
 
-function App() {
+function AppRoutes() {
+  const location = useLocation();
+  const shouldReduceMotion = useReducedMotion();
+
   return (
-    <ThemeProvider>
-      <BrowserRouter>
-        <Routes>
+    <AnimatePresence initial={!shouldReduceMotion}>
+      <motion.div
+        layout
+        transition={{
+          duration: 0.55,
+          ease: premiumEasing,
+        }}
+      >
+        <Routes location={location}>
           <Route
             path="/"
             element={
@@ -24,6 +35,16 @@ function App() {
             <Route path="projects/:slug" element={<ProjectPage />} />
           </Route>
         </Routes>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <BrowserRouter>
+        <AppRoutes />
       </BrowserRouter>
     </ThemeProvider>
   );
