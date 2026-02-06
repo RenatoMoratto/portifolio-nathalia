@@ -78,7 +78,6 @@ export function ProjectPage() {
   const [ref, isVisible] = useScrollAnimation<HTMLDivElement>();
   const scrollToSectionRef = useRef<string | null>(null);
   const shouldReduceMotion = useReducedMotion();
-  const hasRestoredScroll = useRef(false);
 
   const currentSections =
     project === undefined
@@ -135,7 +134,7 @@ export function ProjectPage() {
 
   return (
     <motion.main
-      className="pt-24 pb-20 px-3 sm:px-4 lg:px-6"
+      className="bg-slate-50/50 dark:bg-dark-surface pt-24 pb-20 px-3 sm:px-4 lg:px-6"
       initial={shouldReduceMotion ? false : { opacity: 0 }}
       animate={shouldReduceMotion ? undefined : { opacity: 1 }}
       exit={shouldReduceMotion ? undefined : { opacity: 0 }}
@@ -144,100 +143,68 @@ export function ProjectPage() {
         ease: [0.22, 1, 0.36, 1], // premium, easeOutExpo-ish
       }}
     >
-      <article className="pt-24 pb-20 px-3 sm:px-4 lg:px-6">
-        <div ref={ref} className="max-w-6xl mx-auto">
-          {/* 1 & 2. Project title + Cover image (title overlays darkened cover) */}
-          {project.coverImage ? (
-            <motion.div
-              layoutId={imageLayoutId}
-              transition={{
-                layout: {
-                  duration: 0.6,
-                  ease: premiumEasing,
-                },
-              }}
-              className="relative rounded-xl overflow-hidden mb-6 aspect-video bg-slate-900"
-              onLayoutAnimationComplete={() => {
-                if (hasRestoredScroll.current) return;
-                hasRestoredScroll.current = true;
+      <div ref={ref} className="max-w-6xl mx-auto">
+        {/* 1 & 2. Project title + Cover image (title overlays darkened cover) */}
+        <motion.div
+          layoutId={imageLayoutId}
+          transition={{
+            layout: { duration: 0.6, ease: premiumEasing },
+          }}
+          className="relative aspect-video rounded-xl overflow-hidden mb-6 bg-slate-900"
+        >
+          <img
+            src={project.coverImage}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover opacity-70"
+          />
 
-                // Restore scroll AFTER animation settles
-                window.scrollTo({
-                  top: 0,
-                  left: 0,
-                  behavior: 'auto',
-                });
-              }}
-            >
-              <img
-                src={project.coverImage}
-                alt=""
-                className="absolute inset-0 w-full h-full object-cover opacity-70"
-              />
-              <div className="absolute inset-0 bg-black/60" aria-hidden />
-              <div className="absolute inset-x-0 bottom-0 px-6 py-5 sm:px-8 sm:py-6 pt-20 sm:pt-24 bg-linear-to-t from-black/70 via-black/35 to-transparent backdrop-blur-[2px]">
-                <motion.h1
-                  layoutId={titleLayoutId}
-                  transition={{
-                    layout: {
-                      duration: 0.45,
-                      ease: premiumEasing,
-                    },
-                  }}
-                  className="heading-1 text-white"
-                >
-                  {project.title}
-                </motion.h1>
-              </div>
-            </motion.div>
-          ) : (
+          <div className="absolute inset-0 bg-black/60" />
+
+          <div className="absolute inset-x-0 bottom-0 px-6 py-5 sm:px-8 sm:py-6 bg-linear-to-t from-black/70 via-black/35 to-transparent backdrop-blur-[2px]">
             <motion.h1
               layoutId={titleLayoutId}
               transition={{
-                layout: {
-                  duration: 0.45,
-                  ease: premiumEasing,
-                },
+                layout: { duration: 0.45, ease: premiumEasing },
               }}
-              className="heading-1 text-slate-900 dark:text-white mb-6"
+              className="heading-1 text-white"
             >
               {project.title}
             </motion.h1>
-          )}
+          </div>
+        </motion.div>
 
-          {/* 3. Project metadata dashboard */}
-          <ProjectMetadataDashboard project={project} />
+        {/* 3. Project metadata dashboard */}
+        <ProjectMetadataDashboard project={project} />
 
-          {/* 4 & 5. Section navigation + lane toggle | Project content */}
-          <div className="mt-8 grid grid-cols-1 lg:grid-cols-[minmax(0,220px)_1fr] gap-8 lg:gap-12">
-            {/* Left: section nav with lane toggle at top */}
-            <aside
-              className="lg:sticky lg:top-24 lg:self-start"
-              aria-label="Project navigation"
-            >
-              <ProjectSectionNav
-                sections={currentSections ?? []}
-                lane={lane}
-                onLaneChange={handleLaneChange}
-              />
-            </aside>
+        {/* 4 & 5. Section navigation + lane toggle | Project content */}
+        <div className="mt-8 grid grid-cols-1 lg:grid-cols-[minmax(0,220px)_1fr] gap-8 lg:gap-12">
+          {/* Left: section nav with lane toggle at top */}
+          <aside
+            className="lg:sticky lg:top-24 lg:self-start"
+            aria-label="Project navigation"
+          >
+            <ProjectSectionNav
+              sections={currentSections ?? []}
+              lane={lane}
+              onLaneChange={handleLaneChange}
+            />
+          </aside>
 
-            {/* Right: main content - reduced lateral padding */}
-            <div
-              className={cn(
-                'min-w-0',
-                'max-w-2xl lg:max-w-none',
-                'transition-all duration-700 delay-300',
-                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
-              )}
-            >
-              <AnimatePresence mode="wait">
-                <LaneContent sections={currentSections ?? []} laneType={lane} />
-              </AnimatePresence>
-            </div>
+          {/* Right: main content - reduced lateral padding */}
+          <div
+            className={cn(
+              'min-w-0',
+              'max-w-2xl lg:max-w-none',
+              'transition-all duration-700 delay-300',
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+            )}
+          >
+            <AnimatePresence mode="wait">
+              <LaneContent sections={currentSections ?? []} laneType={lane} />
+            </AnimatePresence>
           </div>
         </div>
-      </article>
+      </div>
     </motion.main>
   );
 }

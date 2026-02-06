@@ -6,7 +6,6 @@ export function Home() {
 
   return (
     <motion.main
-      className="pt-24 pb-20 px-3 sm:px-4 lg:px-6"
       initial={shouldReduceMotion ? false : { opacity: 0 }}
       animate={shouldReduceMotion ? undefined : { opacity: 1 }}
       exit={shouldReduceMotion ? undefined : { opacity: 0 }}

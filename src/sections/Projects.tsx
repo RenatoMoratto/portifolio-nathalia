@@ -54,46 +54,36 @@ export function Projects() {
                       'hover:border-primary-500/30 dark:hover:border-primary-500/20'
                     )}
                   >
-                    {/* Cover image or placeholder */}
-                    {project.coverImage ? (
-                      <motion.div
-                        layoutId={imageLayoutId}
-                        transition={{
-                          layout: {
-                            duration: 0.6,
-                            ease: premiumEasing,
-                          },
-                        }}
-                        className="h-48 w-full rounded-xl mb-5 overflow-hidden"
-                      >
-                        <img
-                          src={project.coverImage}
-                          alt={`Cover: ${project.title}`}
-                          className="h-full w-full object-cover"
-                        />
-                      </motion.div>
-                    ) : (
-                      <div className="h-48 bg-linear-to-br from-slate-100 to-slate-200 dark:from-slate-800 dark:to-slate-700 rounded-xl mb-5 flex items-center justify-center overflow-hidden">
-                        <span className="text-slate-400 dark:text-slate-500 text-sm font-medium">
-                          {project.title}
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Content */}
-                    <motion.h3
-                      layoutId={titleLayoutId}
+                    <motion.div
+                      layoutId={imageLayoutId}
                       transition={{
-                        layout: {
-                          duration: 0.45,
-                          ease: premiumEasing,
-                        },
+                        layout: { duration: 0.6, ease: premiumEasing },
                       }}
-                      className="text-xl font-semibold text-slate-900 dark:text-white mb-2 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors duration-300"
+                      className="relative aspect-video rounded-xl overflow-hidden"
                     >
-                      {project.title}
-                    </motion.h3>
-                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                      <img
+                        src={project.coverImage}
+                        alt={`Cover: ${project.title}`}
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+
+                      {/* softer overlay than project page */}
+                      <div className="absolute inset-0 bg-black/30" />
+
+                      <div className="absolute inset-x-0 bottom-0 px-4 py-3 bg-linear-to-t from-black/60 via-black/20 to-transparent">
+                        <motion.h3
+                          layoutId={titleLayoutId}
+                          transition={{
+                            layout: { duration: 0.45, ease: premiumEasing },
+                          }}
+                          className="text-lg font-semibold text-white leading-tight"
+                        >
+                          {project.title}
+                        </motion.h3>
+                      </div>
+                    </motion.div>
+
+                    <p className="mt-4 text-slate-600 dark:text-slate-400 leading-relaxed">
                       {project.shortDescription}
                     </p>
                   </Card>
