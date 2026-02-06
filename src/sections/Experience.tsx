@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from '../components';
@@ -50,15 +50,90 @@ export function Experience() {
   }, []);
 
   /* --------------------------------------------
+   * CENTRALIZAR CARD
+   * ------------------------------------------ */
+  const centerCard = useCallback(
+    (id: number) => {
+      const el = scrollRef.current;
+      const card = cardsRef.current.get(id);
+      if (!el || !card) return;
+
+      const left = card.offsetLeft - el.offsetWidth / 2 + card.offsetWidth / 2;
+      el.scrollTo({ left, behavior: 'smooth' });
+    },
+    [cardsRef]
+  );
+
+  /* --------------------------------------------
+   * SNAP AUTOMÁTICO
+   * ------------------------------------------ */
+  const snapToClosest = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const containerCenter = el.scrollLeft + el.offsetWidth / 2;
+
+    let closestId: number | null = null;
+    let minDistance = Infinity;
+
+    cardsRef.current.forEach((card, id) => {
+      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+      const dist = Math.abs(containerCenter - cardCenter);
+
+      if (dist < minDistance) {
+        minDistance = dist;
+        closestId = id;
+      }
+    });
+
+    if (closestId !== null) {
+      centerCard(closestId);
+    }
+  }, [cardsRef, centerCard]);
+
+  /* --------------------------------------------
    * SNAP
    * ------------------------------------------ */
-  const scheduleSnap = () => {
+  const scheduleSnap = useCallback(() => {
     if (snapTimeout.current) window.clearTimeout(snapTimeout.current);
 
     snapTimeout.current = window.setTimeout(() => {
       snapToClosest();
     }, 180);
-  };
+  }, [snapToClosest]);
+
+  /* --------------------------------------------
+   * SCROLL INICIAL NO MAIS RECENTE
+   * ------------------------------------------ */
+  useEffect(() => {
+    if (!scrollRef.current || orderedExperiences.length === 0) return;
+
+    const last = orderedExperiences[orderedExperiences.length - 1];
+    // Aguarda o layout com o padding dinâmico para centralizar o último card
+    const id = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        centerCard(last.id);
+      });
+    });
+    return () => cancelAnimationFrame(id);
+  }, [centerCard, orderedExperiences]);
+
+  /* --------------------------------------------
+   * CLICK FORA FECHA CARD
+   * ------------------------------------------ */
+  useEffect(() => {
+    if (expandedId === null) return;
+
+    const onClickOutside = (e: MouseEvent) => {
+      const card = cardsRef.current.get(expandedId);
+      if (card && !card.contains(e.target as Node)) {
+        setExpandedId(null);
+      }
+    };
+
+    document.addEventListener('mousedown', onClickOutside);
+    return () => document.removeEventListener('mousedown', onClickOutside);
+  }, [expandedId]);
 
   /* --------------------------------------------
    * DRAG HORIZONTAL NATIVO
@@ -106,75 +181,7 @@ export function Experience() {
       el.removeEventListener('pointerup', onPointerUp);
       el.removeEventListener('pointerleave', onPointerUp);
     };
-  }, [expandedId]);
-
-  /* --------------------------------------------
-   * SNAP AUTOMÁTICO
-   * ------------------------------------------ */
-  const snapToClosest = () => {
-    const el = scrollRef.current;
-    if (!el) return;
-
-    const containerCenter = el.scrollLeft + el.offsetWidth / 2;
-
-    let closestId: number | null = null;
-    let minDistance = Infinity;
-
-    cardsRef.current.forEach((card, id) => {
-      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
-      const dist = Math.abs(containerCenter - cardCenter);
-
-      if (dist < minDistance) {
-        minDistance = dist;
-        closestId = id;
-      }
-    });
-
-    if (closestId !== null) {
-      centerCard(closestId);
-    }
-  };
-
-  /* --------------------------------------------
-   * CENTRALIZAR CARD
-   * ------------------------------------------ */
-  const centerCard = (id: number) => {
-    const el = scrollRef.current;
-    const card = cardsRef.current.get(id);
-    if (!el || !card) return;
-
-    const left = card.offsetLeft - el.offsetWidth / 2 + card.offsetWidth / 2;
-    el.scrollTo({ left, behavior: 'smooth' });
-  };
-
-  /* --------------------------------------------
-   * SCROLL INICIAL NO MAIS RECENTE
-   * ------------------------------------------ */
-  useEffect(() => {
-    if (!scrollRef.current || orderedExperiences.length === 0) return;
-
-    const last = orderedExperiences[orderedExperiences.length - 1];
-    requestAnimationFrame(() => {
-      centerCard(last.id);
-    });
-  }, [orderedExperiences]);
-
-  /* --------------------------------------------
-   * CLICK FORA FECHA CARD
-   * ------------------------------------------ */
-  useEffect(() => {
-    if (expandedId === null) return;
-
-    const onClickOutside = (e: MouseEvent) => {
-      const card = cardsRef.current.get(expandedId);
-      if (card && !card.contains(e.target as Node)) {
-        setExpandedId(null);
-      }
-    };
-
-    document.addEventListener('mousedown', onClickOutside);
-    return () => document.removeEventListener('mousedown', onClickOutside);
-  }, [expandedId]);
+  }, [expandedId, scheduleSnap]);
 
   /* --------------------------------------------
    * CENTRALIZA AO ABRIR
@@ -183,7 +190,7 @@ export function Experience() {
     if (expandedId !== null) {
       centerCard(expandedId);
     }
-  }, [expandedId]);
+  }, [centerCard, expandedId]);
 
   return (
     <section id="experience" className="py-32">
@@ -194,7 +201,7 @@ export function Experience() {
 
         <div className="relative">
           {/* Timeline */}
-          <div className="absolute top-10 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-400/50 to-transparent" />
+          <div className="absolute top-10 left-0 right-0 h-px bg-linear-to-r from-transparent via-primary-400/50 to-transparent" />
 
           <div
             ref={scrollRef}
@@ -209,8 +216,8 @@ export function Experience() {
               scrollbar-hide
             "
             style={{
-              paddingLeft: HALF_CARD,
-              paddingRight: HALF_CARD,
+              paddingLeft: `max(${HALF_CARD}px, calc(50% - ${HALF_CARD}px))`,
+              paddingRight: `max(${HALF_CARD}px, calc(50% - ${HALF_CARD}px))`,
             }}
           >
             {orderedExperiences.map((exp) => {
@@ -219,43 +226,42 @@ export function Experience() {
               return (
                 <div
                   key={exp.id}
-                  data-card
                   ref={(el) => {
                     if (el) cardsRef.current.set(exp.id, el);
                   }}
                   className={cn(
-                    'shrink-0 transition-[width] duration-500 ease-out',
-                    isExpanded ? 'w-[520px]' : 'w-[320px]',
+                    'shrink-0 transition-[width] duration-500 ease-out relative',
+                    isExpanded ? 'w-[520px]' : 'w-[320px]'
                   )}
                 >
+                  {/* Timeline node + date */}
+                  <div className="absolute -top-12 left-1/2 -translate-x-1/2 flex flex-col items-center">
+                    <div
+                      className={cn(
+                        'w-3 h-3 rounded-full border-2',
+                        isExpanded
+                          ? 'bg-primary-500 border-primary-500'
+                          : 'bg-primary-300 border-primary-400/50'
+                      )}
+                    />
+                    <span className="mt-2 text-xs font-semibold text-primary-500 whitespace-nowrap">
+                      {formatPeriod(exp.startDate, exp.endDate)}
+                    </span>
+                  </div>
+
                   <button
                     type="button"
                     onPointerDown={(e) => e.stopPropagation()}
                     onClick={() => setExpandedId(isExpanded ? null : exp.id)}
+                    data-card
                     className={cn(
                       'w-full text-left rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
                       isExpanded
                         ? 'bg-white dark:bg-slate-800 shadow-xl'
-                        : 'bg-white/70 dark:bg-white/10 hover:bg-white',
+                        : 'bg-white/70 dark:bg-white/10 hover:bg-white'
                     )}
                   >
-                    <Card className="p-6 border-0 bg-transparent shadow-none relative">
-                      {/* Node */}
-                      <div className="absolute -top-8 left-1/2 -translate-x-1/2">
-                        <div
-                          className={cn(
-                            'w-3 h-3 rounded-full border-2',
-                            isExpanded
-                              ? 'bg-primary-500 border-primary-500'
-                              : 'bg-primary-300 border-primary-400/50',
-                          )}
-                        />
-                      </div>
-
-                      <span className="block text-xs font-bold uppercase tracking-wider text-primary-500 mb-2">
-                        {formatPeriod(exp.startDate, exp.endDate)}
-                      </span>
-
+                    <Card className="p-6 border-0 bg-transparent shadow-none">
                       <h3 className="text-xl font-bold text-slate-900 dark:text-white">
                         {exp.role}
                       </h3>
