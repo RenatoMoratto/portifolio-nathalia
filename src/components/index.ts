@@ -5,4 +5,6 @@ export { SectionHeading } from './SectionHeading';
 export { SocialIcons } from './SocialIcons';
 export { Card } from './Card';
 export { LaneToggle } from './LaneToggle';
+export { ProjectMetadataDashboard } from './ProjectMetadataDashboard';
+export { ProjectSectionNav } from './ProjectSectionNav';
 export type { LaneType } from './LaneToggle';
