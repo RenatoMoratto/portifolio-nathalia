@@ -28,7 +28,10 @@ export function Experience() {
   const { t } = useTranslation();
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const timelineWrapperRef = useRef<HTMLDivElement | null>(null);
+  const timelineStartRef = useRef<HTMLSpanElement | null>(null);
+  const timelineEndRef = useRef<HTMLSpanElement | null>(null);
   const cardsRef = useRef<Map<number, HTMLDivElement>>(new Map());
 
   const isDragging = useRef(false);
@@ -184,13 +187,49 @@ export function Experience() {
   }, [expandedId, scheduleSnap]);
 
   /* --------------------------------------------
-   * CENTRALIZA AO ABRIR
+   * CENTRALIZA AO ABRIR (logo ao expandir + após a transição de largura)
    * ------------------------------------------ */
+  const EXPAND_TRANSITION_MS = 500;
   useEffect(() => {
-    if (expandedId !== null) {
+    if (expandedId === null) return;
+    centerCard(expandedId);
+    const id = setTimeout(() => {
       centerCard(expandedId);
-    }
+    }, EXPAND_TRANSITION_MS);
+    return () => clearTimeout(id);
   }, [centerCard, expandedId]);
+
+  useEffect(() => {
+    const wrapper = timelineWrapperRef.current;
+    const scroller = scrollRef.current;
+    const start = timelineStartRef.current;
+    const end = timelineEndRef.current;
+
+    if (!wrapper || !scroller || !start || !end) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.target === start) {
+            wrapper.toggleAttribute('data-start', entry.isIntersecting);
+          }
+
+          if (entry.target === end) {
+            wrapper.toggleAttribute('data-end', entry.isIntersecting);
+          }
+        }
+      },
+      {
+        root: scroller,
+        threshold: 1,
+      }
+    );
+
+    observer.observe(start);
+    observer.observe(end);
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <section id="experience" className="py-32">
@@ -199,9 +238,15 @@ export function Experience() {
           {t('nav.experience')}
         </h2>
 
-        <div className="relative">
-          {/* Timeline */}
-          <div className="absolute top-10 left-0 right-0 h-px bg-linear-to-r from-transparent via-primary-400/50 to-transparent" />
+        <div ref={timelineWrapperRef} className="relative overflow-hidden">
+          <div
+            className="
+              absolute top-10 left-0 right-0 h-px
+              bg-primary-400/50
+              [--fade:30%]
+              timeline
+            "
+          />
 
           <div
             ref={scrollRef}
@@ -220,6 +265,8 @@ export function Experience() {
               paddingRight: `max(${HALF_CARD}px, calc(50% - ${HALF_CARD}px))`,
             }}
           >
+            {/* Start sentinel */}
+            <span ref={timelineStartRef} aria-hidden className="w-px h-full shrink-0" />
             {orderedExperiences.map((exp) => {
               const isExpanded = expandedId === exp.id;
 
@@ -313,6 +360,8 @@ export function Experience() {
                 </div>
               );
             })}
+            {/* End sentinel */}
+            <span ref={timelineEndRef} aria-hidden className="w-px h-full shrink-0" />
           </div>
         </div>
       </div>

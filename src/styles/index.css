@@ -198,8 +198,7 @@ html {
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
-  transition:
-    background-color 0.4s var(--ease-out-quart),
+  transition: background-color 0.4s var(--ease-out-quart),
     color 0.3s var(--ease-out-quart);
 }
 
@@ -438,4 +437,71 @@ body {
 /* Smooth link transitions */
 a {
   transition: color 0.2s var(--ease-out-quart);
+}
+
+/* Base: solid line */
+.timeline {
+  mask-image: linear-gradient(to right, black, black);
+  -webkit-mask-image: linear-gradient(to right, black, black);
+}
+
+/* Fade left */
+[data-start] .timeline {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    rgba(0, 0, 0, 0.35) calc(var(--fade) * 0.4),
+    black var(--fade),
+    black
+  );
+
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    rgba(0, 0, 0, 0.35) calc(var(--fade) * 0.4),
+    black var(--fade),
+    black
+  );
+}
+
+/* Fade right */
+[data-end] .timeline {
+  mask-image: linear-gradient(
+    to right,
+    black,
+    black calc(100% - var(--fade)),
+    rgba(0, 0, 0, 0.35) calc(100% - (var(--fade) * 0.4)),
+    transparent
+  );
+
+  -webkit-mask-image: linear-gradient(
+    to right,
+    black,
+    black calc(100% - var(--fade)),
+    rgba(0, 0, 0, 0.35) calc(100% - (var(--fade) * 0.4)),
+    transparent
+  );
+}
+
+/* Fade both */
+[data-start][data-end] .timeline {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    rgba(0, 0, 0, 0.35) calc(var(--fade) * 0.4),
+    black var(--fade),
+    black calc(100% - var(--fade)),
+    rgba(0, 0, 0, 0.35) calc(100% - (var(--fade) * 0.4)),
+    transparent
+  );
+
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    rgba(0, 0, 0, 0.35) calc(var(--fade) * 0.4),
+    black var(--fade),
+    black calc(100% - var(--fade)),
+    rgba(0, 0, 0, 0.35) calc(100% - (var(--fade) * 0.4)),
+    transparent
+  );
 }
