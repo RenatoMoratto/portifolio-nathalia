@@ -71,32 +71,6 @@ export const experiences: Experience[] = [
   },
 ];
 
-export const projects = [
-  {
-    id: 1,
-    title: 'Project Placeholder 1',
-    description: 'Description of the project will go here.',
-    tech: ['UX Research', 'Figma'],
-    role: 'Product Designer',
-    impact: 'Impact of the project',
-    github: '#',
-    live: '#',
-    image: '', // Needs a placeholder image or empty
-  },
-  {
-    id: 2,
-    title: 'Project Placeholder 2',
-    description: 'Description of the project will go here.',
-    tech: ['UI Design', 'Prototyping'],
-    role: 'Product Designer',
-    impact: 'Impact of the project',
-    github: '#',
-    live: '#',
-    image: '',
-  },
-  // Add more placeholders if needed
-];
-
 export const navLinks = [
   { label: 'Home', href: '/' },
   { label: 'About', href: '/about' },

@@ -80,6 +80,15 @@ i18n.use(initReactI18next).init({
           step6:
             'I register decisions and learnings to ensure <strong>clarity, consistency and scale</strong>',
         },
+        projects: {
+          comingSoon: 'Coming soon',
+          laneToggle: {
+            label: 'View',
+            fast: 'Fast',
+            slow: 'Slow',
+            ariaLabel: 'Choose lane: currently {{current}}',
+          },
+        },
       },
     },
     pt: {
@@ -158,6 +167,15 @@ i18n.use(initReactI18next).init({
             'Trabalho de forma próxima com <strong>desenvolvedores e stakeholders</strong>, facilitando alinhamentos',
           step6:
             'Registro decisões e aprendizados para garantir <strong>clareza, consistência e escala</strong>',
+        },
+        projects: {
+          comingSoon: 'Em breve',
+          laneToggle: {
+            label: 'Visualização',
+            fast: 'Rápida',
+            slow: 'Detalhada',
+            ariaLabel: 'Escolher visualização: atualmente {{current}}',
+          },
         },
       },
     },
