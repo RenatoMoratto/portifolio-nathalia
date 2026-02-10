@@ -64,7 +64,7 @@ export function Experience() {
       const left = card.offsetLeft - el.offsetWidth / 2 + card.offsetWidth / 2;
       el.scrollTo({ left, behavior: 'smooth' });
     },
-    [cardsRef]
+    [cardsRef],
   );
 
   /* --------------------------------------------
@@ -222,7 +222,7 @@ export function Experience() {
       {
         root: scroller,
         threshold: 1,
-      }
+      },
     );
 
     observer.observe(start);
@@ -232,8 +232,8 @@ export function Experience() {
   }, []);
 
   return (
-    <section id="experience" className="py-32">
-      <div className="pt-24 pb-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="experience">
+      <div className="pt-20 pb-16 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 className="heading-2 text-slate-900 dark:text-white mb-16">
           {t('nav.experience')}
         </h2>
@@ -278,7 +278,7 @@ export function Experience() {
                   }}
                   className={cn(
                     'shrink-0 transition-[width] duration-500 ease-out relative',
-                    isExpanded ? 'w-[520px]' : 'w-[320px]'
+                    isExpanded ? 'w-[520px]' : 'w-[320px]',
                   )}
                 >
                   {/* Timeline node + date */}
@@ -288,7 +288,7 @@ export function Experience() {
                         'w-3 h-3 rounded-full border-2',
                         isExpanded
                           ? 'bg-primary-500 border-primary-500'
-                          : 'bg-primary-300 border-primary-400/50'
+                          : 'bg-primary-300 border-primary-400/50',
                       )}
                     />
                     <span className="mt-2 text-xs font-semibold text-primary-500 whitespace-nowrap">
@@ -305,7 +305,7 @@ export function Experience() {
                       'w-full text-left rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
                       isExpanded
                         ? 'bg-white dark:bg-slate-800 shadow-xl'
-                        : 'bg-white/70 dark:bg-white/10 hover:bg-white'
+                        : 'bg-white/70 dark:bg-white/10 hover:bg-white',
                     )}
                   >
                     <Card className="p-6 border-0 bg-transparent shadow-none">

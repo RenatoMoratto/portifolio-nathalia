@@ -1,8 +1,17 @@
 import { useTranslation } from 'react-i18next';
 import { OrganicOrbs } from '../components/OrganicOrbs';
+import { useTypewriter } from '../hooks/useTypewriter';
+
+const ROLES = [
+  'UX Designer',
+  'UX Researcher',
+  'Quality Assurance',
+  'Information Architect',
+];
 
 export function Hero() {
   const { t } = useTranslation();
+  const typedRole = useTypewriter(ROLES);
 
   return (
     <section
@@ -31,7 +40,8 @@ export function Hero() {
             className="text-xl md:text-2xl text-slate-700 dark:text-slate-400 mb-14 max-w-2xl opacity-0 animate-fade-slide-up"
             style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}
           >
-            {t('role')}
+            Product Designer <span className="text-primary-500">|</span> {typedRole}
+            <span className="animate-blink ml-0.5 inline-block w-0.5 h-6 align-middle bg-primary-500"></span>
           </p>
 
           {/* Manifest */}

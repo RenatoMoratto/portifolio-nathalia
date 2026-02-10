@@ -7,7 +7,7 @@ i18n.use(initReactI18next).init({
       translation: {
         // Placeholders for now
         title: 'Nathália Moratto Caldeira',
-        role: 'Product Designer @Kiwano Tecnologia | UX researcher, UX designer, QA',
+        role: 'Product Designer | UX researcher, UX designer, QA',
         manifest: 'DESIGN AS A DECISION TOOL\nfor clear, usable and sustainable products',
         about: {
           title: 'About Me',
@@ -100,7 +100,7 @@ i18n.use(initReactI18next).init({
     pt: {
       translation: {
         title: 'Nathália Moratto Caldeira',
-        role: 'Product Designer @Kiwano Tecnologia | UX researcher, UX designer, QA',
+        role: 'Product Designer | UX researcher, UX designer, QA',
         manifest:
           'DESIGN COMO FERRAMENTA DE DECISÃO\npara produtos claros, usáveis e sustentáveis',
         about: {

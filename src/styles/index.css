@@ -65,6 +65,7 @@
   --animate-orb-float-1: orbFloat1 12s ease-in-out infinite;
   --animate-orb-float-2: orbFloat2 15s ease-in-out infinite;
   --animate-orb-float-3: orbFloat3 10s ease-in-out infinite;
+  --animate-blink: blink 1s step-end infinite;
 }
 
 /* Keyframes */
@@ -178,6 +179,16 @@
   }
 }
 
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
 @keyframes expandWidth {
   0% {
     width: 0;
@@ -198,7 +209,8 @@ html {
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
-  transition: background-color 0.4s var(--ease-out-quart),
+  transition:
+    background-color 0.4s var(--ease-out-quart),
     color 0.3s var(--ease-out-quart);
 }
 
