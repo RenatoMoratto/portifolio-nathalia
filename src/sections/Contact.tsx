@@ -17,7 +17,10 @@ interface FormErrors {
   message?: string;
 }
 
+import { useTranslation } from 'react-i18next';
+
 export function Contact() {
+  const { t } = useTranslation();
   const formRef = useRef<HTMLFormElement>(null);
   const [formData, setFormData] = useState<FormData>({
     name: '',
@@ -32,19 +35,19 @@ export function Contact() {
     const newErrors: FormErrors = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
+      newErrors.name = t('contact.form.name.error.required');
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = t('contact.form.email.error.required');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email';
+      newErrors.email = t('contact.form.email.error.invalid');
     }
 
     if (!formData.message.trim()) {
-      newErrors.message = 'Message is required';
+      newErrors.message = t('contact.form.message.error.required');
     } else if (formData.message.trim().length < 10) {
-      newErrors.message = 'Message must be at least 10 characters';
+      newErrors.message = t('contact.form.message.error.min');
     }
 
     setErrors(newErrors);
@@ -73,7 +76,7 @@ export function Contact() {
       setTimeout(() => setIsSubmitted(false), 5000);
     } catch (error) {
       console.error('FAILED...', error);
-      alert('Failed to send message. Please try again later.');
+      alert(t('contact.form.failed'));
     } finally {
       setIsSubmitting(false);
     }
@@ -86,10 +89,7 @@ export function Contact() {
     >
       <div className="section-container">
         <ScrollReveal>
-          <SectionHeading
-            title="Get In Touch"
-            subtitle="Have a project in mind? Let's work together"
-          />
+          <SectionHeading title={t('contact.title')} subtitle={t('contact.subtitle')} />
         </ScrollReveal>
 
         <ScrollReveal className="max-w-xl mx-auto">
@@ -112,43 +112,43 @@ export function Contact() {
                   </svg>
                 </div>
                 <h3 className="heading-3 text-slate-900 dark:text-white mb-2">
-                  Message Sent!
+                  {t('contact.success.title')}
                 </h3>
                 <p className="text-slate-600 dark:text-slate-400">
-                  Thank you for reaching out. I'll get back to you soon!
+                  {t('contact.success.message')}
                 </p>
               </div>
             ) : (
               <form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
                 <FormField
-                  label="Name"
+                  label={t('contact.form.name.label')}
                   name="name"
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   error={errors.name}
-                  placeholder="Your name"
+                  placeholder={t('contact.form.name.placeholder')}
                 />
 
                 <FormField
-                  label="Email"
+                  label={t('contact.form.email.label')}
                   name="email"
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   error={errors.email}
-                  placeholder="your@email.com"
+                  placeholder={t('contact.form.email.placeholder')}
                 />
 
                 <FormField
-                  label="Message"
+                  label={t('contact.form.message.label')}
                   name="message"
                   type="textarea"
                   rows={5}
                   value={formData.message}
                   onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                   error={errors.message}
-                  placeholder="Tell me about your project..."
+                  placeholder={t('contact.form.message.placeholder')}
                 />
 
                 <Button
@@ -171,13 +171,13 @@ export function Contact() {
                       d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
                     />
                   </svg>
-                  Send Message
+                  {t('contact.form.submit')}
                 </Button>
 
                 {/* LinkedIn link */}
                 <div className="pt-6 mt-4 border-t border-light-border dark:border-dark-border text-center">
                   <p className="text-sm text-slate-500 dark:text-slate-500 mb-3">
-                    Or connect with me on
+                    {t('contact.social')}
                   </p>
                   <a
                     href={personalInfo.linkedin}

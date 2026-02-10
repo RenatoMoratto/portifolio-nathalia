@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { SectionHeading, Card, ScrollReveal } from '../components';
-import { getAllProjects } from '../data/projects';
+import type { Project } from '../data/projects';
 import { useTranslation } from 'react-i18next';
 import { useScrollAnimation } from '../hooks';
 import { cn } from '../utils/cn';
@@ -11,7 +11,7 @@ import { premiumEasing } from '../utils/animations';
 export function Projects() {
   const { t } = useTranslation();
   const [ref, isVisible] = useScrollAnimation<HTMLDivElement>();
-  const projects = getAllProjects();
+  const projects = t('projects.items', { returnObjects: true }) as Project[];
   const shouldReduceMotion = useReducedMotion();
 
   return (

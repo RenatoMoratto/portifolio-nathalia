@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { getProjectBySlug, type ProjectSection } from '../data/projects';
+import { useTranslation } from 'react-i18next';
+import type { Project, ProjectSection } from '../data/projects';
 import {
   ProjectMetadataDashboard,
   ProjectSectionNav,
@@ -73,8 +74,10 @@ function LaneContent({
 }
 
 export function ProjectPage() {
+  const { t } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
-  const project = slug ? getProjectBySlug(slug) : undefined;
+  const projects = t('projects.items', { returnObjects: true }) as Project[];
+  const project = projects.find((p) => p.slug === slug);
   const [lane, setLane] = useState<LaneType>('fast');
   const [ref, isVisible] = useScrollAnimation<HTMLDivElement>();
   const scrollToSectionRef = useRef<string | null>(null);

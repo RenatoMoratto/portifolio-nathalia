@@ -1,7 +1,10 @@
 import { SocialIcons } from '../components';
 import { personalInfo } from '../data/portfolio';
 
+import { useTranslation } from 'react-i18next';
+
 export function Footer() {
+  const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
 
   return (
@@ -10,7 +13,7 @@ export function Footer() {
         <div className="flex flex-col items-center justify-between gap-2">
           <SocialIcons size="sm" />
           <p className="text-slate-500 dark:text-slate-500 text-sm text-center">
-            © {currentYear} {personalInfo.name}. All rights reserved.
+            © {currentYear} {personalInfo.name}. {t('footer.rights')}
           </p>
         </div>
       </div>

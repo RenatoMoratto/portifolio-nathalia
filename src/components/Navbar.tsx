@@ -98,7 +98,7 @@ export function Navbar() {
                 'hover:bg-slate-100 dark:hover:bg-slate-800',
                 'transition-colors duration-200',
               )}
-              aria-label="Toggle menu"
+              aria-label={t('navbar.aria.toggleMenu')}
               aria-expanded={isMobileMenuOpen}
             >
               <svg

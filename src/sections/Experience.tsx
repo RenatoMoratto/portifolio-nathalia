@@ -2,7 +2,6 @@ import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from '../components';
-import { experiences } from '../data/portfolio';
 import { cn } from '../utils/cn';
 import { ChevronRight, ChevronDown } from 'lucide-react';
 
@@ -12,8 +11,13 @@ const HALF_CARD = CARD_WIDTH / 2;
 /* --------------------------------------------
  * HELPERS
  * ------------------------------------------ */
-const formatPeriod = (startDate: string, endDate?: string) => {
-  const formatter = new Intl.DateTimeFormat('en-US', {
+const formatPeriod = (
+  startDate: string,
+  endDate: string | undefined,
+  language: string,
+  presentText: string,
+) => {
+  const formatter = new Intl.DateTimeFormat(language, {
     month: 'short',
     year: 'numeric',
   });
@@ -21,11 +25,14 @@ const formatPeriod = (startDate: string, endDate?: string) => {
   const start = new Date(startDate);
   const end = endDate ? new Date(endDate) : null;
 
-  return `${formatter.format(start)} – ${end ? formatter.format(end) : 'Present'}`;
+  return `${formatter.format(start)} – ${end ? formatter.format(end) : presentText}`;
 };
 
+import type { Experience as ExperienceType } from '../data/portfolio';
+
 export function Experience() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const experiences = t('experience.items', { returnObjects: true }) as ExperienceType[];
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -50,7 +57,7 @@ export function Experience() {
 
       return aEnd - bEnd;
     });
-  }, []);
+  }, [experiences]);
 
   /* --------------------------------------------
    * CENTRALIZAR CARD
@@ -292,7 +299,12 @@ export function Experience() {
                       )}
                     />
                     <span className="mt-2 text-xs font-semibold text-primary-500 whitespace-nowrap">
-                      {formatPeriod(exp.startDate, exp.endDate)}
+                      {formatPeriod(
+                        exp.startDate,
+                        exp.endDate,
+                        i18n.language,
+                        t('experience.present'),
+                      )}
                     </span>
                   </div>
 
@@ -323,7 +335,11 @@ export function Experience() {
                         ) : (
                           <ChevronRight size={14} />
                         )}
-                        <span>{isExpanded ? 'Show less' : 'Show details'}</span>
+                        <span>
+                          {isExpanded
+                            ? t('experience.showLess')
+                            : t('experience.showDetails')}
+                        </span>
                       </div>
 
                       <AnimatePresence>

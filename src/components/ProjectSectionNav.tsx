@@ -19,12 +19,15 @@ interface ProjectSectionNavProps {
   className?: string;
 }
 
+import { useTranslation } from 'react-i18next';
+
 export function ProjectSectionNav({
   sections,
   lane,
   onLaneChange,
   className,
 }: ProjectSectionNavProps) {
+  const { t } = useTranslation();
   const validSections = sections.filter((s) => s.content && s.content.length > 0);
   const sectionIds = validSections.map((s) => slugifyHeading(s.heading));
   const activeId = useActiveSection(sectionIds);
@@ -37,13 +40,20 @@ export function ProjectSectionNav({
   }, []);
 
   return (
-    <nav className={cn('flex flex-col gap-6', className)} aria-label="Project sections">
+    <nav
+      className={cn('flex flex-col gap-6', className)}
+      aria-label={t('projectNav.aria.sections')}
+    >
       <div>
         <LaneToggle value={lane} onChange={onLaneChange} />
       </div>
 
       {validSections.length > 0 && (
-        <ol role="list" className="flex flex-col gap-1" aria-label="Section navigation">
+        <ol
+          role="list"
+          className="flex flex-col gap-1"
+          aria-label={t('projectNav.aria.nav')}
+        >
           {validSections.map((section, idx) => {
             const id = slugifyHeading(section.heading);
             const isActive = activeId === id;
@@ -63,7 +73,7 @@ export function ProjectSectionNav({
                       e.preventDefault();
                       document
                         .getElementById(
-                          `nav-${slugifyHeading(validSections[idx + 1].heading)}`
+                          `nav-${slugifyHeading(validSections[idx + 1].heading)}`,
                         )
                         ?.focus();
                     }
@@ -71,7 +81,7 @@ export function ProjectSectionNav({
                       e.preventDefault();
                       document
                         .getElementById(
-                          `nav-${slugifyHeading(validSections[idx - 1].heading)}`
+                          `nav-${slugifyHeading(validSections[idx - 1].heading)}`,
                         )
                         ?.focus();
                     }
@@ -86,7 +96,7 @@ export function ProjectSectionNav({
                     'hover:translate-x-0.5 hover:text-slate-900 dark:hover:text-slate-100',
                     isActive
                       ? 'text-primary-600 dark:text-primary-400 bg-primary-50/50 dark:bg-primary-900/20'
-                      : 'text-slate-600 dark:text-slate-400'
+                      : 'text-slate-600 dark:text-slate-400',
                   )}
                 >
                   <motion.span

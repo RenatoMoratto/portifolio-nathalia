@@ -41,7 +41,7 @@ export function About() {
               <div className="relative w-100 h-100 sm:w-110 sm:h-110">
                 <img
                   src={aboutImage}
-                  alt={t('about.imageAlt', 'Nathália Moratto Caldeira')}
+                  alt={t('about.imageAlt')}
                   className="w-full h-full object-cover rounded-2xl shadow-xl ring-1 ring-slate-200/50 dark:ring-slate-700/50"
                 />
                 {/* Subtle gradient overlay on image */}
