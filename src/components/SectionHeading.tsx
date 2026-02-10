@@ -1,5 +1,4 @@
 import { cn } from '../utils/cn';
-import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
 interface SectionHeadingProps {
   title: string;
@@ -8,22 +7,22 @@ interface SectionHeadingProps {
   align?: 'left' | 'center';
 }
 
+/**
+ * Section heading component with title, optional subtitle, and decorative line
+ *
+ * Note: Animation is handled by parent via ScrollReveal wrapper
+ */
 export function SectionHeading({
   title,
   subtitle,
   className,
   align = 'center',
 }: SectionHeadingProps) {
-  const [ref, isVisible] = useScrollAnimation<HTMLDivElement>();
-
   return (
     <div
-      ref={ref}
       className={cn(
         'mb-12 md:mb-16',
-        'transition-all duration-700 ease-out-expo',
         align === 'center' ? 'text-center' : 'text-left',
-        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6',
         className,
       )}
     >
@@ -32,9 +31,7 @@ export function SectionHeading({
         <p
           className={cn(
             'text-lg text-slate-500 dark:text-slate-400 max-w-2xl',
-            'transition-all duration-700 delay-100',
             align === 'center' ? 'mx-auto' : '',
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4',
           )}
         >
           {subtitle}
@@ -42,10 +39,8 @@ export function SectionHeading({
       )}
       <div
         className={cn(
-          'h-0.5 bg-linear-to-r from-primary-500 to-accent-500 rounded-full mt-6',
-          'transition-all duration-700 delay-200 ease-out-expo',
+          'h-0.5 bg-linear-to-r from-primary-500 to-accent-500 rounded-full mt-6 w-16',
           align === 'center' ? 'mx-auto' : '',
-          isVisible ? 'w-16 opacity-100' : 'w-0 opacity-0',
         )}
       />
     </div>

@@ -4,7 +4,7 @@ import { ScrollToTop } from './components/ScrollToTop';
 import { Home, About, Contact, ProjectPage } from './pages';
 import { ThemeProvider } from './hooks';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { premiumEasing } from './utils/projectMotion';
+import { premiumEasing } from './utils/animations';
 
 function AppRoutes() {
   const location = useLocation();

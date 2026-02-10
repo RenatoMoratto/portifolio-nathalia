@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import { SectionHeading } from '../components';
+import { SectionHeading, ScrollReveal } from '../components';
 import { useScrollAnimation } from '../hooks';
 import { cn } from '../utils/cn';
+import { getStaggerDelay } from '../utils/animations';
 
 export function HowIWork() {
   const { t } = useTranslation();
@@ -19,11 +20,13 @@ export function HowIWork() {
   return (
     <section className="section-padding bg-slate-50/50 dark:bg-dark-surface">
       <div className="section-container">
-        <SectionHeading
-          title={t('howIWork.title', 'Como eu trabalho')}
-          subtitle=""
-          className="mb-16"
-        />
+        <ScrollReveal>
+          <SectionHeading
+            title={t('howIWork.title', 'Como eu trabalho')}
+            subtitle=""
+            className="mb-16"
+          />
+        </ScrollReveal>
 
         <div ref={ref} className="max-w-4xl mx-auto relative">
           {/* Timeline central line */}
@@ -62,7 +65,9 @@ export function HowIWork() {
                     // Desktop: alternate sides
                     isEven ? 'md:flex-row' : 'md:flex-row-reverse',
                   )}
-                  style={{ transitionDelay: isVisible ? `${index * 100}ms` : '0ms' }}
+                  style={{
+                    transitionDelay: isVisible ? `${getStaggerDelay(index)}ms` : '0ms',
+                  }}
                 >
                   {/* Timeline node - center dot */}
                   <div

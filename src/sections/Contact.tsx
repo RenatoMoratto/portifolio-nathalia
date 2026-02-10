@@ -1,9 +1,8 @@
 import { useState, useRef } from 'react';
 import type { FormEvent } from 'react';
 import emailjs from '@emailjs/browser';
-import { SectionHeading, Button, Card } from '../components';
+import { SectionHeading, Button, Card, ScrollReveal, FormField } from '../components';
 import { personalInfo } from '../data/portfolio';
-import { useScrollAnimation } from '../hooks';
 import { cn } from '../utils/cn';
 
 interface FormData {
@@ -28,8 +27,6 @@ export function Contact() {
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-
-  const [ref, isVisible] = useScrollAnimation<HTMLDivElement>();
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -88,19 +85,14 @@ export function Contact() {
       className="section-padding bg-light-surface dark:bg-dark-surface"
     >
       <div className="section-container">
-        <SectionHeading
-          title="Get In Touch"
-          subtitle="Have a project in mind? Let's work together"
-        />
+        <ScrollReveal>
+          <SectionHeading
+            title="Get In Touch"
+            subtitle="Have a project in mind? Let's work together"
+          />
+        </ScrollReveal>
 
-        <div
-          ref={ref}
-          className={cn(
-            'max-w-xl mx-auto',
-            'transition-all duration-700 ease-out-expo',
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8',
-          )}
-        >
+        <ScrollReveal className="max-w-xl mx-auto">
           <Card>
             {isSubmitted ? (
               <div className="text-center py-12">
@@ -128,82 +120,36 @@ export function Contact() {
               </div>
             ) : (
               <form ref={formRef} onSubmit={handleSubmit} className="space-y-5">
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
-                  >
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    id="name"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className={cn(
-                      'input-field',
-                      errors.name &&
-                        'border-red-400 dark:border-red-500 focus:border-red-400 focus:ring-red-400/20',
-                    )}
-                    placeholder="Your name"
-                  />
-                  {errors.name && (
-                    <p className="mt-1.5 text-sm text-red-500">{errors.name}</p>
-                  )}
-                </div>
+                <FormField
+                  label="Name"
+                  name="name"
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  error={errors.name}
+                  placeholder="Your name"
+                />
 
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
-                  >
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    id="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className={cn(
-                      'input-field',
-                      errors.email &&
-                        'border-red-400 dark:border-red-500 focus:border-red-400 focus:ring-red-400/20',
-                    )}
-                    placeholder="your@email.com"
-                  />
-                  {errors.email && (
-                    <p className="mt-1.5 text-sm text-red-500">{errors.email}</p>
-                  )}
-                </div>
+                <FormField
+                  label="Email"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  error={errors.email}
+                  placeholder="your@email.com"
+                />
 
-                <div>
-                  <label
-                    htmlFor="message"
-                    className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2"
-                  >
-                    Message
-                  </label>
-                  <textarea
-                    name="message"
-                    id="message"
-                    rows={5}
-                    value={formData.message}
-                    onChange={(e) =>
-                      setFormData({ ...formData, message: e.target.value })
-                    }
-                    className={cn(
-                      'input-field resize-none',
-                      errors.message &&
-                        'border-red-400 dark:border-red-500 focus:border-red-400 focus:ring-red-400/20',
-                    )}
-                    placeholder="Tell me about your project..."
-                  />
-                  {errors.message && (
-                    <p className="mt-1.5 text-sm text-red-500">{errors.message}</p>
-                  )}
-                </div>
+                <FormField
+                  label="Message"
+                  name="message"
+                  type="textarea"
+                  rows={5}
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  error={errors.message}
+                  placeholder="Tell me about your project..."
+                />
 
                 <Button
                   type="submit"
@@ -253,7 +199,7 @@ export function Contact() {
               </form>
             )}
           </Card>
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   );

@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
-import { SectionHeading, Card } from '../components';
+import { SectionHeading, Card, ScrollReveal } from '../components';
 import { getAllProjects } from '../data/projects';
 import { useTranslation } from 'react-i18next';
 import { useScrollAnimation } from '../hooks';
 import { cn } from '../utils/cn';
-import { getProjectSharedLayoutIds, premiumEasing } from '../utils/projectMotion';
+import { getProjectSharedLayoutIds } from '../utils/projectMotion';
+import { premiumEasing } from '../utils/animations';
 
 export function Projects() {
   const { t } = useTranslation();
@@ -19,10 +20,12 @@ export function Projects() {
       className="section-padding bg-slate-200/50 dark:bg-slate-900/30 relative shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.05)] dark:shadow-none"
     >
       <div className="section-container">
-        <SectionHeading
-          title={t('nav.projects')}
-          subtitle={projects.length > 0 ? '' : t('projects.comingSoon')}
-        />
+        <ScrollReveal>
+          <SectionHeading
+            title={t('nav.projects')}
+            subtitle={projects.length > 0 ? '' : t('projects.comingSoon')}
+          />
+        </ScrollReveal>
 
         {projects.length > 0 && (
           <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
@@ -32,7 +35,7 @@ export function Projects() {
                 {
                   hasCoverImage: Boolean(project.coverImage),
                   reduceMotion: !!shouldReduceMotion,
-                }
+                },
               );
 
               return (
@@ -44,14 +47,14 @@ export function Projects() {
                     'block h-full',
                     'transition-all duration-700 ease-out-expo',
                     'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-dark-bg rounded-2xl',
-                    isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                    isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8',
                   )}
                   style={{ transitionDelay: isVisible ? `${index * 100}ms` : '0ms' }}
                 >
                   <Card
                     className={cn(
                       'h-full group',
-                      'hover:border-primary-500/30 dark:hover:border-primary-500/20'
+                      'hover:border-primary-500/30 dark:hover:border-primary-500/20',
                     )}
                   >
                     <motion.div

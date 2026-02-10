@@ -9,7 +9,8 @@ import {
 } from '../components';
 import { useScrollAnimation } from '../hooks';
 import { cn } from '../utils/cn';
-import { getProjectSharedLayoutIds, premiumEasing } from '../utils/projectMotion';
+import { getProjectSharedLayoutIds } from '../utils/projectMotion';
+import { premiumEasing } from '../utils/animations';
 
 function slugifyHeading(heading: string): string {
   return heading
@@ -45,7 +46,7 @@ function LaneContent({
   laneType: LaneType;
 }) {
   const validSections = sections.filter(
-    (section) => section.content && section.content.length > 0
+    (section) => section.content && section.content.length > 0,
   );
 
   if (validSections.length === 0) {
@@ -83,8 +84,8 @@ export function ProjectPage() {
     project === undefined
       ? undefined
       : lane === 'fast'
-      ? project.fastLane
-      : project.slowLane;
+        ? project.fastLane
+        : project.slowLane;
 
   const handleLaneChange = (newLane: LaneType) => {
     const sections = document.querySelectorAll<HTMLElement>('section[id]');
@@ -196,7 +197,7 @@ export function ProjectPage() {
               'min-w-0',
               'max-w-2xl lg:max-w-none',
               'transition-all duration-700 delay-300',
-              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6',
             )}
           >
             <AnimatePresence mode="wait">

@@ -1,11 +1,9 @@
-import type { Easing } from 'framer-motion';
-
 export function getProjectSharedLayoutIds(
   slug: string,
   options?: {
     hasCoverImage?: boolean;
     reduceMotion?: boolean;
-  }
+  },
 ) {
   const reduceMotion = options?.reduceMotion ?? false;
   const hasCoverImage = options?.hasCoverImage ?? true;
@@ -22,5 +20,3 @@ export function getProjectSharedLayoutIds(
     titleLayoutId: `project-${slug}-title`,
   };
 }
-
-export const premiumEasing: Easing = [0.22, 1, 0.36, 1]; // easeOutExpo-ish

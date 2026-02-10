@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import type { RefObject } from 'react';
 
-interface UseScrollAnimationOptions {
+export interface UseScrollAnimationOptions {
   threshold?: number;
   rootMargin?: string;
   triggerOnce?: boolean;
 }
 
 export function useScrollAnimation<T extends HTMLElement = HTMLDivElement>(
-  options: UseScrollAnimationOptions = {}
+  options: UseScrollAnimationOptions = {},
 ): [RefObject<T | null>, boolean] {
   const { threshold = 0.1, rootMargin = '0px', triggerOnce = true } = options;
   const ref = useRef<T>(null);
@@ -29,7 +29,7 @@ export function useScrollAnimation<T extends HTMLElement = HTMLDivElement>(
           setIsVisible(false);
         }
       },
-      { threshold, rootMargin }
+      { threshold, rootMargin },
     );
 
     observer.observe(element);
