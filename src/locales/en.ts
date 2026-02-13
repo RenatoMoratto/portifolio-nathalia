@@ -79,17 +79,50 @@ export const en = {
     },
     howIWork: {
       title: 'How I Work',
-      step1:
-        'I start by understanding the <strong>problem and context</strong>, before thinking about solutions',
-      step2: 'I use <strong>user research and data</strong> to base product decisions',
-      step3:
-        'I translate needs into <strong>clear requirements, flows and information architecture</strong>',
-      step4:
-        'I prototype and validate solutions <strong>iteratively</strong>, with tests and real feedback',
-      step5:
-        'I work closely with <strong>developers and stakeholders</strong>, facilitating alignment',
-      step6:
-        'I register decisions and learnings to ensure <strong>clarity, consistency and scale</strong>',
+      steps: [
+        {
+          title: 'Understand',
+          description:
+            'I start by understanding the <strong>problem and context</strong>, before thinking about solutions',
+          tools: ['User Interviews', 'Stakeholder Workshops', 'Data Analysis'],
+          process: ['Define Goals', 'Map Constraints', 'Identify KPIs'],
+        },
+        {
+          title: 'Research',
+          description:
+            'I use <strong>user research and data</strong> to base product decisions',
+          tools: ['Benchmark', 'Desk Research', 'Surveys'],
+          process: ['Competitor Analysis', 'User Personas', 'Journey Mapping'],
+        },
+        {
+          title: 'Define',
+          description:
+            'I translate needs into <strong>clear requirements, flows and information architecture</strong>',
+          tools: ['Miro', 'FigJam', 'Flowcharts'],
+          process: ['User Flows', 'Sitemaps', 'Requirement Doc'],
+        },
+        {
+          title: 'Prototype',
+          description:
+            'I prototype and validate solutions <strong>iteratively</strong>, with tests and real feedback',
+          tools: ['Figma', 'Protopie', 'Usability Hub'],
+          process: ['Wireframing', 'Interactive Prototypes', 'Usability Testing'],
+        },
+        {
+          title: 'Collaborate',
+          description:
+            'I work closely with <strong>developers and stakeholders</strong>, facilitating alignment',
+          tools: ['Jira', 'Notion', 'Slack'],
+          process: ['Design Handoff', 'QA Support', 'Design Review'],
+        },
+        {
+          title: 'Document',
+          description:
+            'I register decisions and learnings to ensure <strong>clarity, consistency and scale</strong>',
+          tools: ['Design System', 'Documentation', 'Loom'],
+          process: ['Style Guides', 'Pattern Library', 'Post-mortem'],
+        },
+      ],
     },
     projects: {
       comingSoon: 'Coming soon',

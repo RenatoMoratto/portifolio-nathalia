@@ -79,18 +79,50 @@ export const pt = {
     },
     howIWork: {
       title: 'Como eu trabalho',
-      step1:
-        'Começo entendendo o <strong>problema e o contexto</strong>, antes de pensar em soluções',
-      step2:
-        'Uso <strong>pesquisa com usuários e dados</strong> para embasar decisões de produto',
-      step3:
-        'Traduzo necessidades em <strong>requisitos claros, fluxos e arquitetura da informação</strong>',
-      step4:
-        'Prototipo e valido soluções de forma <strong>iterativa</strong>, com testes e feedback real',
-      step5:
-        'Trabalho de forma próxima com <strong>desenvolvedores e stakeholders</strong>, facilitando alinhamentos',
-      step6:
-        'Registro decisões e aprendizados para garantir <strong>clareza, consistência e escala</strong>',
+      steps: [
+        {
+          title: 'Entender',
+          description:
+            'Começo entendendo o <strong>problema e o contexto</strong>, antes de pensar em soluções',
+          tools: ['Entrevistas', 'Workshops', 'Análise de dados'],
+          process: ['Objetivos', 'Restrições', 'KPIs'],
+        },
+        {
+          title: 'Pesquisar',
+          description:
+            'Uso <strong>pesquisa com usuários e dados</strong> para embasar decisões de produto',
+          tools: ['Benchmarking', 'Desk Research', 'Questionários'],
+          process: ['Análise competitiva', 'Personas', 'Mapeamento de jornada'],
+        },
+        {
+          title: 'Definir',
+          description:
+            'Traduzo necessidades em <strong>requisitos claros, fluxos e arquitetura da informação</strong>',
+          tools: ['Miro', 'FigJam', 'Fluxogramas'],
+          process: ['User Flows', 'Sitemaps', 'Requisitos'],
+        },
+        {
+          title: 'Prototipar',
+          description:
+            'Prototipo e valido soluções de forma <strong>iterativa</strong>, com testes e feedback real',
+          tools: ['Figma', 'Protopie', 'Testes de usabilidade'],
+          process: ['Wireframing', 'Protótipos', 'Testes validação'],
+        },
+        {
+          title: 'Colaborar',
+          description:
+            'Trabalho de forma próxima com <strong>desenvolvedores e stakeholders</strong>, facilitando alinhamentos',
+          tools: ['Jira', 'Notion', 'Slack'],
+          process: ['Handoff', 'Suporte a QA', 'Design Review'],
+        },
+        {
+          title: 'Documentar',
+          description:
+            'Registro decisões e aprendizados para garantir <strong>clareza, consistência e escala</strong>',
+          tools: ['Design System', 'Documentação', 'Loom'],
+          process: ['Guias de estilo', 'Biblioteca', 'Post-mortem'],
+        },
+      ],
     },
     projects: {
       comingSoon: 'Em breve',
