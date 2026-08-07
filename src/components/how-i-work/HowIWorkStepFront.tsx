@@ -1,17 +1,24 @@
+import { useTranslation } from 'react-i18next';
 import type { HowIWorkStep } from '../../content';
-import { RichText } from '../RichText';
 import { cn } from '../../utils/cn';
+import { RichText } from '../RichText';
 
 interface HowIWorkStepFrontProps {
   step: HowIWorkStep;
   index: number;
+  /** True while this face is rotated away from the viewer. */
+  hidden: boolean;
 }
 
-export function HowIWorkStepFront({ step, index }: HowIWorkStepFrontProps) {
+export function HowIWorkStepFront({ step, index, hidden }: HowIWorkStepFrontProps) {
+  const { t } = useTranslation();
+
   return (
     <div
+      aria-hidden={hidden}
+      inert={hidden}
       className={cn(
-        'w-full h-full backface-hidden', // Removed absolute inset-0
+        'w-full h-full backface-hidden',
         'col-start-1 row-start-1', // Stack in grid
         'flex flex-col p-6 md:p-8',
         'bg-white dark:bg-dark-surface-elevated',
@@ -20,7 +27,7 @@ export function HowIWorkStepFront({ step, index }: HowIWorkStepFrontProps) {
         'justify-between',
       )}
     >
-      {/* Number and Header */}
+      {/* Number and header */}
       <div className="flex items-start justify-between">
         <span
           className={cn(
@@ -32,8 +39,6 @@ export function HowIWorkStepFront({ step, index }: HowIWorkStepFrontProps) {
         >
           {index + 1}
         </span>
-
-        {/* Decorative element or verified icon could go here */}
         <div className="w-2 h-2 rounded-full bg-primary-400/20" />
       </div>
 
@@ -50,9 +55,15 @@ export function HowIWorkStepFront({ step, index }: HowIWorkStepFrontProps) {
 
       {/* Action hint */}
       <div className="border-t border-slate-100 dark:border-slate-800 flex items-center gap-2 text-sm text-primary-600 dark:text-primary-400 font-medium opacity-80">
-        <span className="hidden md:inline">Hover to reveal</span>
-        <span className="md:hidden">Tap to reveal</span>
-        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <span className="hidden md:inline">{t('howIWork.card.revealHover')}</span>
+        <span className="md:hidden">{t('howIWork.card.revealTap')}</span>
+        <svg
+          className="w-4 h-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          aria-hidden="true"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
