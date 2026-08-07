@@ -49,6 +49,7 @@ export const pt = {
         aria: 'Etapa {{number}}: {{title}}. Ative para ver ferramentas e processo.',
         revealHover: 'Passe o mouse para ver',
         revealTap: 'Toque para ver',
+        unpin: 'Cartão fixado. Desafixe para ver ao passar o mouse novamente.',
         tools: 'Ferramentas',
         process: 'Processo',
       },

@@ -48,6 +48,7 @@ export const en = {
         aria: 'Step {{number}}: {{title}}. Activate to see tools and process.',
         revealHover: 'Hover to reveal',
         revealTap: 'Tap to reveal',
+        unpin: 'Card pinned. Unpin it to reveal on hover again.',
         tools: 'Tools',
         process: 'Process',
       },
