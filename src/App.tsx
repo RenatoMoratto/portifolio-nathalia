@@ -3,6 +3,7 @@ import { Layout } from './components/Layout';
 import { ScrollToTop } from './components/ScrollToTop';
 import { Home, About, Contact, ProjectPage } from './pages';
 import { ThemeProvider } from './providers';
+import { DocumentLanguage } from './components/DocumentLanguage';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { premiumEasing } from './utils/animations';
 
@@ -43,6 +44,7 @@ function AppRoutes() {
 function App() {
   return (
     <ThemeProvider>
+      <DocumentLanguage />
       <BrowserRouter>
         <AppRoutes />
       </BrowserRouter>
