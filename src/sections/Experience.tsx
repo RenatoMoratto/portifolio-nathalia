@@ -7,9 +7,6 @@ import { cn } from '../utils/cn';
 import { formatPeriod } from '../utils/date';
 import { ChevronRight, ChevronDown } from 'lucide-react';
 
-const CARD_WIDTH = 320;
-const HALF_CARD = CARD_WIDTH / 2;
-
 export function Experience() {
   const { t, i18n } = useTranslation();
   // Referentially stable per language, and already ordered oldest -> newest.
@@ -167,6 +164,14 @@ export function Experience() {
     };
   }, [expandedId, scheduleSnap]);
 
+  // Card width is a fraction of the rail, so a resize both moves and resizes
+  // every card and leaves the focused one off-centre. Re-centre whichever card
+  // is closest now; scheduleSnap already debounces the resize storm.
+  useEffect(() => {
+    window.addEventListener('resize', scheduleSnap);
+    return () => window.removeEventListener('resize', scheduleSnap);
+  }, [scheduleSnap]);
+
   /* --------------------------------------------
    * CENTRALIZA AO ABRIR (logo ao expandir + após a transição de largura)
    * ------------------------------------------ */
@@ -232,7 +237,8 @@ export function Experience() {
           <div
             ref={scrollRef}
             className="
-              flex gap-12
+              timeline-rail
+              flex
               overflow-x-auto
               overscroll-x-contain
               scroll-smooth
@@ -241,10 +247,6 @@ export function Experience() {
               cursor-grab active:cursor-grabbing
               scrollbar-hide
             "
-            style={{
-              paddingLeft: `max(${HALF_CARD}px, calc(50% - ${HALF_CARD}px))`,
-              paddingRight: `max(${HALF_CARD}px, calc(50% - ${HALF_CARD}px))`,
-            }}
           >
             {/* Start sentinel */}
             <span ref={timelineStartRef} aria-hidden className="w-px h-full shrink-0" />
@@ -265,7 +267,7 @@ export function Experience() {
                   }}
                   className={cn(
                     'shrink-0 transition-[width] duration-500 ease-out relative',
-                    isExpanded ? 'w-[520px]' : 'w-[320px]',
+                    isExpanded ? 'w-[520px]' : 'w-(--rail-card)',
                   )}
                 >
                   {/* Timeline node + date */}
