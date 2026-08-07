@@ -1,38 +1,19 @@
-import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from '../components';
 import { useExperiences } from '../content';
 import { cn } from '../utils/cn';
+import { formatPeriod } from '../utils/date';
 import { ChevronRight, ChevronDown } from 'lucide-react';
 
 const CARD_WIDTH = 320;
 const HALF_CARD = CARD_WIDTH / 2;
 
-/* --------------------------------------------
- * HELPERS
- * ------------------------------------------ */
-const formatPeriod = (
-  startDate: string,
-  endDate: string | undefined,
-  language: string,
-  presentText: string,
-) => {
-  const formatter = new Intl.DateTimeFormat(language, {
-    month: 'short',
-    year: 'numeric',
-  });
-
-  const start = new Date(startDate);
-  const end = endDate ? new Date(endDate) : null;
-
-  return `${formatter.format(start)} – ${end ? formatter.format(end) : presentText}`;
-};
-
-
 export function Experience() {
   const { t, i18n } = useTranslation();
-  const experiences = useExperiences();
+  // Referentially stable per language, and already ordered oldest -> newest.
+  const orderedExperiences = useExperiences();
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
@@ -48,31 +29,16 @@ export function Experience() {
   const snapTimeout = useRef<number | null>(null);
 
   /* --------------------------------------------
-   * ORDENAR EXPERIÊNCIAS (antigas → recentes)
-   * ------------------------------------------ */
-  const orderedExperiences = useMemo(() => {
-    return [...experiences].sort((a, b) => {
-      const aEnd = a.endDate ? new Date(a.endDate).getTime() : Infinity;
-      const bEnd = b.endDate ? new Date(b.endDate).getTime() : Infinity;
-
-      return aEnd - bEnd;
-    });
-  }, [experiences]);
-
-  /* --------------------------------------------
    * CENTRALIZAR CARD
    * ------------------------------------------ */
-  const centerCard = useCallback(
-    (id: number) => {
-      const el = scrollRef.current;
-      const card = cardsRef.current.get(id);
-      if (!el || !card) return;
+  const centerCard = useCallback((id: number) => {
+    const el = scrollRef.current;
+    const card = cardsRef.current.get(id);
+    if (!el || !card) return;
 
-      const left = card.offsetLeft - el.offsetWidth / 2 + card.offsetWidth / 2;
-      el.scrollTo({ left, behavior: 'smooth' });
-    },
-    [cardsRef],
-  );
+    const left = card.offsetLeft - el.offsetWidth / 2 + card.offsetWidth / 2;
+    el.scrollTo({ left, behavior: 'smooth' });
+  }, []);
 
   /* --------------------------------------------
    * SNAP AUTOMÁTICO
@@ -99,7 +65,7 @@ export function Experience() {
     if (closestId !== null) {
       centerCard(closestId);
     }
-  }, [cardsRef, centerCard]);
+  }, [centerCard]);
 
   /* --------------------------------------------
    * SNAP
@@ -111,6 +77,14 @@ export function Experience() {
       snapToClosest();
     }, 180);
   }, [snapToClosest]);
+
+  // A pending snap must not outlive the component: it would scroll a detached node.
+  useEffect(
+    () => () => {
+      if (snapTimeout.current) window.clearTimeout(snapTimeout.current);
+    },
+    [],
+  );
 
   /* --------------------------------------------
    * SCROLL INICIAL NO MAIS RECENTE
@@ -281,7 +255,13 @@ export function Experience() {
                 <div
                   key={exp.id}
                   ref={(el) => {
-                    if (el) cardsRef.current.set(exp.id, el);
+                    if (!el) return;
+                    cardsRef.current.set(exp.id, el);
+                    // Must delete on detach, otherwise the map keeps detached
+                    // nodes whose offsetLeft is 0 and skews the snap maths.
+                    return () => {
+                      cardsRef.current.delete(exp.id);
+                    };
                   }}
                   className={cn(
                     'shrink-0 transition-[width] duration-500 ease-out relative',
