@@ -2,7 +2,7 @@ import { useState, useRef } from 'react';
 import type { FormEvent } from 'react';
 import emailjs from '@emailjs/browser';
 import { SectionHeading, Button, Card, ScrollReveal, FormField } from '../components';
-import { personalInfo } from '../data/portfolio';
+import { personalInfo } from '../content';
 import { cn } from '../utils/cn';
 
 interface FormData {

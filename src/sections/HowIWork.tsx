@@ -1,24 +1,21 @@
 import { useTranslation } from 'react-i18next';
 import { SectionHeading, ScrollReveal } from '../components';
+import { useHowIWorkSteps } from '../content';
 import { useScrollAnimation } from '../hooks';
 import { cn } from '../utils/cn';
 import { getStaggerDelay } from '../utils/animations';
-import { howIWorkSteps } from '../data/howIWorkSteps';
 import { HowIWorkStepCard } from '../components/how-i-work/HowIWorkStepCard';
 
 export function HowIWork() {
   const { t } = useTranslation();
   const [ref, isVisible] = useScrollAnimation<HTMLDivElement>();
+  const howIWorkSteps = useHowIWorkSteps();
 
   return (
     <section className="section-padding bg-slate-50/50 dark:bg-dark-surface">
       <div className="section-container">
         <ScrollReveal>
-          <SectionHeading
-            title={t('howIWork.title', 'Como eu trabalho')}
-            subtitle=""
-            className="mb-16"
-          />
+          <SectionHeading title={t('howIWork.title')} subtitle="" className="mb-16" />
         </ScrollReveal>
 
         <div ref={ref} className="max-w-4xl mx-auto relative">

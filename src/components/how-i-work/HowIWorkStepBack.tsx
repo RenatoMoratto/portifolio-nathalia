@@ -1,5 +1,4 @@
-import { useTranslation } from 'react-i18next';
-import type { HowIWorkStep } from '../../data/howIWorkSteps';
+import type { HowIWorkStep } from '../../content';
 import { cn } from '../../utils/cn';
 
 interface HowIWorkStepBackProps {
@@ -7,13 +6,7 @@ interface HowIWorkStepBackProps {
 }
 
 export function HowIWorkStepBack({ step }: HowIWorkStepBackProps) {
-  const { t } = useTranslation();
-
-  // Get arrays from translation with fallback to empty array
-  const tools =
-    (t(`${step.translationKey}.tools`, { returnObjects: true }) as string[]) || [];
-  const process =
-    (t(`${step.translationKey}.process`, { returnObjects: true }) as string[]) || [];
+  const { tools, process } = step;
 
   return (
     <div

@@ -1,5 +1,5 @@
 import { SocialIcons } from '../components';
-import { personalInfo } from '../data/portfolio';
+import { personalInfo } from '../content';
 
 import { useTranslation } from 'react-i18next';
 

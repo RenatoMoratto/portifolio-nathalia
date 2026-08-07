@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { cn } from '../utils/cn';
 import { LaneToggle, type LaneType } from './LaneToggle';
 import { useActiveSection } from '../hooks/useActiveSection';
-import type { ProjectSection } from '../data/projects';
+import type { ProjectSection } from '../content';
 
 function slugifyHeading(heading: string): string {
   return heading

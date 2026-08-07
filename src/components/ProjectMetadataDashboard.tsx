@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { cn } from '../utils/cn';
-import type { Project } from '../data/projects';
+import type { Project } from '../content';
 
 interface ProjectMetadataDashboardProps {
   project: Project;

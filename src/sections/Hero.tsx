@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { OrganicOrbs } from '../components/OrganicOrbs';
+import { HERO_ROLES } from '../content';
 import { useTypewriter } from '../hooks/useTypewriter';
 
 export function Hero() {
   const { t } = useTranslation();
-  const roles = t('hero.roles', { returnObjects: true }) as string[];
-  const typedRole = useTypewriter(roles);
+  const typedRole = useTypewriter(HERO_ROLES);
 
   return (
     <section

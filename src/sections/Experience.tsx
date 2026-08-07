@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from '../components';
+import { useExperiences } from '../content';
 import { cn } from '../utils/cn';
 import { ChevronRight, ChevronDown } from 'lucide-react';
 
@@ -28,11 +29,10 @@ const formatPeriod = (
   return `${formatter.format(start)} – ${end ? formatter.format(end) : presentText}`;
 };
 
-import type { Experience as ExperienceType } from '../data/portfolio';
 
 export function Experience() {
   const { t, i18n } = useTranslation();
-  const experiences = t('experience.items', { returnObjects: true }) as ExperienceType[];
+  const experiences = useExperiences();
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
   const scrollRef = useRef<HTMLDivElement | null>(null);

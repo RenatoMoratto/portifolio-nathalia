@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import type { HowIWorkStep } from '../../data/howIWorkSteps';
+import type { HowIWorkStep } from '../../content';
 import { useFlipCard } from '../../hooks/useFlipCard';
 import { cn } from '../../utils/cn';
 import { HowIWorkStepFront } from './HowIWorkStepFront';
@@ -34,7 +34,7 @@ export function HowIWorkStepCard({ step, index, className }: HowIWorkStepCardPro
       tabIndex={0}
       role="button"
       aria-expanded={isFlipped}
-      aria-label={`Step ${index + 1}: ${step.translationKey}`} // Adjust label appropriately
+      aria-label={`Step ${index + 1}: ${step.title}`}
     >
       <motion.div
         className={cn(

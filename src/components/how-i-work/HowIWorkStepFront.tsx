@@ -1,5 +1,4 @@
-import { useTranslation } from 'react-i18next';
-import type { HowIWorkStep } from '../../data/howIWorkSteps';
+import type { HowIWorkStep } from '../../content';
 import { cn } from '../../utils/cn';
 
 interface HowIWorkStepFrontProps {
@@ -8,8 +7,6 @@ interface HowIWorkStepFrontProps {
 }
 
 export function HowIWorkStepFront({ step, index }: HowIWorkStepFrontProps) {
-  const { t } = useTranslation();
-
   return (
     <div
       className={cn(
@@ -42,14 +39,12 @@ export function HowIWorkStepFront({ step, index }: HowIWorkStepFrontProps) {
       {/* Content */}
       <div className="mt-6 space-y-3">
         <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-slate-100 font-display">
-          {t(`${step.translationKey}.title`)}
+          {step.title}
         </h3>
 
         <p className="text-base text-slate-600 dark:text-slate-400 leading-relaxed min-h-18">
           <span
-            dangerouslySetInnerHTML={{
-              __html: t(`${step.translationKey}.description`),
-            }}
+            dangerouslySetInnerHTML={{ __html: step.description }}
           />
         </p>
       </div>

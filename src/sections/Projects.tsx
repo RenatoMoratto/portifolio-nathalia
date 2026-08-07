@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { SectionHeading, Card, ScrollReveal } from '../components';
-import type { Project } from '../data/projects';
 import { useTranslation } from 'react-i18next';
+import { useProjects } from '../content';
 import { useScrollAnimation } from '../hooks';
 import { cn } from '../utils/cn';
 import { getProjectSharedLayoutIds } from '../utils/projectMotion';
@@ -11,7 +11,7 @@ import { premiumEasing } from '../utils/animations';
 export function Projects() {
   const { t } = useTranslation();
   const [ref, isVisible] = useScrollAnimation<HTMLDivElement>();
-  const projects = t('projects.items', { returnObjects: true }) as Project[];
+  const projects = useProjects();
   const shouldReduceMotion = useReducedMotion();
 
   return (
@@ -66,7 +66,11 @@ export function Projects() {
                     >
                       <img
                         src={project.coverImage}
-                        alt={`Cover: ${project.title}`}
+                        alt={t('projects.coverAlt', { title: project.title })}
+                        loading="lazy"
+                        decoding="async"
+                        width={1024}
+                        height={768}
                         className="absolute inset-0 w-full h-full object-cover"
                       />
 

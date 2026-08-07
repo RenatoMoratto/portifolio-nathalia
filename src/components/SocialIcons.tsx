@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { personalInfo } from '../data/portfolio';
+import { personalInfo } from '../content';
 import { cn } from '../utils/cn';
 
 const socialLinks = [
