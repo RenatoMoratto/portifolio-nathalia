@@ -5,7 +5,9 @@ export const pt = {
       'DESIGN COMO FERRAMENTA DE DECISÃO\npara produtos claros, usáveis e sustentáveis',
     navbar: {
       aria: {
-        toggleMenu: 'Alternar menu',
+        openMenu: 'Abrir menu',
+        closeMenu: 'Fechar menu',
+        menu: 'Navegação principal',
       },
     },
     hero: {

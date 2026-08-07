@@ -77,10 +77,16 @@ export function Contact() {
         : t('contact.form.failed')
       : null;
 
+  /*
+   * Explicit padding rather than `section-padding`: that utility's generous top
+   * is meant for sections stacked mid-page on Home, and this one only ever
+   * opens a route. The bottom keeps the utility's values so the gap down to the
+   * footer is unchanged.
+   */
   return (
     <section
       id="contact"
-      className="section-padding bg-light-surface dark:bg-dark-surface"
+      className="pt-10 md:pt-16 pb-24 md:pb-32 lg:pb-40 bg-light-surface dark:bg-dark-surface"
     >
       <div className="section-container">
         <ScrollReveal>

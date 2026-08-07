@@ -70,7 +70,7 @@ export function ProjectPage() {
 
   if (!project) {
     return (
-      <div className="pt-24 pb-20 max-w-4xl mx-auto px-3 sm:px-4 lg:px-6 text-center">
+      <div className="pt-10 md:pt-16 pb-20 max-w-4xl mx-auto px-3 sm:px-4 lg:px-6 text-center">
         <h1 className="heading-2 text-slate-900 dark:text-white mb-4">
           {t('projects.notFound.title')}
         </h1>
@@ -88,7 +88,7 @@ export function ProjectPage() {
 
   return (
     <motion.div
-      className="bg-slate-50/50 dark:bg-dark-surface pt-24 pb-20 px-3 sm:px-4 lg:px-6"
+      className="bg-slate-50/50 dark:bg-dark-surface pt-10 md:pt-16 pb-20 px-3 sm:px-4 lg:px-6"
       initial={shouldReduceMotion ? false : { opacity: 0 }}
       animate={shouldReduceMotion ? undefined : { opacity: 1 }}
       exit={shouldReduceMotion ? undefined : { opacity: 0 }}

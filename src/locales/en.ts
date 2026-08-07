@@ -4,7 +4,9 @@ export const en = {
     manifest: 'DESIGN AS A DECISION TOOL\nfor clear, usable and sustainable products',
     navbar: {
       aria: {
-        toggleMenu: 'Toggle menu',
+        openMenu: 'Open menu',
+        closeMenu: 'Close menu',
+        menu: 'Main navigation',
       },
     },
     hero: {

@@ -10,7 +10,7 @@ export function About() {
   const [eduRef, eduVisible] = useScrollAnimation<HTMLDivElement>();
 
   return (
-    <div className="pt-24 pb-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="pt-10 md:pt-16 pb-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       {/* Hero Section with Image */}
       <section className="mb-20 mx-auto">
         {/* Centered Title */}
