@@ -8,6 +8,7 @@ export { LaneToggle } from './LaneToggle';
 export { ProjectMetadataDashboard } from './ProjectMetadataDashboard';
 export { ProjectSectionNav } from './ProjectSectionNav';
 export { DocumentLanguage } from './DocumentLanguage';
+export { OrbsBackdrop } from './OrbsBackdrop';
 export { ScrollReveal } from './ScrollReveal';
 export { ListBullet } from './ListBullet';
 export { FormField } from './FormField';

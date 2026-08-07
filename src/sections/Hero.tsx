@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { OrganicOrbs } from '../components/OrganicOrbs';
+import { OrbsBackdrop } from '../components/OrbsBackdrop';
 import { HERO_ROLES } from '../content';
 import { useTypewriter } from '../hooks/useTypewriter';
 
@@ -16,7 +16,7 @@ export function Hero() {
       <div className="absolute inset-0 bg-linear-to-b from-transparent via-light-bg/30 to-light-bg dark:via-dark-bg/30 dark:to-dark-bg pointer-events-none" />
 
       {/* 3D Organic Orbs Background */}
-      <OrganicOrbs />
+      <OrbsBackdrop />
 
       {/* Content */}
       <div className="relative z-10 section-container text-center">
