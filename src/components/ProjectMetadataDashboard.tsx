@@ -28,7 +28,7 @@ export function ProjectMetadataDashboard({
         'grid gap-x-6 gap-y-3 py-6',
         'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
         'border-y border-slate-200/60 dark:border-slate-700/60',
-        className
+        className,
       )}
     >
       {items.map(({ term, value }) => (

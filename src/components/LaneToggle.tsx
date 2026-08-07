@@ -62,7 +62,7 @@ export function LaneToggle({ value, onChange, className }: LaneToggleProps) {
           'bg-slate-100/80 dark:bg-slate-800/80 backdrop-blur-sm',
           'border border-slate-200/60 dark:border-slate-700/60',
           'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-dark-bg',
-          'transition-all duration-300 ease-out'
+          'transition-all duration-300 ease-out',
         )}
       >
         {/* Sliding track background for selected state */}
@@ -72,7 +72,7 @@ export function LaneToggle({ value, onChange, className }: LaneToggleProps) {
             'bg-white dark:bg-dark-surface shadow-sm',
             'border border-slate-200/60 dark:border-slate-600/60',
             'transition-all duration-300 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]',
-            isFast ? 'left-1 right-[50%]' : 'left-[50%] right-1'
+            isFast ? 'left-1 right-[50%]' : 'left-[50%] right-1',
           )}
           aria-hidden
         />
@@ -82,7 +82,7 @@ export function LaneToggle({ value, onChange, className }: LaneToggleProps) {
             'relative z-10 flex-1 flex items-center justify-center text-sm font-medium transition-colors duration-200',
             isFast
               ? 'text-primary-600 dark:text-primary-400'
-              : 'text-slate-500 dark:text-slate-400'
+              : 'text-slate-500 dark:text-slate-400',
           )}
         >
           {t('projects.laneToggle.fast')}
@@ -92,7 +92,7 @@ export function LaneToggle({ value, onChange, className }: LaneToggleProps) {
             'relative z-10 flex-1 flex items-center justify-center text-sm font-medium transition-colors duration-200',
             !isFast
               ? 'text-primary-600 dark:text-primary-400'
-              : 'text-slate-500 dark:text-slate-400'
+              : 'text-slate-500 dark:text-slate-400',
           )}
         >
           {t('projects.laneToggle.slow')}

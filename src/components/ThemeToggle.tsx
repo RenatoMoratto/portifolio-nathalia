@@ -10,7 +10,7 @@ export function ThemeToggle() {
       className={cn(
         'relative w-14 h-8 rounded-full p-1 transition-colors duration-300',
         'bg-slate-200 dark:bg-slate-700',
-        'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2'
+        'focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2',
       )}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
     >
@@ -18,7 +18,7 @@ export function ThemeToggle() {
         className={cn(
           'absolute top-1 w-6 h-6 rounded-full transition-all duration-300 flex items-center justify-center',
           'bg-white shadow-md',
-          isDark ? 'left-7' : 'left-1'
+          isDark ? 'left-7' : 'left-1',
         )}
       >
         {isDark ? (
