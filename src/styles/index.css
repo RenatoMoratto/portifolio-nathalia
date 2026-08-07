@@ -232,7 +232,8 @@ body {
 }
 
 ::selection {
-  background-color: rgba(99, 102, 241, 0.25);
+  background-color: var(--color-primary-200);
+  color: var(--color-primary-900);
 }
 
 /* Reduced motion support */
@@ -433,6 +434,11 @@ body {
 }
 
 /* Dark mode refinements */
+.dark ::selection {
+  background-color: var(--color-primary-900);
+  color: var(--color-primary-100);
+}
+
 .dark .skill-badge {
   background-color: rgba(223, 80, 104, 0.12);
   color: var(--color-primary-300);
