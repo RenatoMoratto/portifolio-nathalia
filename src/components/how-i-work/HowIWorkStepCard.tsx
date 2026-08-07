@@ -24,7 +24,7 @@ export function HowIWorkStepCard({ step, index, className }: HowIWorkStepCardPro
 
   return (
     <div
-      className={cn('relative h-[320px] w-full perspective-1000', className)}
+      className={cn('relative w-full perspective-1000 group', className)} // Removed fixed height
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={handleClick}
@@ -38,10 +38,8 @@ export function HowIWorkStepCard({ step, index, className }: HowIWorkStepCardPro
     >
       <motion.div
         className={cn(
-          'w-full h-full relative preserve-3d transition-shadow duration-300',
-          // Add subtle shadow lift on hover if needed on the container,
-          // but normally it's better on the faces or this container.
-          // However, faces handle their own borders/backgrounds.
+          'w-full relative preserve-3d transition-shadow duration-300',
+          'grid grid-cols-1 grid-rows-1', // Create stacking context
         )}
         initial={false}
         animate={{ rotateY: isFlipped ? 180 : 0 }}

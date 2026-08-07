@@ -13,7 +13,8 @@ export function HowIWorkStepFront({ step, index }: HowIWorkStepFrontProps) {
   return (
     <div
       className={cn(
-        'absolute inset-0 w-full h-full backface-hidden',
+        'w-full h-full backface-hidden', // Removed absolute inset-0
+        'col-start-1 row-start-1', // Stack in grid
         'flex flex-col p-6 md:p-8',
         'bg-white dark:bg-dark-surface-elevated',
         'border border-light-border dark:border-dark-border',
@@ -44,7 +45,7 @@ export function HowIWorkStepFront({ step, index }: HowIWorkStepFrontProps) {
           {t(`${step.translationKey}.title`)}
         </h3>
 
-        <p className="text-base text-slate-600 dark:text-slate-400 leading-relaxed min-h-[4.5rem]">
+        <p className="text-base text-slate-600 dark:text-slate-400 leading-relaxed min-h-18">
           <span
             dangerouslySetInnerHTML={{
               __html: t(`${step.translationKey}.description`),
@@ -54,7 +55,7 @@ export function HowIWorkStepFront({ step, index }: HowIWorkStepFrontProps) {
       </div>
 
       {/* Action hint */}
-      <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center gap-2 text-sm text-primary-600 dark:text-primary-400 font-medium opacity-80">
+      <div className="border-t border-slate-100 dark:border-slate-800 flex items-center gap-2 text-sm text-primary-600 dark:text-primary-400 font-medium opacity-80">
         <span className="hidden md:inline">Hover to reveal</span>
         <span className="md:hidden">Tap to reveal</span>
         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">

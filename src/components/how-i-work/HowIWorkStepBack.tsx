@@ -18,7 +18,8 @@ export function HowIWorkStepBack({ step }: HowIWorkStepBackProps) {
   return (
     <div
       className={cn(
-        'absolute inset-0 w-full h-full backface-hidden rotate-y-180',
+        'w-full h-full backface-hidden rotate-y-180', // Removed absolute inset-0
+        'col-start-1 row-start-1', // Stack in grid
         'flex flex-col p-6 md:p-8',
         'bg-slate-900 dark:bg-primary-950', // Darker background for contrast
         'border border-slate-800 dark:border-primary-900',
