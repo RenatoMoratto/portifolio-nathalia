@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { ScrollToTop } from './components/ScrollToTop';
 import { Home, About, Contact, ProjectPage } from './pages';
-import { ThemeProvider } from './hooks';
+import { ThemeProvider } from './providers';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { premiumEasing } from './utils/animations';
 

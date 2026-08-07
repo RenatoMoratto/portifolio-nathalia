@@ -1,4 +1,4 @@
-import { useTheme } from '../hooks/useTheme';
+import { useTheme } from '../providers';
 import { cn } from '../utils/cn';
 
 export function ThemeToggle() {

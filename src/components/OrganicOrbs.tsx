@@ -2,7 +2,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { MeshDistortMaterial, Float } from '@react-three/drei';
 import { useRef, useMemo, useEffect } from 'react';
 import * as THREE from 'three';
-import { useTheme } from '../hooks/useTheme';
+import { useTheme } from '../providers';
 
 const ORB_COLORS_DARK = [
   '#F3D1D4', // Very Soft Rose
