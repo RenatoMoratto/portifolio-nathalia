@@ -81,7 +81,12 @@ function App() {
   return (
     <ThemeProvider>
       <DocumentLanguage />
-      <BrowserRouter>
+      {/*
+       * `basename` comes from Vite's base, so the routes below stay declared as
+       * plain `/about`-style paths while the app is served from a subdirectory
+       * on GitHub Pages. It is `/` in dev and under a custom domain.
+       */}
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <AppRoutes />
       </BrowserRouter>
     </ThemeProvider>

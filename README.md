@@ -45,6 +45,52 @@ succeeded and shipped a contact form that failed on every submission.
 | `npm run format`       | Prettier write                     |
 | `npm run format:check` | Prettier check (CI gate)           |
 
+## Deployment
+
+Pushing to `main` builds and publishes to GitHub Pages via
+`.github/workflows/deploy.yml`, which can also be run by hand from the Actions
+tab. It depends on two repository settings:
+
+- **Settings → Pages → Source: GitHub Actions**
+- **Settings → Secrets and variables → Actions**: the three `VITE_EMAILJS_*`
+  values. The deploy build fails without them rather than publishing a contact
+  form that silently drops every message.
+
+Live at <https://renatomoratto.github.io/portifolio-nathalia/>.
+
+### Base path
+
+Pages serves a project site from `/<repository>/`, so the bundle needs that
+prefix. `VITE_BASE_PATH` carries it, and the workflow reads it from the Pages
+API via `actions/configure-pages` instead of hardcoding it — so neither a
+repository rename nor a custom domain needs a code change. `DEFAULT_BASE_PATH`
+in `vite.config.ts` is only the fallback for local `npm run build` and
+`npm run preview`.
+
+Everything else derives from that one value: Vite rewrites asset URLs itself,
+and `import.meta.env.BASE_URL` feeds the router `basename` and the resume
+links. The repository name appears nowhere outside `vite.config.ts`.
+
+`npm run dev` is unaffected — the dev server still serves from `/`.
+
+### Client-side routing
+
+Pages has no SPA rewrite rule, so a direct request for `/about` matches no file
+on disk. The build copies `index.html` to `404.html` (the `spa-404-fallback`
+plugin in `vite.config.ts`), which Pages serves for unmatched paths; the router
+then resolves the route from the URL the browser already has. Deep links and
+refreshes keep their real paths — no hash URLs and no redirect hop. The
+trade-off is that those responses carry a 404 status.
+
+### Moving to a custom domain
+
+1. Point DNS at GitHub Pages and set the domain under **Settings → Pages →
+   Custom domain** (a committed `public/CNAME` works too).
+2. `actions/configure-pages` then reports `/` as the base path, so the deploy
+   needs no change. Set `DEFAULT_BASE_PATH` in `vite.config.ts` to `'/'` so
+   local builds match.
+3. Make `og:image` / `twitter:image` in `index.html` absolute — see Known gaps.
+
 ## Architecture
 
 ```text
@@ -96,6 +142,6 @@ markup.
 
 - `public/resume-en.pdf` and `public/resume-pt.pdf` are currently the same file;
   the English resume still needs to be supplied.
-- `og:image` in `index.html` is a relative path. Make it absolute once the
-  production domain is known — LinkedIn and several other crawlers will not
-  resolve a relative URL.
+- `og:image` in `index.html` is base-prefixed, so it resolves in a browser, but
+  it is still a relative path. Make it absolute once the production domain is
+  known — LinkedIn and several other crawlers will not resolve a relative URL.

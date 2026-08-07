@@ -1,4 +1,6 @@
-import { defineConfig, loadEnv } from 'vite';
+import { copyFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { defineConfig, loadEnv, type Plugin } from 'vite';
 import react from '@vitejs/plugin-react';
 
 /**
@@ -15,10 +17,53 @@ const REQUIRED_BUILD_ENV = [
   'VITE_EMAILJS_PUBLIC_KEY',
 ];
 
+/**
+ * Public path used by local production builds (`npm run build`, `npm run
+ * preview`).
+ *
+ * GitHub Pages serves a project site from `/<repository>/`, so every asset and
+ * router URL needs that prefix. The deploy workflow overrides it with the path
+ * GitHub reports for the Pages site itself, which means pointing a custom
+ * domain at the site changes the deployed base with no code change; only this
+ * local default has to follow, becoming `/`.
+ */
+const DEFAULT_BASE_PATH = '/portifolio-nathalia/';
+
+/** Vite expects a base with both a leading and a trailing slash. */
+function normalizeBasePath(value: string): string {
+  const withLeadingSlash = value.startsWith('/') ? value : `/${value}`;
+  return withLeadingSlash.endsWith('/') ? withLeadingSlash : `${withLeadingSlash}/`;
+}
+
+/**
+ * Copies the built `index.html` to `404.html`.
+ *
+ * GitHub Pages has no SPA rewrite rule: a request for `/about` matches no file
+ * on disk, so Pages serves `404.html` instead. Making that file the app shell
+ * lets the client router read the route off the URL the browser already has, so
+ * deep links and refreshes resolve without moving the app onto hash URLs or
+ * bouncing through a redirect.
+ */
+function spaFallback(): Plugin {
+  let outDir = '';
+
+  return {
+    name: 'spa-404-fallback',
+    apply: 'build',
+    configResolved(config) {
+      outDir = resolve(config.root, config.build.outDir);
+    },
+    closeBundle() {
+      copyFileSync(resolve(outDir, 'index.html'), resolve(outDir, '404.html'));
+    },
+  };
+}
+
 // https://vite.dev/config/
-export default defineConfig(({ command, mode }) => {
+export default defineConfig(({ command, mode, isPreview }) => {
+  const env = loadEnv(mode, process.cwd(), 'VITE_');
+
   if (command === 'build') {
-    const env = loadEnv(mode, process.cwd(), 'VITE_');
     const missing = REQUIRED_BUILD_ENV.filter((key) => !env[key]);
     if (missing.length > 0) {
       throw new Error(
@@ -30,7 +75,16 @@ export default defineConfig(({ command, mode }) => {
   }
 
   return {
-    plugins: [react()],
+    /*
+     * The dev server stays at the root so `npm run dev` is unchanged; `vite
+     * preview` takes the deployed path so the built output is exercised the way
+     * Pages will actually serve it.
+     */
+    base:
+      command === 'build' || isPreview
+        ? normalizeBasePath(env.VITE_BASE_PATH || DEFAULT_BASE_PATH)
+        : '/',
+    plugins: [react(), spaFallback()],
     build: {
       rollupOptions: {
         output: {
