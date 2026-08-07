@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, Ref } from 'react';
 import { cn } from '../utils/cn';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import type { UseScrollAnimationOptions } from '../hooks/useScrollAnimation';
@@ -7,7 +7,7 @@ interface ScrollRevealProps extends UseScrollAnimationOptions {
   children: ReactNode;
   /** CSS class name to apply to wrapper */
   className?: string;
-  /** Translation amount in pixels (default: 8px for subtle reveal) */
+  /** Distance in pixels the element rises from (default: 8px for a subtle reveal) */
   translateY?: number;
   /** Animation delay in milliseconds */
   delay?: number;
@@ -16,10 +16,13 @@ interface ScrollRevealProps extends UseScrollAnimationOptions {
 }
 
 /**
- * Reusable scroll-triggered reveal animation component
+ * Reusable scroll-triggered reveal animation.
  *
- * Wraps children with fade-in and slide-up animation that triggers
- * when the element enters the viewport.
+ * The offset is applied as an inline `transform` rather than a Tailwind class.
+ * The previous implementation interpolated the value into the class name
+ * (`translate-y-[${translateY}px]`), which Tailwind's scanner cannot see - it
+ * reads source files as plain text - so no such rule was ever generated and the
+ * slide silently did nothing. Only the fade was visible.
  *
  * @example
  * <ScrollReveal>
@@ -49,21 +52,18 @@ export function ScrollReveal({
 
   return (
     <Component
-      ref={ref as any}
+      // Every allowed tag is an HTMLElement, and the ref is only ever read as
+      // one; the cast just reconciles the per-tag ref types.
+      ref={ref as Ref<HTMLDivElement & HTMLElement>}
       className={cn(
         'transition-all duration-700 ease-out-expo',
-        isVisible
-          ? 'opacity-100 translate-y-0'
-          : `opacity-0 translate-y-[${translateY}px]`,
+        isVisible ? 'opacity-100' : 'opacity-0',
         className,
       )}
-      style={
-        delay > 0
-          ? {
-              transitionDelay: isVisible ? `${delay}ms` : '0ms',
-            }
-          : undefined
-      }
+      style={{
+        transform: isVisible ? 'none' : `translateY(${translateY}px)`,
+        transitionDelay: isVisible && delay > 0 ? `${delay}ms` : '0ms',
+      }}
     >
       {children}
     </Component>
