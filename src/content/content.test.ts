@@ -46,12 +46,12 @@ describe('content completeness', () => {
     }
   });
 
-  it.each(LANGUAGES)('every process step has %s prose', (language) => {
+  it.each(LANGUAGES)('every practice has %s prose', (language) => {
     for (const step of HOW_I_WORK_STEPS) {
       const content = step.locales[language];
       expect(content).toBeDefined();
       expect(content.tools.length).toBeGreaterThan(0);
-      expect(content.process.length).toBeGreaterThan(0);
+      expect(content.practices.length).toBeGreaterThan(0);
     }
   });
 });

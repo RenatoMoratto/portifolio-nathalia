@@ -46,14 +46,16 @@ export const pt = {
       contact: 'Contato',
     },
     howIWork: {
-      title: 'Como eu trabalho',
+      title: 'Minha abordagem',
+      intro:
+        'Não sigo um processo rígido. Cada produto exige uma combinação diferente de pesquisa, colaboração, experimentação e execução. Estas são as práticas que fazem parte da minha forma de trabalhar.',
       card: {
-        aria: 'Etapa {{number}}: {{title}}. Ative para ver ferramentas e processo.',
+        aria: 'Etapa {{number}}: {{title}}. Ative para ver ferramentas e práticas.',
         revealHover: 'Passe o mouse para ver',
         revealTap: 'Toque para ver',
         unpin: 'Cartão fixado. Desafixe para ver ao passar o mouse novamente.',
         tools: 'Ferramentas',
-        process: 'Processo',
+        practices: 'Na prática',
       },
     },
     projects: {

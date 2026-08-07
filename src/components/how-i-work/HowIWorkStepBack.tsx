@@ -44,10 +44,10 @@ export function HowIWorkStepBack({ step, hidden }: HowIWorkStepBackProps) {
 
         <div>
           <h4 className="text-xs uppercase tracking-wider font-semibold text-primary-400 mb-3">
-            {t('howIWork.card.process')}
+            {t('howIWork.card.practices')}
           </h4>
           <ul className="space-y-2">
-            {step.process.map((item) => (
+            {step.practices.map((item) => (
               <li key={item} className="flex items-start gap-2 text-sm text-slate-300">
                 <span
                   className="mt-1.5 w-1 h-1 rounded-full bg-primary-500 shrink-0"

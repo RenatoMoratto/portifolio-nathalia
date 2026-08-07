@@ -93,7 +93,11 @@ export interface HowIWorkStepContent {
   title: string;
   description: string;
   tools: string[];
-  process: string[];
+  /**
+   * What the practice looks like day to day. Deliberately *not* named `process`:
+   * these are things done in this practice, not ordered stages of a pipeline.
+   */
+  practices: string[];
 }
 
 export interface HowIWorkStepEntry extends HowIWorkStepBase {

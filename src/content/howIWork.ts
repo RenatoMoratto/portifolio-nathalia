@@ -1,6 +1,9 @@
 import type { HowIWorkStepEntry } from './types';
 
-/** Process steps rendered by the `HowIWork` section as flip cards. */
+/**
+ * The practices that make up the design approach, rendered by the `HowIWork`
+ * section as flip cards.
+ */
 export const HOW_I_WORK_STEPS: HowIWorkStepEntry[] = [
   {
     id: 1,
@@ -8,16 +11,20 @@ export const HOW_I_WORK_STEPS: HowIWorkStepEntry[] = [
       pt: {
         title: 'Entender',
         description:
-          'Começo entendendo o <strong>problema e o contexto</strong>, antes de pensar em soluções',
-        tools: ['Entrevistas', 'Workshops', 'Análise de dados'],
-        process: ['Objetivos', 'Restrições', 'KPIs'],
+          'Antes de pensar em soluções, procuro compreender o <strong>contexto, os objetivos do negócio, as necessidades dos usuários e as restrições técnicas</strong>.',
+        tools: ['Jira', 'Confluence', 'Miro'],
+        practices: [
+          'Alinhamento com stakeholders',
+          'Levantamento de requisitos',
+          'Definição de objetivos',
+        ],
       },
       en: {
         title: 'Understand',
         description:
-          'I start by understanding the <strong>problem and context</strong>, before thinking about solutions',
-        tools: ['User Interviews', 'Stakeholder Workshops', 'Data Analysis'],
-        process: ['Define Goals', 'Map Constraints', 'Identify KPIs'],
+          'Before thinking about solutions, I seek to understand the <strong>context, business goals, user needs and technical constraints</strong>.',
+        tools: ['Jira', 'Confluence', 'Miro'],
+        practices: ['Stakeholder alignment', 'Requirements gathering', 'Goal definition'],
       },
     },
   },
@@ -25,18 +32,22 @@ export const HOW_I_WORK_STEPS: HowIWorkStepEntry[] = [
     id: 2,
     locales: {
       pt: {
-        title: 'Pesquisar',
+        title: 'Descobrir Insights',
         description:
-          'Uso <strong>pesquisa com usuários e dados</strong> para embasar decisões de produto',
-        tools: ['Benchmarking', 'Desk Research', 'Questionários'],
-        process: ['Análise competitiva', 'Personas', 'Mapeamento de jornada'],
+          'Quando o desafio exige, utilizo <strong>pesquisas com usuários, análise de dados e benchmarking</strong> para reduzir suposições e embasar decisões. Acredito que boas soluções começam com uma boa compreensão das pessoas.',
+        tools: ['Miro', 'ChatGPT', 'Google Forms'],
+        practices: [
+          'Entrevistas com usuários',
+          'Benchmarking',
+          'Síntese de aprendizados',
+        ],
       },
       en: {
-        title: 'Research',
+        title: 'Discover Insights',
         description:
-          'I use <strong>user research and data</strong> to base product decisions',
-        tools: ['Benchmark', 'Desk Research', 'Surveys'],
-        process: ['Competitor Analysis', 'User Personas', 'Journey Mapping'],
+          'When the challenge calls for it, I use <strong>user research, data analysis and benchmarking</strong> to reduce assumptions and support better decisions. I believe great solutions start with a deep understanding of people.',
+        tools: ['Miro', 'ChatGPT', 'Google Forms'],
+        practices: ['User interviews', 'Benchmarking', 'Insight synthesis'],
       },
     },
   },
@@ -44,18 +55,22 @@ export const HOW_I_WORK_STEPS: HowIWorkStepEntry[] = [
     id: 3,
     locales: {
       pt: {
-        title: 'Definir',
+        title: 'Explorar Possibilidades',
         description:
-          'Traduzo necessidades em <strong>requisitos claros, fluxos e arquitetura da informação</strong>',
-        tools: ['Miro', 'FigJam', 'Fluxogramas'],
-        process: ['User Flows', 'Sitemaps', 'Requisitos'],
+          'Exploro diferentes possibilidades utilizando <strong>IA como apoio para acelerar a ideação, desafiar hipóteses e ampliar alternativas</strong> antes de partir para a execução.',
+        tools: ['Figma Make', 'ChatGPT', 'FigJam'],
+        practices: [
+          'Exploração de ideias',
+          'Exploração com IA',
+          'Refinamento de soluções',
+        ],
       },
       en: {
-        title: 'Define',
+        title: 'Explore Possibilities',
         description:
-          'I translate needs into <strong>clear requirements, flows and information architecture</strong>',
-        tools: ['Miro', 'FigJam', 'Flowcharts'],
-        process: ['User Flows', 'Sitemaps', 'Requirement Doc'],
+          'I explore different possibilities using <strong>AI as a partner to accelerate ideation, challenge assumptions and expand alternatives</strong> before moving into execution.',
+        tools: ['Figma Make', 'ChatGPT', 'FigJam'],
+        practices: ['Idea exploration', 'AI-assisted exploration', 'Solution refinement'],
       },
     },
   },
@@ -63,18 +78,22 @@ export const HOW_I_WORK_STEPS: HowIWorkStepEntry[] = [
     id: 4,
     locales: {
       pt: {
-        title: 'Prototipar',
+        title: 'Projetar',
         description:
-          'Prototipo e valido soluções de forma <strong>iterativa</strong>, com testes e feedback real',
-        tools: ['Figma', 'Protopie', 'Testes de usabilidade'],
-        process: ['Wireframing', 'Protótipos', 'Testes validação'],
+          'Transformo ideias em <strong>interfaces escaláveis</strong> utilizando Design System, componentização e protótipos iterativos para equilibrar velocidade, consistência e qualidade.',
+        tools: ['Figma', 'Figma Make', 'Design System'],
+        practices: ['Componentização', 'Prototipação iterativa', 'Consistência visual'],
       },
       en: {
-        title: 'Prototype',
+        title: 'Design',
         description:
-          'I prototype and validate solutions <strong>iteratively</strong>, with tests and real feedback',
-        tools: ['Figma', 'Protopie', 'Usability Hub'],
-        process: ['Wireframing', 'Interactive Prototypes', 'Usability Testing'],
+          'I transform ideas into <strong>scalable interfaces</strong> using Design Systems, reusable components and iterative prototyping to balance speed, consistency and quality.',
+        tools: ['Figma', 'Figma Make', 'Design System'],
+        practices: [
+          'Component-based design',
+          'Iterative prototyping',
+          'Visual consistency',
+        ],
       },
     },
   },
@@ -82,18 +101,18 @@ export const HOW_I_WORK_STEPS: HowIWorkStepEntry[] = [
     id: 5,
     locales: {
       pt: {
-        title: 'Colaborar',
+        title: 'Validar',
         description:
-          'Trabalho de forma próxima com <strong>desenvolvedores e stakeholders</strong>, facilitando alinhamentos',
-        tools: ['Jira', 'Notion', 'Slack'],
-        process: ['Handoff', 'Suporte a QA', 'Design Review'],
+          'Valido soluções continuamente com <strong>stakeholders e desenvolvedores</strong>, acompanhando a implementação para garantir que a experiência planejada seja entregue.',
+        tools: ['Jira', 'Confluence', 'Figma'],
+        practices: ['Handoff', 'QA funcional', 'Testes de responsividade'],
       },
       en: {
-        title: 'Collaborate',
+        title: 'Validate',
         description:
-          'I work closely with <strong>developers and stakeholders</strong>, facilitating alignment',
-        tools: ['Jira', 'Notion', 'Slack'],
-        process: ['Design Handoff', 'QA Support', 'Design Review'],
+          'I continuously validate solutions with <strong>stakeholders and developers</strong>, following implementation closely to ensure the intended experience is delivered.',
+        tools: ['Jira', 'Confluence', 'Figma'],
+        practices: ['Design handoff', 'Functional QA', 'Responsive testing'],
       },
     },
   },
@@ -101,18 +120,22 @@ export const HOW_I_WORK_STEPS: HowIWorkStepEntry[] = [
     id: 6,
     locales: {
       pt: {
-        title: 'Documentar',
+        title: 'Evoluir',
         description:
-          'Registro decisões e aprendizados para garantir <strong>clareza, consistência e escala</strong>',
-        tools: ['Design System', 'Documentação', 'Loom'],
-        process: ['Guias de estilo', 'Biblioteca', 'Post-mortem'],
+          'Registro decisões, compartilho conhecimento e transformo aprendizados em <strong>melhorias contínuas para o produto e para o time</strong>.',
+        tools: ['Confluence', 'Notion', 'Jira'],
+        practices: [
+          'Documentação',
+          'Compartilhamento de conhecimento',
+          'Melhoria contínua',
+        ],
       },
       en: {
-        title: 'Document',
+        title: 'Evolve',
         description:
-          'I register decisions and learnings to ensure <strong>clarity, consistency and scale</strong>',
-        tools: ['Design System', 'Documentation', 'Loom'],
-        process: ['Style Guides', 'Pattern Library', 'Post-mortem'],
+          'I document decisions, share knowledge and turn learnings into <strong>continuous improvements for both the product and the team</strong>.',
+        tools: ['Confluence', 'Notion', 'Jira'],
+        practices: ['Documentation', 'Knowledge sharing', 'Continuous improvement'],
       },
     },
   },

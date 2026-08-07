@@ -88,7 +88,7 @@ export function useExperiences(): Experience[] {
   return EXPERIENCES_BY_LANGUAGE[useContentLanguage()];
 }
 
-/** Process steps. Referentially stable per language. */
+/** Design practices. Referentially stable per language. */
 export function useHowIWorkSteps(): HowIWorkStep[] {
   return HOW_I_WORK_BY_LANGUAGE[useContentLanguage()];
 }

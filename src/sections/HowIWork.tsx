@@ -15,7 +15,11 @@ export function HowIWork() {
     <section className="section-padding bg-slate-50/50 dark:bg-dark-surface">
       <div className="section-container">
         <ScrollReveal>
-          <SectionHeading title={t('howIWork.title')} subtitle="" className="mb-16" />
+          <SectionHeading
+            title={t('howIWork.title')}
+            subtitle={t('howIWork.intro')}
+            className="mb-16"
+          />
         </ScrollReveal>
 
         <div ref={ref} className="max-w-4xl mx-auto relative">

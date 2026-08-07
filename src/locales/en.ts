@@ -45,14 +45,16 @@ export const en = {
       contact: 'Contact',
     },
     howIWork: {
-      title: 'How I Work',
+      title: 'My Approach',
+      intro:
+        "I don't follow a rigid process. Every product requires a different combination of research, collaboration, experimentation and execution. These are the practices that shape how I work.",
       card: {
-        aria: 'Step {{number}}: {{title}}. Activate to see tools and process.',
+        aria: 'Step {{number}}: {{title}}. Activate to see tools and practices.',
         revealHover: 'Hover to reveal',
         revealTap: 'Tap to reveal',
         unpin: 'Card pinned. Unpin it to reveal on hover again.',
         tools: 'Tools',
-        process: 'Process',
+        practices: 'In practice',
       },
     },
     projects: {

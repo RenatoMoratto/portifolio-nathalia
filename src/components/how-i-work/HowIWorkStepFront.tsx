@@ -27,26 +27,25 @@ export function HowIWorkStepFront({ step, index, hidden }: HowIWorkStepFrontProp
         'justify-between',
       )}
     >
-      {/* Number and header */}
-      <div className="flex items-start justify-between">
-        <span
-          className={cn(
-            'flex items-center justify-center w-10 h-10',
-            'rounded-full text-base font-bold',
-            'bg-primary-100 dark:bg-primary-900/30',
-            'text-primary-600 dark:text-primary-400',
-          )}
-        >
-          {index + 1}
-        </span>
-        <div className="w-2 h-2 rounded-full bg-primary-400/20" />
-      </div>
-
       {/* Content */}
-      <div className="mt-6 space-y-3">
-        <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-slate-100 font-display">
-          {step.title}
-        </h3>
+      <div className="space-y-3">
+        <div className="flex items-center gap-4">
+          {/* Number */}
+          <span
+            className={cn(
+              'flex items-center justify-center w-10 h-10 shrink-0',
+              'rounded-full text-base font-bold',
+              'bg-primary-100 dark:bg-primary-900/30',
+              'text-primary-600 dark:text-primary-400',
+            )}
+          >
+            {index + 1}
+          </span>
+
+          <h3 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-slate-100 font-display">
+            {step.title}
+          </h3>
+        </div>
 
         <p className="text-base text-slate-600 dark:text-slate-400 leading-relaxed min-h-18">
           <RichText text={step.description} />
@@ -54,9 +53,9 @@ export function HowIWorkStepFront({ step, index, hidden }: HowIWorkStepFrontProp
       </div>
 
       {/* Action hint */}
-      <div className="border-t border-slate-100 dark:border-slate-800 flex items-center gap-2 text-sm text-primary-600 dark:text-primary-400 font-medium opacity-80">
-        <span className="hidden md:inline">{t('howIWork.card.revealHover')}</span>
-        <span className="md:hidden">{t('howIWork.card.revealTap')}</span>
+      <div className="border-t border-slate-100 dark:border-slate-800 flex items-center justify-end text-primary-600 dark:text-primary-400 opacity-80">
+        <span className="sr-only hidden md:inline">{t('howIWork.card.revealHover')}</span>
+        <span className="sr-only md:hidden">{t('howIWork.card.revealTap')}</span>
         <svg
           className="w-4 h-4"
           fill="none"
