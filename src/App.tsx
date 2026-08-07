@@ -1,42 +1,78 @@
+import { Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import { Layout } from './components/Layout';
 import { ScrollToTop } from './components/ScrollToTop';
-import { Home, About, Contact, ProjectPage } from './pages';
 import { ThemeProvider } from './providers';
 import { DocumentLanguage } from './components/DocumentLanguage';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { premiumEasing } from './utils/animations';
+
+/*
+ * Home is eager: it is the landing route, and lazy-loading it would only add a
+ * round trip before first paint. The rest are split so a visitor who never
+ * opens them never downloads them.
+ */
+import { Home } from './pages/Home';
+
+const About = lazy(() => import('./pages/About').then((m) => ({ default: m.About })));
+const Contact = lazy(() =>
+  import('./pages/Contact').then((m) => ({ default: m.Contact })),
+);
+const ProjectPage = lazy(() =>
+  import('./pages/ProjectPage').then((m) => ({ default: m.ProjectPage })),
+);
+
+/** Reserves vertical space so lazy routes do not collapse the layout. */
+function RouteFallback() {
+  return <div className="min-h-screen" aria-busy="true" />;
+}
 
 function AppRoutes() {
   const location = useLocation();
-  const shouldReduceMotion = useReducedMotion();
 
   return (
-    <AnimatePresence initial={!shouldReduceMotion}>
-      <motion.div
-        layout
-        transition={{
-          duration: 0.55,
-          ease: premiumEasing,
-        }}
-      >
-        <Routes location={location}>
+    /*
+     * `Routes` is keyed by pathname so it is a *new* child of AnimatePresence on
+     * every navigation. Without the key, AnimatePresence sees one child that
+     * never changes identity and the pages' `exit` animations never run.
+     */
+    <AnimatePresence mode="wait" initial={false}>
+      <Routes location={location} key={location.pathname}>
+        <Route
+          path="/"
+          element={
+            <>
+              <ScrollToTop />
+              <Layout />
+            </>
+          }
+        >
+          <Route index element={<Home />} />
           <Route
-            path="/"
+            path="about"
             element={
-              <>
-                <ScrollToTop />
-                <Layout />
-              </>
+              <Suspense fallback={<RouteFallback />}>
+                <About />
+              </Suspense>
             }
-          >
-            <Route index element={<Home />} />
-            <Route path="about" element={<About />} />
-            <Route path="contact" element={<Contact />} />
-            <Route path="projects/:slug" element={<ProjectPage />} />
-          </Route>
-        </Routes>
-      </motion.div>
+          />
+          <Route
+            path="contact"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <Contact />
+              </Suspense>
+            }
+          />
+          <Route
+            path="projects/:slug"
+            element={
+              <Suspense fallback={<RouteFallback />}>
+                <ProjectPage />
+              </Suspense>
+            }
+          />
+        </Route>
+      </Routes>
     </AnimatePresence>
   );
 }

@@ -31,5 +31,21 @@ export default defineConfig(({ command, mode }) => {
 
   return {
     plugins: [react()],
+    build: {
+      rollupOptions: {
+        output: {
+          /*
+           * Split the heavy, rarely-changing dependencies out of the app chunk.
+           * three/drei is only needed by the hero decoration and is lazy-loaded,
+           * so keeping it in its own chunk stops it blocking initial render.
+           */
+          manualChunks: {
+            react: ['react', 'react-dom', 'react-router-dom'],
+            motion: ['framer-motion'],
+            i18n: ['i18next', 'react-i18next'],
+          },
+        },
+      },
+    },
   };
 });
