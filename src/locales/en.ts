@@ -16,14 +16,15 @@ export const en = {
       title: 'About Me',
       imageAlt: 'Nathália Moratto Caldeira',
       mainText:
-        'I am a <strong>Product Designer</strong> with over <strong>2 years of experience</strong> working end-to-end in digital product development, from <strong>discovery to delivery</strong>, in medium and high complexity contexts.\n\nCurrently working at <strong>Kiwano Tecnologia</strong>, actively participating in product decisions and collaborating closely with developers and stakeholders to build solutions based on <strong>user research, usability testing and market analysis</strong>.\n\nI focus on <strong>information architecture, requirements definition, designing complex flows and high-fidelity prototyping</strong>. I have worked on products such as vehicle tracking mobile apps and scheduling platforms, always seeking to <strong>simplify flows, increase clarity and ensure scalability</strong>.\n\nI am motivated by solving <strong>real product problems</strong>, making well-founded decisions and building solutions that are <strong>clear, usable and sustainable over time</strong>.',
+        'I am a <strong>Product Designer</strong> with <strong>3 years of experience</strong> leading projects from <strong>discovery to delivery</strong> across healthcare, mobility and operational products.\n\nI am currently the lead Product Designer for a <strong>Pfizer digital healthcare team at Tata Consultancy Services</strong>, owning <strong>complex web workflows</strong> from requirements and prototyping through <strong>engineering handoff and functional validation</strong>.\n\nI am also introducing <strong>user research practices</strong> to the team, including its <strong>first usability testing initiative</strong>, while using <strong>Figma Make and Rovo</strong> to accelerate design exploration, writing and strategic thinking.\n\nI am motivated by solving <strong>real product problems</strong>, making well-founded decisions and building solutions that are <strong>clear, usable and sustainable over time</strong>.',
       education: {
         title: 'Professional Formation',
         item1:
-          'Post-graduate <strong>User Experience and Beyond</strong>. PUCRS — <em>Ongoing</em>',
+          'Specialization in <strong>User Experience and Beyond</strong>. PUCRS — <em>Feb 2026 – expected Feb 2027</em>',
         item2:
           '<strong>Google UX Design Professional Certificate</strong>. Google — Coursera',
-        item3: '<strong>Bachelor of Law</strong>. Faculdade Pitágoras',
+        item3:
+          '<strong>Bachelor of Law</strong>. Faculdade Pitágoras — Paraná, Brazil, 2015–2019',
       },
       courses: {
         title: 'Complementary Courses',

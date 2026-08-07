@@ -17,14 +17,15 @@ export const pt = {
       title: 'Sobre',
       imageAlt: 'Nathália Moratto Caldeira',
       mainText:
-        'Sou <strong>Product Designer</strong> com mais de <strong>2 anos de experiência</strong> atuando de ponta a ponta no desenvolvimento de produtos digitais, do <strong>discovery à entrega</strong>, em contextos de média e alta complexidade.\n\nAtualmente atuo na <strong>Kiwano Tecnologia</strong>, participando ativamente das decisões de produto e colaborando de forma próxima com desenvolvedores e stakeholders para construir soluções baseadas em <strong>pesquisa com usuários, testes de usabilidade e análise de mercado</strong>.\n\nTenho foco em <strong>arquitetura da informação, definição de requisitos, desenho de fluxos complexos e prototipação de alta fidelidade</strong>. Já trabalhei em produtos como aplicativos mobile de rastreamento veicular e plataformas de agendamento, sempre buscando <strong>simplificar fluxos, aumentar clareza e garantir escalabilidade</strong>.\n\nMe motiva resolver <strong>problemas reais de produto</strong>, tomar decisões bem fundamentadas e construir soluções <strong>claras, usáveis e sustentáveis ao longo do tempo</strong>.',
+        'Sou <strong>Product Designer</strong> com <strong>3 anos de experiência</strong> liderando projetos do <strong>discovery à entrega</strong> em produtos de saúde, mobilidade e operação.\n\nAtualmente atuo como Product Designer principal de uma <strong>equipe de saúde digital da Pfizer na Tata Consultancy Services</strong>, responsável por <strong>fluxos web complexos</strong>, do levantamento de requisitos e da prototipação até o <strong>handoff para engenharia e a validação funcional</strong>.\n\nTambém estou introduzindo <strong>práticas de pesquisa com usuários</strong> na equipe, incluindo o <strong>primeiro teste de usabilidade</strong>, além de usar <strong>Figma Make e Rovo</strong> para acelerar a exploração de design, a escrita e o pensamento estratégico.\n\nMe motiva resolver <strong>problemas reais de produto</strong>, tomar decisões bem fundamentadas e construir soluções <strong>claras, usáveis e sustentáveis ao longo do tempo</strong>.',
       education: {
         title: 'Formação profissional',
         item1:
-          'Pós-graduação <strong>User Experience and Beyond</strong>. PUCRS — <em>Cursando</em>',
+          'Pós-graduação <strong>User Experience and Beyond</strong>. PUCRS — <em>Fev 2026 – previsão Fev 2027</em>',
         item2:
           '<strong>Google UX Design Professional Certificate</strong>. Google — Coursera',
-        item3: '<strong>Bacharel em Direito</strong>. Faculdade Pitágoras',
+        item3:
+          '<strong>Bacharel em Direito</strong>. Faculdade Pitágoras — Paraná, Brasil, 2015–2019',
       },
       courses: {
         title: 'Cursos complementares',
