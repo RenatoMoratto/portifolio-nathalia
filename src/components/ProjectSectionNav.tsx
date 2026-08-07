@@ -1,25 +1,19 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { cn } from '../utils/cn';
 import { LaneToggle, type LaneType } from './LaneToggle';
 import { useActiveSection } from '../hooks/useActiveSection';
+import { slugifyHeading } from '../utils/slug';
 import type { ProjectSection } from '../content';
 
-function slugifyHeading(heading: string): string {
-  return heading
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9-]/g, '');
-}
-
 interface ProjectSectionNavProps {
+  /** Already filtered to sections that have content. */
   sections: ProjectSection[];
   lane: LaneType;
   onLaneChange: (lane: LaneType) => void;
   className?: string;
 }
-
-import { useTranslation } from 'react-i18next';
 
 export function ProjectSectionNav({
   sections,
@@ -28,8 +22,11 @@ export function ProjectSectionNav({
   className,
 }: ProjectSectionNavProps) {
   const { t } = useTranslation();
-  const validSections = sections.filter((s) => s.content && s.content.length > 0);
-  const sectionIds = validSections.map((s) => slugifyHeading(s.heading));
+  const validSections = sections;
+  const sectionIds = useMemo(
+    () => validSections.map((s) => slugifyHeading(s.heading)),
+    [validSections],
+  );
   const activeId = useActiveSection(sectionIds);
 
   const scrollToSection = useCallback((id: string) => {

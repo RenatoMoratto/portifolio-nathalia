@@ -1,8 +1,10 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { useProjects, type ProjectSection } from '../content';
+import { useTranslation } from 'react-i18next';
+import { getValidSections, useProject } from '../content';
 import {
+  LaneContent,
   ProjectMetadataDashboard,
   ProjectSectionNav,
   type LaneType,
@@ -12,87 +14,31 @@ import { cn } from '../utils/cn';
 import { getProjectSharedLayoutIds } from '../utils/projectMotion';
 import { premiumEasing } from '../utils/animations';
 
-function slugifyHeading(heading: string): string {
-  return heading
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9-]/g, '');
-}
-
-function ProjectSectionBlock({ section }: { section: ProjectSection }) {
-  const id = slugifyHeading(section.heading);
-  return (
-    <section id={id} className="mb-16 scroll-mt-24">
-      <h2 className="heading-3 text-slate-900 dark:text-white mb-4">{section.heading}</h2>
-      <div className="space-y-4">
-        {section.content.map((paragraph, idx) => (
-          <p
-            key={idx}
-            className="text-slate-600 dark:text-slate-400 leading-relaxed text-lg"
-          >
-            {paragraph}
-          </p>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function LaneContent({
-  sections,
-  laneType,
-}: {
-  sections: ProjectSection[];
-  laneType: LaneType;
-}) {
-  const validSections = sections.filter(
-    (section) => section.content && section.content.length > 0,
-  );
-
-  if (validSections.length === 0) {
-    return (
-      <div className="text-center py-12 text-slate-500 dark:text-slate-400">
-        No content available for this lane.
-      </div>
-    );
-  }
-
-  return (
-    <motion.div
-      key={laneType}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
-    >
-      {validSections.map((section, idx) => (
-        <ProjectSectionBlock key={`${laneType}-${idx}`} section={section} />
-      ))}
-    </motion.div>
-  );
-}
-
 export function ProjectPage() {
+  const { t } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
-  const projects = useProjects();
-  const project = projects.find((p) => p.slug === slug);
+  const project = useProject(slug);
   const [lane, setLane] = useState<LaneType>('fast');
   const [ref, isVisible] = useScrollAnimation<HTMLDivElement>();
   const scrollToSectionRef = useRef<string | null>(null);
   const shouldReduceMotion = useReducedMotion();
 
-  const currentSections =
-    project === undefined
-      ? undefined
-      : lane === 'fast'
-        ? project.fastLane
-        : project.slowLane;
+  // Memoized so the section list keeps a stable identity across renders -
+  // `ProjectSectionNav` derives its observer keys from it.
+  const currentSections = useMemo(
+    () =>
+      getValidSections((lane === 'fast' ? project?.fastLane : project?.slowLane) ?? []),
+    [project, lane],
+  );
 
+  /**
+   * Remember which section is currently in view so the same one can be restored
+   * after the lane swaps out the entire section list.
+   */
   const handleLaneChange = (newLane: LaneType) => {
     const sections = document.querySelectorAll<HTMLElement>('section[id]');
     const stickyBottom = 100;
-    for (let i = 0; i < sections.length; i++) {
-      const el = sections[i];
+    for (const el of sections) {
       const rect = el.getBoundingClientRect();
       if (rect.top < window.innerHeight - 80 && rect.bottom > stickyBottom) {
         scrollToSectionRef.current = el.id;
@@ -106,24 +52,30 @@ export function ProjectPage() {
     const targetId = scrollToSectionRef.current;
     if (!targetId) return;
     scrollToSectionRef.current = null;
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        const el = document.getElementById(targetId);
-        if (el) {
-          el.scrollIntoView({ block: 'start', behavior: 'smooth' });
-        }
+
+    // Two frames: one for React to commit the new lane, one for layout to settle.
+    let inner = 0;
+    const outer = requestAnimationFrame(() => {
+      inner = requestAnimationFrame(() => {
+        document
+          .getElementById(targetId)
+          ?.scrollIntoView({ block: 'start', behavior: 'smooth' });
       });
     });
-  }, [lane, currentSections]);
+    return () => {
+      cancelAnimationFrame(outer);
+      cancelAnimationFrame(inner);
+    };
+  }, [lane]);
 
   if (!project) {
     return (
       <div className="pt-24 pb-20 max-w-4xl mx-auto px-3 sm:px-4 lg:px-6 text-center">
         <h1 className="heading-2 text-slate-900 dark:text-white mb-4">
-          Project not found
+          {t('projects.notFound.title')}
         </h1>
         <p className="text-slate-600 dark:text-slate-400 mb-8">
-          The project you&apos;re looking for doesn&apos;t exist.
+          {t('projects.notFound.message')}
         </p>
       </div>
     );
@@ -135,28 +87,26 @@ export function ProjectPage() {
   });
 
   return (
-    <motion.main
+    <motion.div
       className="bg-slate-50/50 dark:bg-dark-surface pt-24 pb-20 px-3 sm:px-4 lg:px-6"
       initial={shouldReduceMotion ? false : { opacity: 0 }}
       animate={shouldReduceMotion ? undefined : { opacity: 1 }}
       exit={shouldReduceMotion ? undefined : { opacity: 0 }}
-      transition={{
-        duration: 0.25,
-        ease: [0.22, 1, 0.36, 1], // premium, easeOutExpo-ish
-      }}
+      transition={{ duration: 0.25, ease: premiumEasing }}
     >
       <div ref={ref} className="max-w-6xl mx-auto">
-        {/* 1 & 2. Project title + Cover image (title overlays darkened cover) */}
+        {/* Project title overlaying the darkened cover */}
         <motion.div
           layoutId={imageLayoutId}
-          transition={{
-            layout: { duration: 0.6, ease: premiumEasing },
-          }}
+          transition={{ layout: { duration: 0.6, ease: premiumEasing } }}
           className="relative aspect-video rounded-xl overflow-hidden mb-6 bg-slate-900"
         >
           <img
             src={project.coverImage}
             alt=""
+            width={1024}
+            height={768}
+            decoding="async"
             className="absolute inset-0 w-full h-full object-cover opacity-70"
           />
 
@@ -165,9 +115,7 @@ export function ProjectPage() {
           <div className="absolute inset-x-0 bottom-0 px-6 py-5 sm:px-8 sm:py-6 bg-linear-to-t from-black/70 via-black/35 to-transparent backdrop-blur-[2px]">
             <motion.h1
               layoutId={titleLayoutId}
-              transition={{
-                layout: { duration: 0.45, ease: premiumEasing },
-              }}
+              transition={{ layout: { duration: 0.45, ease: premiumEasing } }}
               className="heading-1 text-white"
             >
               {project.title}
@@ -175,24 +123,19 @@ export function ProjectPage() {
           </div>
         </motion.div>
 
-        {/* 3. Project metadata dashboard */}
         <ProjectMetadataDashboard project={project} />
 
-        {/* 4 & 5. Section navigation + lane toggle | Project content */}
+        {/* Section navigation + lane toggle | project content */}
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-[minmax(0,220px)_1fr] gap-8 lg:gap-12">
-          {/* Left: section nav with lane toggle at top */}
-          <aside
-            className="lg:sticky lg:top-24 lg:self-start"
-            aria-label="Project navigation"
-          >
+          {/* The nested <nav> carries its own accessible name. */}
+          <aside className="lg:sticky lg:top-24 lg:self-start">
             <ProjectSectionNav
-              sections={currentSections ?? []}
+              sections={currentSections}
               lane={lane}
               onLaneChange={handleLaneChange}
             />
           </aside>
 
-          {/* Right: main content - reduced lateral padding */}
           <div
             className={cn(
               'min-w-0',
@@ -202,11 +145,11 @@ export function ProjectPage() {
             )}
           >
             <AnimatePresence mode="wait">
-              <LaneContent sections={currentSections ?? []} laneType={lane} />
+              <LaneContent key={lane} sections={currentSections} />
             </AnimatePresence>
           </div>
         </div>
       </div>
-    </motion.main>
+    </motion.div>
   );
 }
