@@ -1,4 +1,5 @@
 import type { HowIWorkStep } from '../../content';
+import { RichText } from '../RichText';
 import { cn } from '../../utils/cn';
 
 interface HowIWorkStepFrontProps {
@@ -43,9 +44,7 @@ export function HowIWorkStepFront({ step, index }: HowIWorkStepFrontProps) {
         </h3>
 
         <p className="text-base text-slate-600 dark:text-slate-400 leading-relaxed min-h-18">
-          <span
-            dangerouslySetInnerHTML={{ __html: step.description }}
-          />
+          <RichText text={step.description} />
         </p>
       </div>
 

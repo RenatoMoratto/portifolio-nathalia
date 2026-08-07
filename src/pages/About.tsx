@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { SectionHeading, Card, ScrollReveal, ListBullet } from '../components';
+import { SectionHeading, Card, ScrollReveal, ListBullet, RichText } from '../components';
 import { useScrollAnimation } from '../hooks';
 import { getStaggerDelay } from '../utils/animations';
 import { Experience } from '../sections';
@@ -42,6 +42,9 @@ export function About() {
                 <img
                   src={aboutImage}
                   alt={t('about.imageAlt')}
+                  width={900}
+                  height={1076}
+                  decoding="async"
                   className="w-full h-full object-cover rounded-2xl shadow-xl ring-1 ring-slate-200/50 dark:ring-slate-700/50"
                 />
                 {/* Subtle gradient overlay on image */}
@@ -53,12 +56,14 @@ export function About() {
           {/* Text Side */}
           <ScrollReveal className="text-center lg:text-left" delay={250}>
             <div className="max-w-xl mx-auto lg:mx-0">
-              <div
-                className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed space-y-4"
-                dangerouslySetInnerHTML={{
-                  __html: t('about.mainText').replace(/\n\n/g, '</p><p class="mt-4">'),
-                }}
-              />
+              {/*
+                Was built by string-replacing "\n\n" with "</p><p>", which never
+                emitted an opening tag for the first block or a closing tag for
+                the last. RichText splits into real elements instead.
+              */}
+              <div className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed space-y-4">
+                <RichText text={t('about.mainText')} as="paragraphs" />
+              </div>
             </div>
           </ScrollReveal>
         </div>
@@ -85,10 +90,9 @@ export function About() {
                     isVisible={eduVisible}
                     delay={getStaggerDelay(idx, 100)}
                   />
-                  <span
-                    dangerouslySetInnerHTML={{ __html: t(`about.education.${item}`) }}
-                    className="text-lg text-slate-700 dark:text-slate-300 leading-relaxed"
-                  />
+                  <span className="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">
+                    <RichText text={t(`about.education.${item}`)} />
+                  </span>
                 </li>
               ))}
             </ul>
@@ -109,10 +113,9 @@ export function About() {
                     isVisible={eduVisible}
                     delay={getStaggerDelay(idx, 400)}
                   />
-                  <span
-                    dangerouslySetInnerHTML={{ __html: t(`about.courses.${item}`) }}
-                    className="text-lg text-slate-700 dark:text-slate-300 leading-relaxed"
-                  />
+                  <span className="text-lg text-slate-700 dark:text-slate-300 leading-relaxed">
+                    <RichText text={t(`about.courses.${item}`)} />
+                  </span>
                 </li>
               ))}
             </ul>
@@ -126,8 +129,8 @@ export function About() {
           {t('about.beyondWork.title')}
         </h2>
         <Card className="p-8">
-          <div className="prose prose-lg dark:prose-invert max-w-none text-slate-600 dark:text-slate-300 leading-relaxed">
-            <p dangerouslySetInnerHTML={{ __html: t('about.beyondWork.text') }} />
+          <div className="prose prose-lg dark:prose-invert max-w-none text-slate-600 dark:text-slate-300 leading-relaxed space-y-4">
+            <RichText text={t('about.beyondWork.text')} as="paragraphs" />
           </div>
         </Card>
       </ScrollReveal>

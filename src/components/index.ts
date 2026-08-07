@@ -10,4 +10,5 @@ export { ProjectSectionNav } from './ProjectSectionNav';
 export { ScrollReveal } from './ScrollReveal';
 export { ListBullet } from './ListBullet';
 export { FormField } from './FormField';
+export { RichText } from './RichText';
 export type { LaneType } from './LaneToggle';
