@@ -38,19 +38,17 @@ jobs:
 
       - name: Build
         env:
-          # The path GitHub itself serves the site from - `/portifolio-nathalia`
-          # today, `/` once a custom domain is configured in the Pages settings.
-          # Taking it from the API rather than hardcoding it means neither a repo
-          # rename nor a custom domain needs a change here.
-          VITE_BASE_PATH: ${{ steps.pages.outputs.base_path || format('/{0}/', github.event.repository.name) }}
-          # No fallback values: the build deliberately fails when these are
-          # missing, which is better than publishing a dead contact form.
+          # configure-pages returns "/repo-name" for a project Pages URL,
+          # and an empty string when the site is served from the root
+          # of a custom domain.
+          VITE_BASE_PATH: ${{ steps.pages.outputs.base_path || '/' }}
+
           VITE_EMAILJS_SERVICE_ID: ${{ secrets.VITE_EMAILJS_SERVICE_ID }}
           VITE_EMAILJS_TEMPLATE_ID: ${{ secrets.VITE_EMAILJS_TEMPLATE_ID }}
           VITE_EMAILJS_PUBLIC_KEY: ${{ secrets.VITE_EMAILJS_PUBLIC_KEY }}
         run: npm run build
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: dist
 

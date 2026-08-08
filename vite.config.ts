@@ -18,24 +18,6 @@ const REQUIRED_BUILD_ENV = [
 ];
 
 /**
- * Public path used by local production builds (`npm run build`, `npm run
- * preview`).
- *
- * GitHub Pages serves a project site from `/<repository>/`, so every asset and
- * router URL needs that prefix. The deploy workflow overrides it with the path
- * GitHub reports for the Pages site itself, which means pointing a custom
- * domain at the site changes the deployed base with no code change; only this
- * local default has to follow, becoming `/`.
- */
-const DEFAULT_BASE_PATH = '/portifolio-nathalia/';
-
-/** Vite expects a base with both a leading and a trailing slash. */
-function normalizeBasePath(value: string): string {
-  const withLeadingSlash = value.startsWith('/') ? value : `/${value}`;
-  return withLeadingSlash.endsWith('/') ? withLeadingSlash : `${withLeadingSlash}/`;
-}
-
-/**
  * Copies the built `index.html` to `404.html`.
  *
  * GitHub Pages has no SPA rewrite rule: a request for `/about` matches no file
@@ -60,7 +42,7 @@ function spaFallback(): Plugin {
 }
 
 // https://vite.dev/config/
-export default defineConfig(({ command, mode, isPreview }) => {
+export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), 'VITE_');
 
   if (command === 'build') {
@@ -80,10 +62,7 @@ export default defineConfig(({ command, mode, isPreview }) => {
      * preview` takes the deployed path so the built output is exercised the way
      * Pages will actually serve it.
      */
-    base:
-      command === 'build' || isPreview
-        ? normalizeBasePath(env.VITE_BASE_PATH || DEFAULT_BASE_PATH)
-        : '/',
+    base: '/',
     plugins: [react(), spaFallback()],
     build: {
       rollupOptions: {
