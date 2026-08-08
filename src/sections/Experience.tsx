@@ -267,7 +267,10 @@ export function Experience() {
                   }}
                   className={cn(
                     'shrink-0 transition-[width] duration-500 ease-out relative',
-                    isExpanded ? 'w-[520px]' : 'w-(--rail-card)',
+                    // Capped at the rail so an expanded card never grows past
+                    // the visible area - on a phone a flat 520px left both
+                    // edges cut off once `centerCard` centred it.
+                    isExpanded ? 'w-[min(520px,var(--rail-width))]' : 'w-(--rail-card)',
                   )}
                 >
                   {/* Timeline node + date */}
@@ -302,7 +305,7 @@ export function Experience() {
                         : 'bg-white/70 dark:bg-white/10 hover:bg-white',
                     )}
                   >
-                    <Card className="p-6 border-0 bg-transparent shadow-none">
+                    <Card className="p-5 sm:p-6 border-0 bg-transparent shadow-none">
                       <h3 className="text-xl font-bold text-slate-900 dark:text-white">
                         {exp.role}
                       </h3>

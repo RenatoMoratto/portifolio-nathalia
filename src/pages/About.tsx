@@ -36,9 +36,14 @@ export function About() {
               />
             </div>
 
-            {/* Framed image */}
-            <div className="relative z-10">
-              <div className="relative w-100 h-100 sm:w-110 sm:h-110">
+            {/*
+              Fluid square capped at the desktop size. A fixed `w-100`
+              (400px) is wider than a phone viewport minus the page gutter,
+              which pushed the whole document past 100vw and clipped every
+              other section's text.
+            */}
+            <div className="relative z-10 w-full max-w-100 sm:max-w-110">
+              <div className="relative aspect-square">
                 <img
                   src={aboutImage}
                   alt={t('about.imageAlt')}
@@ -128,7 +133,7 @@ export function About() {
         <h2 className="heading-2 mb-8 text-slate-900 dark:text-white">
           {t('about.beyondWork.title')}
         </h2>
-        <Card className="p-8">
+        <Card className="p-6 sm:p-8">
           <div className="prose prose-lg dark:prose-invert max-w-none text-slate-600 dark:text-slate-300 leading-relaxed space-y-4">
             <RichText text={t('about.beyondWork.text')} as="paragraphs" />
           </div>
