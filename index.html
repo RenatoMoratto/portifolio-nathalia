@@ -64,6 +64,32 @@
     <meta name="twitter:image" content="%BASE_URL%og-image.jpg" />
 
     <title>Nathália Moratto Caldeira | Product Designer</title>
+
+    <!--
+      Applies the boot theme during HTML parse. ThemeProvider only adds the
+      class from an effect, i.e. after React mounts, so without this the page
+      paints light and then flips - very visible now that dark is the default.
+
+      Mirrors ThemeProvider in src/providers/theme-provider.tsx: an explicit
+      stored choice first, then the device preference, dark as the fallback.
+      Keep the storage key in sync with STORAGE_KEY there.
+    -->
+    <script>
+      (function () {
+        var stored;
+        try {
+          stored = localStorage.getItem('theme-preference');
+        } catch (e) {
+          // Blocked storage - fall through to the media query.
+        }
+        var light =
+          stored === 'light' ||
+          (stored !== 'dark' &&
+            !!window.matchMedia &&
+            window.matchMedia('(prefers-color-scheme: light)').matches);
+        document.documentElement.classList.toggle('dark', !light);
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
