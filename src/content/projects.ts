@@ -2,7 +2,7 @@ import type { ProjectEntry } from './types';
 import coverRegistroClasses from '../assets/images/registro-classes.jpg';
 // NOTE: this project has no dedicated cover art yet and intentionally reuses the
 // image above. Replace with its own asset when one is available.
-import coverAppRastreioVeicular from '../assets/images/registro-classes.jpg';
+import coverAppRastreioVeicular from '../assets/images/app-rastreio-veicular.png';
 
 /**
  * Project content.
