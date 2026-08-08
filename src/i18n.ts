@@ -2,12 +2,13 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { en } from './locales/en';
 import { pt } from './locales/pt';
+import { detectLanguage } from './content/types';
 i18n.use(initReactI18next).init({
   resources: {
     en,
     pt,
   },
-  lng: 'pt', // Default language
+  lng: detectLanguage(), // Browser preference, falling back to English
   fallbackLng: 'en',
   interpolation: {
     escapeValue: false,

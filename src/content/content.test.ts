@@ -1,5 +1,5 @@
-import { describe, expect, it } from 'vitest';
-import { LANGUAGES, normalizeLanguage } from './types';
+import { describe, expect, it, vi } from 'vitest';
+import { detectLanguage, LANGUAGES, normalizeLanguage } from './types';
 import { PROJECTS } from './projects';
 import { EXPERIENCES } from './experience';
 import { HOW_I_WORK_STEPS } from './howIWork';
@@ -18,10 +18,43 @@ describe('normalizeLanguage', () => {
     expect(normalizeLanguage('en-US')).toBe('en');
   });
 
-  it('falls back to the default for unknown or missing values', () => {
-    expect(normalizeLanguage('fr')).toBe('pt');
-    expect(normalizeLanguage(undefined)).toBe('pt');
-    expect(normalizeLanguage('')).toBe('pt');
+  it('falls back to English for unknown or missing values', () => {
+    expect(normalizeLanguage('fr')).toBe('en');
+    expect(normalizeLanguage(undefined)).toBe('en');
+    expect(normalizeLanguage('')).toBe('en');
+  });
+});
+
+describe('detectLanguage', () => {
+  it('honours the visitor first preference', () => {
+    expect(detectLanguage(['pt-BR', 'en-US'])).toBe('pt');
+    expect(detectLanguage(['en-US', 'pt-BR'])).toBe('en');
+  });
+
+  it('skips unsupported languages instead of giving up on the list', () => {
+    // A browser set to `['fr', 'pt-BR']` should still read Portuguese.
+    expect(detectLanguage(['fr', 'es', 'pt-BR'])).toBe('pt');
+  });
+
+  it('ignores tag casing', () => {
+    expect(detectLanguage(['PT-br'])).toBe('pt');
+  });
+
+  it('falls back to English when nothing matches', () => {
+    expect(detectLanguage(['fr', 'de'])).toBe('en');
+    expect(detectLanguage([])).toBe('en');
+  });
+
+  it('reads navigator.languages when no list is passed', () => {
+    const languages = vi.spyOn(navigator, 'languages', 'get');
+
+    languages.mockReturnValue(['pt-BR', 'en-US']);
+    expect(detectLanguage()).toBe('pt');
+
+    languages.mockReturnValue(['en-GB']);
+    expect(detectLanguage()).toBe('en');
+
+    languages.mockRestore();
   });
 });
 

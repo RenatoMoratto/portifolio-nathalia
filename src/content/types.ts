@@ -16,15 +16,37 @@
 export const LANGUAGES = ['pt', 'en'] as const;
 export type Language = (typeof LANGUAGES)[number];
 
-export const DEFAULT_LANGUAGE: Language = 'pt';
+export const DEFAULT_LANGUAGE: Language = 'en';
 
 /**
  * Map an i18next language tag onto a supported language.
  * Handles regional tags (`pt-BR`, `en-US`) and unknown values.
  */
 export function normalizeLanguage(language: string | undefined): Language {
-  const base = language?.split('-')[0];
+  const base = language?.split('-')[0]?.toLowerCase();
   return LANGUAGES.includes(base as Language) ? (base as Language) : DEFAULT_LANGUAGE;
+}
+
+/**
+ * Pick the language the app boots in from the visitor's browser preferences.
+ *
+ * `navigator.languages` is ordered by preference, so the first entry that maps
+ * onto a supported language wins - a visitor with `['fr', 'pt-BR', 'en']` gets
+ * Portuguese, not English. Anything unsupported falls through to
+ * `DEFAULT_LANGUAGE`. The argument exists so tests can supply their own list.
+ */
+export function detectLanguage(
+  preferred: readonly string[] = typeof navigator === 'undefined'
+    ? []
+    : (navigator.languages ?? [navigator.language]),
+): Language {
+  for (const tag of preferred) {
+    const base = tag?.split('-')[0]?.toLowerCase();
+    if (LANGUAGES.includes(base as Language)) {
+      return base as Language;
+    }
+  }
+  return DEFAULT_LANGUAGE;
 }
 
 /** One heading plus its paragraphs. */
