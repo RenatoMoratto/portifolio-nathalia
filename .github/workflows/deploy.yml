@@ -8,9 +8,6 @@ on:
 # Scoped per job rather than here: only the deploy job needs to write.
 permissions: {}
 
-# One deployment at a time. Runs queued behind the one in flight are superseded
-# by the newest commit, but the in-flight run is left to finish - cancelling it
-# mid-upload would publish a partial site.
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -38,9 +35,6 @@ jobs:
 
       - name: Build
         env:
-          # configure-pages returns "/repo-name" for a project Pages URL,
-          # and an empty string when the site is served from the root
-          # of a custom domain.
           VITE_BASE_PATH: ${{ steps.pages.outputs.base_path || '/' }}
 
           VITE_EMAILJS_SERVICE_ID: ${{ secrets.VITE_EMAILJS_SERVICE_ID }}

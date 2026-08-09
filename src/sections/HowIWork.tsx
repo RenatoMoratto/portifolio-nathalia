@@ -23,7 +23,6 @@ export function HowIWork() {
         </ScrollReveal>
 
         <div ref={ref} className="max-w-4xl mx-auto relative">
-          {/* Timeline central line */}
           <div
             className={cn(
               'absolute left-1/2 top-0 bottom-0 w-px -translate-x-1/2',
@@ -33,7 +32,6 @@ export function HowIWork() {
             )}
           />
 
-          {/* Mobile line - left aligned */}
           <div
             className={cn(
               'absolute left-4 top-0 bottom-0 w-px',
@@ -54,16 +52,13 @@ export function HowIWork() {
                     'relative flex items-center md:items-start gap-4 md:gap-0',
                     'transition-all duration-700 ease-out-quart',
                     isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12',
-                    // Mobile: always left-aligned with padding for line
                     'pl-12 md:pl-0',
-                    // Desktop: alternate sides
                     isEven ? 'md:flex-row' : 'md:flex-row-reverse',
                   )}
                   style={{
                     transitionDelay: isVisible ? `${getStaggerDelay(index)}ms` : '0ms',
                   }}
                 >
-                  {/* Timeline node - center dot */}
                   <div
                     className={cn(
                       'absolute md:left-1/2 md:-translate-x-1/2',
@@ -72,16 +67,14 @@ export function HowIWork() {
                       'bg-primary-500 dark:bg-primary-400',
                       'ring-4 ring-slate-50 dark:ring-dark-surface',
                       'shadow-sm z-20',
-                      'top-8 md:top-1/2 md:-mt-2', // Adjust based on card height? Actually top-8 aligns with card top roughly
+                      'top-8 md:top-1/2 md:-mt-2',
                     )}
                   />
 
-                  {/* Card Container */}
                   <div className="w-full md:w-[calc(50%-3rem)]">
                     <HowIWorkStepCard step={step} index={index} />
                   </div>
 
-                  {/* Spacer for the other side (desktop only) */}
                   <div className="hidden md:block md:w-[calc(50%-3rem)]" />
                 </li>
               );

@@ -9,9 +9,7 @@ export function ResumeButton({ className }: ResumeButtonProps) {
   const { t, i18n } = useTranslation();
 
   const handleResumeClick = () => {
-    // Determine which file to open based on current language. The files live in
-    // `public/`, and `window.open` takes a real browser URL rather than a router
-    // path, so it needs Vite's base prefix to resolve under a subdirectory.
+    // Include Vite's base for subdirectory deployments.
     const resumeFile = i18n.language === 'pt' ? 'resume-pt.pdf' : 'resume-en.pdf';
     window.open(`${import.meta.env.BASE_URL}${resumeFile}`, '_blank');
   };

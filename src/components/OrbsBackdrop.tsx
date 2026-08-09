@@ -3,19 +3,13 @@ import { useReducedMotion } from 'framer-motion';
 import { useScrollAnimation } from '../hooks';
 import { cn } from '../utils/cn';
 
-/*
- * Loading this module pulls in three + @react-three/fiber + drei, which are the
- * single largest thing in the bundle and are used only by this decoration.
- * Lazy-loading keeps them off the critical path, so routes that never show the
- * hero (/about, /contact, /projects/*) do not download them at all.
- */
+// Keep the Three.js bundle off routes without the hero.
 const OrganicOrbs = lazy(() => import('./OrganicOrbs'));
 
 interface OrbsBackdropProps {
   className?: string;
 }
 
-/** Cheap CSS stand-in: the reduced-motion result and the loading placeholder. */
 function StaticOrbs({ className }: { className?: string }) {
   return (
     <div className={cn('absolute inset-0 overflow-hidden', className)} aria-hidden="true">
@@ -26,14 +20,7 @@ function StaticOrbs({ className }: { className?: string }) {
   );
 }
 
-/**
- * Decides *whether* the expensive 3D backdrop should exist at all, and keeps it
- * paused while off-screen.
- *
- * `useReducedMotion` subscribes to the media query, unlike the previous
- * one-shot `useMemo(() => matchMedia(...).matches)`, so toggling the OS setting
- * now takes effect without a reload.
- */
+/** Skips WebGL for reduced motion and pauses it off-screen. */
 export function OrbsBackdrop({ className }: OrbsBackdropProps) {
   const shouldReduceMotion = useReducedMotion();
   const [ref, isVisible] = useScrollAnimation<HTMLDivElement>({

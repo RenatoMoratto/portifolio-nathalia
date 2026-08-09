@@ -7,15 +7,13 @@ vi.mock('../services/contact', () => ({
   sendContactForm: (...args: unknown[]) => sendContactForm(...args),
 }));
 
-// i18n is not initialised in unit tests; echo the key back so assertions can
-// name the rule that fired.
+// Echo keys because i18n is not initialized in unit tests.
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
 const { useContactForm } = await import('./useContactForm');
 
-/** Attach a real form element so `handleSubmit` has something to send. */
 function mountForm(result: {
   current: { formRef: { current: HTMLFormElement | null } };
 }) {

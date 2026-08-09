@@ -1,28 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-/** Tailwind's `md` breakpoint - the width where the desktop nav takes over. */
+/** Matches Tailwind's `md` breakpoint. */
 const DESKTOP_QUERY = '(min-width: 768px)';
 
-/** Everything inside the panel a keyboard can land on. */
 const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled])';
 
-/**
- * Open/close state for the mobile navigation panel, plus the behaviour a panel
- * that covers the page owes the visitor.
- *
- * The panel is a disclosure, but once it dims and locks the page behind it, it
- * has to behave like a dialog: Escape closes it, the page underneath does not
- * scroll away beneath the visitor's thumb, and Tab cycles between the toggle
- * and the panel instead of walking into content hidden behind the scrim.
- *
- * `pathname` is passed in rather than read from the router so the hook stays
- * testable without a `Router` wrapper. Any change to it closes the panel, which
- * covers navigation the panel does not initiate itself - browser back, in
- * particular, used to leave the menu hanging open over the new page.
- *
- * Focus moves into the panel on open and returns to the toggle on close, so a
- * keyboard visitor is never dropped on `<body>` when the panel unmounts.
- */
+/** Provides dialog-like focus, keyboard, and scroll behavior for mobile navigation. */
 export function useMobileMenu(pathname: string) {
   const [isOpen, setIsOpen] = useState(false);
   const [lastPathname, setLastPathname] = useState(pathname);
@@ -42,15 +25,13 @@ export function useMobileMenu(pathname: string) {
     [],
   );
 
-  // Navigating anywhere puts the panel away. Adjusted during render rather than
-  // in an effect so the panel never paints once over the page it just left.
+  // Close before rendering a newly navigated route.
   if (pathname !== lastPathname) {
     setLastPathname(pathname);
     setIsOpen(false);
   }
 
-  // Resizing into the desktop layout hides the toggle. Without this the panel
-  // stays "open" and leaves the body scroll locked with no way to release it.
+  // Release the scroll lock when desktop navigation takes over.
   useEffect(() => {
     if (!isOpen) return;
     const query = window.matchMedia(DESKTOP_QUERY);
@@ -80,8 +61,7 @@ export function useMobileMenu(pathname: string) {
       }
       if (event.key !== 'Tab') return;
 
-      // The toggle leads the cycle: it is the visible "close", so a keyboard
-      // visitor must always be able to reach it without leaving the panel.
+      // Keep the visible close control in the focus cycle.
       const cycle = [triggerRef.current, ...getPanelFocusables()].filter(
         (element): element is HTMLElement => element !== null,
       );

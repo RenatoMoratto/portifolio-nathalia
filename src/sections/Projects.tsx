@@ -74,7 +74,6 @@ export function Projects() {
                         className="absolute inset-0 w-full h-full object-cover"
                       />
 
-                      {/* softer overlay than project page */}
                       <div className="absolute inset-0 bg-black/30" />
 
                       <div className="absolute inset-x-0 bottom-0 px-4 py-3 bg-linear-to-t from-black/60 via-black/20 to-transparent">

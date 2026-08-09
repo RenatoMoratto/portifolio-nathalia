@@ -23,18 +23,14 @@ export function ProjectPage() {
   const scrollToSectionRef = useRef<string | null>(null);
   const shouldReduceMotion = useReducedMotion();
 
-  // Memoized so the section list keeps a stable identity across renders -
-  // `ProjectSectionNav` derives its observer keys from it.
+  // Keep observer keys stable across renders.
   const currentSections = useMemo(
     () =>
       getValidSections((lane === 'fast' ? project?.fastLane : project?.slowLane) ?? []),
     [project, lane],
   );
 
-  /**
-   * Remember which section is currently in view so the same one can be restored
-   * after the lane swaps out the entire section list.
-   */
+  // Preserve the visible section when switching lanes.
   const handleLaneChange = (newLane: LaneType) => {
     const sections = document.querySelectorAll<HTMLElement>('section[id]');
     const stickyBottom = 100;
@@ -53,7 +49,7 @@ export function ProjectPage() {
     if (!targetId) return;
     scrollToSectionRef.current = null;
 
-    // Two frames: one for React to commit the new lane, one for layout to settle.
+    // Wait for the lane commit and layout before restoring scroll.
     let inner = 0;
     const outer = requestAnimationFrame(() => {
       inner = requestAnimationFrame(() => {
@@ -95,7 +91,6 @@ export function ProjectPage() {
       transition={{ duration: 0.25, ease: premiumEasing }}
     >
       <div ref={ref} className="max-w-6xl mx-auto">
-        {/* Project title overlaying the darkened cover */}
         <motion.div
           layoutId={imageLayoutId}
           transition={{ layout: { duration: 0.6, ease: premiumEasing } }}
@@ -125,9 +120,7 @@ export function ProjectPage() {
 
         <ProjectMetadataDashboard project={project} />
 
-        {/* Section navigation + lane toggle | project content */}
         <div className="mt-8 grid grid-cols-1 lg:grid-cols-[minmax(0,220px)_1fr] gap-8 lg:gap-12">
-          {/* The nested <nav> carries its own accessible name. */}
           <aside className="lg:sticky lg:top-24 lg:self-start">
             <ProjectSectionNav
               sections={currentSections}

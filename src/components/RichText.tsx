@@ -1,11 +1,9 @@
 import { Fragment } from 'react';
 import type { ReactNode } from 'react';
 
-/** Inline tags authors may use in content and translation strings. */
 const ALLOWED_TAGS = ['strong', 'em'] as const;
 type AllowedTag = (typeof ALLOWED_TAGS)[number];
 
-/** Built from the allowlist so the two can never drift apart. */
 const INLINE_TAG = new RegExp(`<(${ALLOWED_TAGS.join('|')})>([\\s\\S]*?)</\\1>`, 'g');
 
 interface RichTextProps {
@@ -13,19 +11,10 @@ interface RichTextProps {
   text: string;
   /** Render each `\n\n`-separated block as its own `<p>`. */
   as?: 'inline' | 'paragraphs';
-  /** Class applied to each paragraph when `as="paragraphs"`. */
   paragraphClassName?: string;
 }
 
-/**
- * Render a restricted subset of inline markup without `dangerouslySetInnerHTML`.
- *
- * Content is emitted as React text nodes; only the *tag name* comes from the
- * input, and only from a fixed allowlist. Anything else - including a `<script>`
- * or an `onerror` attribute - is rendered as literal text rather than parsed as
- * HTML, so this stays safe even if the strings later come from a CMS or
- * translation platform.
- */
+/** Parses allowlisted tags and renders everything else as text. */
 function renderInline(text: string): ReactNode[] {
   const nodes: ReactNode[] = [];
   let lastIndex = 0;

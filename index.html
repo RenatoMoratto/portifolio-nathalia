@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- `lang` is a sensible default; DocumentLanguage keeps it in sync at runtime. -->
+<!-- DocumentLanguage updates this default at runtime. -->
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,12 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#df5068" />
 
-    <!--
-      Fonts load here rather than via `@import` in index.css: an @import inside a
-      stylesheet is discovered only after that stylesheet is parsed, which
-      serializes the request behind the CSS. preconnect + link starts it during
-      HTML parse instead.
-    -->
+    <!-- Avoid delaying font discovery until CSS is parsed. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -39,14 +34,7 @@
     <meta property="og:site_name" content="Nathália Moratto Caldeira" />
     <meta property="og:locale" content="pt_BR" />
     <meta property="og:locale:alternate" content="en_US" />
-    <!--
-      `%BASE_URL%` is Vite's base path, so the image still resolves when the site
-      is served from a subdirectory. Vite rewrites asset attributes such as
-      `link[href]` on its own, but not `meta[content]`.
-
-      TODO: og:image should be an absolute URL (https://your-domain/og-image.jpg).
-      Several crawlers, LinkedIn included, will not resolve a relative path.
-    -->
+    <!-- TODO: Use an absolute social image URL once the production domain is known. -->
     <meta property="og:image" content="%BASE_URL%og-image.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -65,22 +53,14 @@
 
     <title>Nathália Moratto Caldeira | Product Designer</title>
 
-    <!--
-      Applies the boot theme during HTML parse. ThemeProvider only adds the
-      class from an effect, i.e. after React mounts, so without this the page
-      paints light and then flips - very visible now that dark is the default.
-
-      Mirrors ThemeProvider in src/providers/theme-provider.tsx: an explicit
-      stored choice first, then the device preference, dark as the fallback.
-      Keep the storage key in sync with STORAGE_KEY there.
-    -->
+    <!-- Set the theme before React mounts to avoid a flash. Keep in sync with ThemeProvider. -->
     <script>
       (function () {
         var stored;
         try {
           stored = localStorage.getItem('theme-preference');
         } catch (e) {
-          // Blocked storage - fall through to the media query.
+          // Use the device preference when storage is unavailable.
         }
         var light =
           stored === 'light' ||

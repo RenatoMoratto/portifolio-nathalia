@@ -10,11 +10,7 @@ export interface ThemeContextValue {
   isDark: boolean;
 }
 
-/**
- * Context and hook live in their own module, separate from the provider
- * component. Mixing a component and non-component exports in one file breaks
- * React Fast Refresh (`react-refresh/only-export-components`).
- */
+/** Kept separate from the provider for React Fast Refresh. */
 export const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
 export function useTheme(): ThemeContextValue {

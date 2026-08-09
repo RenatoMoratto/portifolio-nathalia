@@ -8,7 +8,7 @@ i18n.use(initReactI18next).init({
     en,
     pt,
   },
-  lng: detectLanguage(), // Browser preference, falling back to English
+  lng: detectLanguage(),
   fallbackLng: 'en',
   interpolation: {
     escapeValue: false,

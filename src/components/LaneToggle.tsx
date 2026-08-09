@@ -20,7 +20,6 @@ export function LaneToggle({ value, onChange, className }: LaneToggleProps) {
     onChange(newLane);
   };
 
-  // Announce state change to screen readers
   useEffect(() => {
     if (liveRef.current) {
       liveRef.current.textContent = t('projects.laneToggle.liveRegion', {
@@ -65,7 +64,6 @@ export function LaneToggle({ value, onChange, className }: LaneToggleProps) {
           'transition-all duration-300 ease-out',
         )}
       >
-        {/* Sliding track background for selected state */}
         <span
           className={cn(
             'absolute top-1 bottom-1 rounded-lg',
@@ -76,7 +74,6 @@ export function LaneToggle({ value, onChange, className }: LaneToggleProps) {
           )}
           aria-hidden
         />
-        {/* Labels */}
         <span
           className={cn(
             'relative z-10 flex-1 flex items-center justify-center text-sm font-medium transition-colors duration-200',
@@ -98,7 +95,6 @@ export function LaneToggle({ value, onChange, className }: LaneToggleProps) {
           {t('projects.laneToggle.slow')}
         </span>
       </button>
-      {/* Live region for state change announcements */}
       <span ref={liveRef} aria-live="polite" aria-atomic="true" className="sr-only" />
     </div>
   );

@@ -11,21 +11,16 @@ export function About() {
 
   return (
     <div className="pt-10 md:pt-16 pb-20 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      {/* Hero Section with Image */}
       <section className="mb-20 mx-auto">
-        {/* Centered Title */}
         <ScrollReveal className="mb-12 text-center" delay={0}>
           <SectionHeading title={t('about.title')} subtitle="" />
         </ScrollReveal>
 
-        {/* Split Layout: Image + Text */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Image Side */}
           <ScrollReveal
             className="relative flex justify-center lg:justify-end"
             delay={100}
           >
-            {/* Decorative gradient blob */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div
                 className="w-72 h-72 sm:w-80 sm:h-80 rounded-full opacity-20 blur-3xl"
@@ -36,12 +31,7 @@ export function About() {
               />
             </div>
 
-            {/*
-              Fluid square capped at the desktop size. A fixed `w-100`
-              (400px) is wider than a phone viewport minus the page gutter,
-              which pushed the whole document past 100vw and clipped every
-              other section's text.
-            */}
+            {/* Cap image width to prevent overflow on narrow screens. */}
             <div className="relative z-10 w-full max-w-100 sm:max-w-110">
               <div className="relative aspect-square">
                 <img
@@ -52,20 +42,13 @@ export function About() {
                   decoding="async"
                   className="w-full h-full object-cover rounded-2xl shadow-xl ring-1 ring-slate-200/50 dark:ring-slate-700/50"
                 />
-                {/* Subtle gradient overlay on image */}
                 <div className="absolute inset-0 rounded-2xl bg-linear-to-br from-primary-400/5 to-transparent pointer-events-none" />
               </div>
             </div>
           </ScrollReveal>
 
-          {/* Text Side */}
           <ScrollReveal className="text-center lg:text-left" delay={250}>
             <div className="max-w-xl mx-auto lg:mx-0">
-              {/*
-                Was built by string-replacing "\n\n" with "</p><p>", which never
-                emitted an opening tag for the first block or a closing tag for
-                the last. RichText splits into real elements instead.
-              */}
               <div className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed space-y-4">
                 <RichText text={t('about.mainText')} as="paragraphs" />
               </div>
@@ -76,7 +59,6 @@ export function About() {
 
       <Experience />
 
-      {/* Formation */}
       <section
         ref={eduRef}
         className="mb-20 grid grid-cols-2 max-md:grid-cols-1 gap-6 lg:gap-8 max-w-5xl mx-auto"
@@ -128,7 +110,6 @@ export function About() {
         </ScrollReveal>
       </section>
 
-      {/* Beyond Work */}
       <ScrollReveal as="section">
         <h2 className="heading-2 mb-8 text-slate-900 dark:text-white">
           {t('about.beyondWork.title')}

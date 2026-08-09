@@ -5,7 +5,6 @@ on:
     branches: [main]
   pull_request:
 
-# Cancel superseded runs on the same branch.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -37,9 +36,7 @@ jobs:
         run: npm test
 
       - name: Build
-        # The build fails fast if the EmailJS vars are missing, so they are
-        # supplied here. Real values live in repository secrets; these are only
-        # required to be non-empty for the build to typecheck and bundle.
+        # CI only needs non-empty values to validate the build.
         env:
           VITE_EMAILJS_SERVICE_ID: ${{ secrets.VITE_EMAILJS_SERVICE_ID || 'ci-placeholder' }}
           VITE_EMAILJS_TEMPLATE_ID: ${{ secrets.VITE_EMAILJS_TEMPLATE_ID || 'ci-placeholder' }}

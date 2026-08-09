@@ -9,7 +9,6 @@ import { useMobileMenu } from '../hooks';
 import { premiumEasing } from '../utils/animations';
 import { cn } from '../utils/cn';
 
-/** Ties the toggle's `aria-controls` to the panel it opens. */
 const MOBILE_MENU_ID = 'mobile-menu';
 
 export function Navbar() {
@@ -40,11 +39,7 @@ export function Navbar() {
 
   return (
     <>
-      {/*
-       * Scrim behind the whole bar rather than only below it: the bar and the
-       * panel are one translucent surface, so dimming the page under both keeps
-       * them reading as a single sheet.
-       */}
+      {/* Dim under the bar and panel so they read as one sheet. */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -72,7 +67,6 @@ export function Navbar() {
       >
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8">
               {links.map((link) => (
                 <Link
@@ -88,7 +82,6 @@ export function Navbar() {
                   )}
                 >
                   {link.label}
-                  {/* Active indicator */}
                   <span
                     className={cn(
                       'absolute -bottom-0.5 left-0 h-0.5 bg-primary-500 rounded-full',
@@ -115,7 +108,7 @@ export function Navbar() {
                 ref={triggerRef}
                 onClick={toggle}
                 className={cn(
-                  // 44px target: the icon alone is well under what a thumb needs.
+                  // Preserve a 44px touch target.
                   'flex h-11 w-11 -mr-2 items-center justify-center rounded-xl',
                   'text-slate-600 dark:text-slate-400',
                   'hover:text-slate-900 dark:hover:text-white',
@@ -134,7 +127,6 @@ export function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Menu */}
         <AnimatePresence initial={false}>
           {isOpen && (
             <motion.div
@@ -146,11 +138,9 @@ export function Navbar() {
               exit={{ height: 0, opacity: 0 }}
               transition={panelTransition}
             >
-              {/* Capped so a short landscape viewport scrolls the panel instead
-                  of pushing the last items off-screen. */}
+              {/* Keep the menu usable in short landscape viewports. */}
               <div className="max-h-[calc(100dvh-4rem)] overflow-y-auto max-w-6xl mx-auto px-4 sm:px-6 py-3">
-                {/* A list rather than a nested `nav`: the surrounding element is
-                    already the navigation landmark. */}
+                {/* Avoid nesting navigation landmarks. */}
                 <ul className="flex flex-col gap-1" aria-label={t('navbar.aria.menu')}>
                   {links.map((link, index) => {
                     const isActive = location.pathname === link.href;
@@ -194,11 +184,7 @@ export function Navbar() {
                   })}
                 </ul>
 
-                {/*
-                 * The CV used to be `hidden sm:block` in the bar, which left the
-                 * narrowest phones - most of the mobile traffic - with no way to
-                 * reach it at all.
-                 */}
+                {/* Keep resume access available on the narrowest screens. */}
                 <motion.div
                   className="mt-3 pt-3 border-t border-slate-200/70 dark:border-dark-border/70"
                   initial={{ opacity: 0, y: shouldReduceMotion ? 0 : -6 }}
@@ -222,11 +208,7 @@ export function Navbar() {
 
 const MENU_BAR = 'absolute left-0 h-0.5 w-5 rounded-full bg-current';
 
-/**
- * Three bars that fold into an X. The state change is the only feedback the
- * toggle gives on a device with no hover, so it is worth animating rather than
- * swapping one icon for another.
- */
+/** Morphs bars instead of swapping icons to preserve toggle feedback. */
 function MenuIcon({ isOpen }: { isOpen: boolean }) {
   const shouldReduceMotion = useReducedMotion();
   const transition = { duration: shouldReduceMotion ? 0 : 0.3, ease: premiumEasing };

@@ -9,13 +9,7 @@ interface LaneContentProps {
   sections: ProjectSection[];
 }
 
-/**
- * The body of one lane.
- *
- * Rendered as a keyed direct child of `AnimatePresence` so switching lanes
- * actually crossfades - previously the keyed element was nested one level too
- * deep and the exit animation never ran.
- */
+/** Must remain a keyed direct child of `AnimatePresence` for exit transitions. */
 export function LaneContent({ sections }: LaneContentProps) {
   const { t } = useTranslation();
 

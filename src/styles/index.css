@@ -23,7 +23,6 @@
 @theme {
   --font-family-sans: 'Inter', system-ui, sans-serif;
 
-  /* Feminine rose-based color palette */
   --color-primary-50: #fdf2f4;
   --color-primary-100: #fce7ea;
   --color-primary-200: #f9d0d7;
@@ -36,33 +35,28 @@
   --color-primary-900: #7a2039;
   --color-primary-950: #440d1b;
 
-  /* Rose accent tones */
   --color-accent-300: #e8b4b8;
   --color-accent-400: #d49499;
   --color-accent-500: #c07a80;
   --color-accent-600: #a65d64;
 
-  /* Warm taupe neutrals */
   --color-taupe-200: #d4ccc4;
   --color-taupe-300: #b8aca0;
   --color-taupe-400: #9a8a7a;
   --color-taupe-500: #7d6d5d;
 
-  /* Warm dark mode - elegant brown/charcoal, no pure black */
   --color-dark-bg: #1a1614;
   --color-dark-surface: #241f1c;
   --color-dark-surface-elevated: #2d2724;
   --color-dark-border: #3d3530;
   --color-dark-border-subtle: #322b27;
 
-  /* Refined light mode */
   --color-light-bg: #fdfbfa;
   --color-light-surface: #ffffff;
   --color-light-surface-elevated: #ffffff;
   --color-light-border: #e8e4e1;
   --color-light-border-subtle: #f5f2f0;
 
-  /* Motion tokens */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
@@ -71,7 +65,6 @@
   --duration-slow: 500ms;
   --duration-entrance: 700ms;
 
-  /* Refined animations */
   --animate-fade-in: fadeIn 0.6s var(--ease-out-expo) forwards;
   --animate-slide-up: slideUp 0.7s var(--ease-out-expo) forwards;
   --animate-fade-slide-up: fadeSlideUp 0.7s var(--ease-out-expo) forwards;
@@ -85,7 +78,6 @@
   --animate-blink: blink 1s step-end infinite;
 }
 
-/* Keyframes */
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -147,7 +139,6 @@
   }
 }
 
-/* Orb floating animations - organic, slow movement */
 @keyframes orbFloat1 {
   0%,
   100% {
@@ -217,7 +208,6 @@
   }
 }
 
-/* Base styles */
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
@@ -236,7 +226,6 @@ body {
   color: var(--color-primary-900);
 }
 
-/* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -248,7 +237,6 @@ body {
   }
 }
 
-/* Utility classes */
 @utility section-container {
   max-width: 72rem;
   margin-left: auto;
@@ -325,7 +313,6 @@ body {
   transform: translateY(-1px);
 }
 
-/* Animation delay utilities */
 @utility animate-delay-100 {
   animation-delay: 100ms;
 }
@@ -351,7 +338,6 @@ body {
   animation-delay: 800ms;
 }
 
-/* Stagger animation utility */
 .stagger-children > * {
   opacity: 0;
   animation: fadeSlideUp 0.6s var(--ease-out-expo) forwards;
@@ -382,7 +368,6 @@ body {
   animation-delay: 525ms;
 }
 
-/* Scrollbar utilities */
 @utility scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -396,7 +381,6 @@ body {
   display: none;
 }
 
-/* Responsive typography */
 @media (min-width: 768px) {
   .heading-1 {
     font-size: 3.25rem;
@@ -433,7 +417,6 @@ body {
   }
 }
 
-/* Dark mode refinements */
 .dark ::selection {
   background-color: var(--color-primary-900);
   color: var(--color-primary-100);
@@ -463,31 +446,16 @@ body {
   color: #64748b;
 }
 
-/* Focus visible for accessibility */
 :focus-visible {
   outline: 2px solid var(--color-primary-500);
   outline-offset: 2px;
 }
 
-/* Smooth link transitions */
 a {
   transition: color 0.2s var(--ease-out-quart);
 }
 
-/*
- * Horizontal experience rail.
- *
- * Card width is derived from the rail instead of being fixed so the rail always
- * ends mid-card: `--rail-cards` is fractional at every breakpoint, which leaves
- * part of the neighbouring card cut off at the edge as the cue that the
- * timeline scrolls. A whole number lines the outermost card up with the rail
- * edge - which is what a fixed 320px card did at `max-w-6xl` - and the timeline
- * reads as if it ended there.
- *
- * `--rail-width` mirrors the page shell: `max-w-6xl` capped by the viewport,
- * minus the one level of `px-4 sm:px-6 lg:px-8` padding that the rail's own
- * negative margins bleed back out. Keep the two in sync.
- */
+/* Fractional card counts reveal the next card; rail width mirrors page gutters. */
 .timeline-rail {
   --rail-width: calc(min(100vw, 72rem) - 2rem);
   --rail-cards: 1.15;
@@ -496,7 +464,7 @@ a {
   --rail-card: calc(var(--rail-width) / var(--rail-cards) - var(--rail-gap));
 
   gap: var(--rail-gap);
-  /* Half a rail minus half a card, so the first and last cards still centre. */
+  /* Center edge cards. */
   padding-inline: calc((var(--rail-width) - var(--rail-card)) / 2);
 }
 
@@ -516,13 +484,11 @@ a {
   }
 }
 
-/* Base: solid line */
 .timeline {
   mask-image: linear-gradient(to right, black, black);
   -webkit-mask-image: linear-gradient(to right, black, black);
 }
 
-/* Fade left */
 [data-start] .timeline {
   mask-image: linear-gradient(
     to right,
@@ -541,7 +507,6 @@ a {
   );
 }
 
-/* Fade right */
 [data-end] .timeline {
   mask-image: linear-gradient(
     to right,
@@ -560,7 +525,6 @@ a {
   );
 }
 
-/* Fade both */
 [data-start][data-end] .timeline {
   mask-image: linear-gradient(
     to right,

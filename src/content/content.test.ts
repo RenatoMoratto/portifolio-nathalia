@@ -13,7 +13,6 @@ describe('normalizeLanguage', () => {
   });
 
   it('maps regional tags onto their base language', () => {
-    // i18next may report `pt-BR`; the old `i18n.language === 'pt'` check missed this.
     expect(normalizeLanguage('pt-BR')).toBe('pt');
     expect(normalizeLanguage('en-US')).toBe('en');
   });
@@ -32,7 +31,6 @@ describe('detectLanguage', () => {
   });
 
   it('skips unsupported languages instead of giving up on the list', () => {
-    // A browser set to `['fr', 'pt-BR']` should still read Portuguese.
     expect(detectLanguage(['fr', 'es', 'pt-BR'])).toBe('pt');
   });
 
@@ -101,10 +99,7 @@ describe('project identity', () => {
     }
   });
 
-  /**
-   * Section ids must be unique *within a lane*, since only one lane is mounted
-   * at a time and duplicates would make `getElementById` ambiguous.
-   */
+  // IDs only need to be unique within the mounted lane.
   it.each(LANGUAGES)('generates unique section ids per lane in %s', (language) => {
     for (const project of PROJECTS) {
       for (const lane of ['fastLane', 'slowLane'] as const) {

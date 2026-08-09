@@ -1,9 +1,5 @@
 import type { HowIWorkStepEntry } from './types';
 
-/**
- * The practices that make up the design approach, rendered by the `HowIWork`
- * section as flip cards.
- */
 export const HOW_I_WORK_STEPS: HowIWorkStepEntry[] = [
   {
     id: 1,

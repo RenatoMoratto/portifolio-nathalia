@@ -5,12 +5,7 @@ interface ProjectSectionBlockProps {
   section: ProjectSection;
 }
 
-/**
- * One heading plus its paragraphs.
- *
- * The `id` is what `ProjectSectionNav` scrolls to and what `useActiveSection`
- * observes, so it must be derived with the shared `slugifyHeading`.
- */
+/** Shares slug generation with navigation and section observation. */
 export function ProjectSectionBlock({ section }: ProjectSectionBlockProps) {
   return (
     <section id={slugifyHeading(section.heading)} className="mb-16 scroll-mt-24">

@@ -15,13 +15,7 @@ export interface ContactFormValues {
 
 export type ContactFieldErrors = Partial<Record<keyof ContactFormValues, string>>;
 
-/**
- * Submission state as an explicit union.
- *
- * The previous `isSubmitting` / `isSubmitted` boolean pair allowed impossible
- * combinations (both true) and had no representation for "failed" at all -
- * failures went to `alert()`.
- */
+/** Prevents impossible combinations of submission flags. */
 export type ContactStatus =
   | { kind: 'idle' }
   | { kind: 'submitting' }
@@ -37,7 +31,6 @@ export function useContactForm() {
   const [errors, setErrors] = useState<ContactFieldErrors>({});
   const [status, setStatus] = useState<ContactStatus>({ kind: 'idle' });
 
-  // Auto-dismiss the success panel, but never outlive the component.
   useEffect(() => {
     if (status.kind !== 'success') return;
     const timeoutId = window.setTimeout(
@@ -49,7 +42,6 @@ export function useContactForm() {
 
   const setField = useCallback((field: keyof ContactFormValues, value: string) => {
     setValues((prev) => ({ ...prev, [field]: value }));
-    // Clear a field's error as soon as the user edits it.
     setErrors((prev) => (prev[field] ? { ...prev, [field]: undefined } : prev));
   }, []);
 
@@ -78,7 +70,7 @@ export function useContactForm() {
   const handleSubmit = useCallback(
     async (event: FormEvent) => {
       event.preventDefault();
-      if (status.kind === 'submitting') return; // guard against double submits
+      if (status.kind === 'submitting') return;
 
       const nextErrors = validate();
       setErrors(nextErrors);

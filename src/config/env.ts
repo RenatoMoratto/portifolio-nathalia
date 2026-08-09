@@ -1,17 +1,4 @@
-/**
- * Centralized, validated access to build-time configuration.
- *
- * Vite inlines `import.meta.env.VITE_*` at build time and substitutes
- * `undefined` for anything missing - with no warning. Reading those values
- * directly inside a component meant a build with no `.env` produced a bundle
- * containing `publicKey: void 0` and a contact form that failed on every
- * submission, surfacing only as a runtime alert.
- *
- * `vite.config.ts` now fails `vite build` outright when these are missing. This
- * module is the second line of defence: in dev, or if a host injects an empty
- * value, `emailConfig` is `null` and the UI degrades to an explicit
- * "unavailable" state instead of pretending to send.
- */
+/** Missing EmailJS credentials disable the form instead of failing at submission. */
 
 export interface EmailConfig {
   serviceId: string;
@@ -43,5 +30,4 @@ function readEmailConfig(): EmailConfig | null {
 
 export const emailConfig: EmailConfig | null = readEmailConfig();
 
-/** Whether the contact form can actually submit. */
 export const isContactFormEnabled = emailConfig !== null;

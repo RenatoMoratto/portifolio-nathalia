@@ -4,7 +4,6 @@ import { cn } from '../../utils/cn';
 
 interface HowIWorkStepBackProps {
   step: HowIWorkStep;
-  /** True while this face is rotated away from the viewer. */
   hidden: boolean;
 }
 
@@ -17,7 +16,7 @@ export function HowIWorkStepBack({ step, hidden }: HowIWorkStepBackProps) {
       inert={hidden}
       className={cn(
         'w-full h-full backface-hidden rotate-y-180',
-        'col-start-1 row-start-1', // Stack in grid
+        'col-start-1 row-start-1',
         'flex flex-col p-6 md:p-8',
         'bg-slate-900 dark:bg-primary-950',
         'border border-slate-800 dark:border-primary-900',

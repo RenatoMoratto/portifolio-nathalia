@@ -28,10 +28,6 @@ describe('RichText inline markup', () => {
   });
 });
 
-/**
- * The reason this component exists instead of `dangerouslySetInnerHTML`:
- * anything outside the allowlist must be inert text, not parsed markup.
- */
 describe('RichText does not execute untrusted markup', () => {
   it('does not create script elements', () => {
     const { container } = render(
@@ -53,8 +49,6 @@ describe('RichText does not execute untrusted markup', () => {
     const { container } = render(
       <RichText text={'<strong onclick="alert(1)">hi</strong>'} />,
     );
-    // The opening tag carries an attribute, so it is not an allowlist match at
-    // all and stays literal text.
     expect(container.querySelector('strong')).toBeNull();
     expect(container.textContent).toContain('onclick');
   });
@@ -72,8 +66,6 @@ describe('RichText paragraph mode', () => {
   });
 
   it('wraps the first and last block too', () => {
-    // The old string-replace emitted "</p><p>" between blocks only, leaving the
-    // first block outside any <p> and the last one unclosed.
     const { container } = render(<RichText text={'only block'} as="paragraphs" />);
     expect(container.querySelectorAll('p')).toHaveLength(1);
   });

@@ -65,7 +65,6 @@ export function ProjectSectionNav({
                       e.preventDefault();
                       scrollToSection(id);
                     }
-                    // Arrow key navigation
                     if (e.key === 'ArrowDown' && idx < validSections.length - 1) {
                       e.preventDefault();
                       document

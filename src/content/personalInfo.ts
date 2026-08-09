@@ -1,6 +1,3 @@
-/**
- * Site owner details. Not localized - these are the same in every language.
- */
 export const personalInfo = {
   name: 'Nathália Moratto Caldeira',
   email: 'nathaliascaldeira@gmail.com',

@@ -6,7 +6,6 @@ import { RichText } from '../RichText';
 interface HowIWorkStepFrontProps {
   step: HowIWorkStep;
   index: number;
-  /** True while this face is rotated away from the viewer. */
   hidden: boolean;
 }
 
@@ -19,7 +18,7 @@ export function HowIWorkStepFront({ step, index, hidden }: HowIWorkStepFrontProp
       inert={hidden}
       className={cn(
         'w-full h-full backface-hidden',
-        'col-start-1 row-start-1', // Stack in grid
+        'col-start-1 row-start-1',
         'flex flex-col p-6 md:p-8',
         'bg-white dark:bg-dark-surface-elevated',
         'border border-light-border dark:border-dark-border',
@@ -27,10 +26,8 @@ export function HowIWorkStepFront({ step, index, hidden }: HowIWorkStepFrontProp
         'justify-between',
       )}
     >
-      {/* Content */}
       <div className="space-y-3">
         <div className="flex items-center gap-4">
-          {/* Number */}
           <span
             className={cn(
               'flex items-center justify-center w-10 h-10 shrink-0',
@@ -52,7 +49,6 @@ export function HowIWorkStepFront({ step, index, hidden }: HowIWorkStepFrontProp
         </p>
       </div>
 
-      {/* Action hint */}
       <div className="border-t border-slate-100 dark:border-slate-800 flex items-center justify-end text-primary-600 dark:text-primary-400 opacity-80">
         <span className="sr-only hidden md:inline">{t('howIWork.card.revealHover')}</span>
         <span className="sr-only md:hidden">{t('howIWork.card.revealTap')}</span>

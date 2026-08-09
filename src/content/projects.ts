@@ -1,17 +1,8 @@
 import type { ProjectEntry } from './types';
 import coverRegistroClasses from '../assets/images/registro-classes.jpg';
-// NOTE: this project has no dedicated cover art yet and intentionally reuses the
-// image above. Replace with its own asset when one is available.
 import coverAppRastreioVeicular from '../assets/images/app-rastreio-veicular.png';
 
-/**
- * Project content.
- *
- * Identity fields (slug, coverImage, role, platform, designTools) are declared
- * once so they cannot drift between languages - a mismatched slug would make the
- * project URL resolve in one language and 404 in the other. Only prose lives
- * under `locales`.
- */
+/** Keeps project identity outside locales so URLs cannot drift by language. */
 export const PROJECTS: ProjectEntry[] = [
   {
     slug: 'registro-de-classes',

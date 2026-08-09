@@ -5,11 +5,6 @@ import i18n from '../i18n';
 import { ProjectPage } from './ProjectPage';
 import { PROJECTS } from '../content/projects';
 
-/**
- * End-to-end smoke cover for the content-layer migration: a project now has to
- * resolve from `src/content` through `useProject` and render, with no
- * `returnObjects` cast anywhere in the path.
- */
 function renderAt(path: string) {
   return render(
     <MemoryRouter initialEntries={[path]}>
@@ -55,7 +50,6 @@ describe('ProjectPage', () => {
     await i18n.changeLanguage('pt');
     renderAt('/projects/does-not-exist');
 
-    // Must be the translated copy, not a raw i18n key and not English.
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
       'Projeto não encontrado',
     );

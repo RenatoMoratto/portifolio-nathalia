@@ -7,11 +7,6 @@ interface SectionHeadingProps {
   align?: 'left' | 'center';
 }
 
-/**
- * Section heading component with title, optional subtitle, and decorative line
- *
- * Note: Animation is handled by parent via ScrollReveal wrapper
- */
 export function SectionHeading({
   title,
   subtitle,

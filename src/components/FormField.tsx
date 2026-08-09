@@ -5,42 +5,21 @@ type InputProps = InputHTMLAttributes<HTMLInputElement>;
 type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement>;
 
 interface BaseFormFieldProps {
-  /** Field label text */
   label: string;
-  /** Field name for form submission */
   name: string;
-  /** Optional error message to display */
   error?: string;
 }
 
 interface TextInputFieldProps extends BaseFormFieldProps, Omit<InputProps, 'name'> {
-  /** Input type - text or email */
   type?: 'text' | 'email';
 }
 
 interface TextareaFieldProps extends BaseFormFieldProps, Omit<TextareaProps, 'name'> {
-  /** Textarea type */
   type: 'textarea';
 }
 
 type FormFieldProps = TextInputFieldProps | TextareaFieldProps;
 
-/**
- * Standardized form field component with label, input/textarea, and error message
- *
- * Handles both text inputs and textareas with consistent styling and error states.
- * Uses the `input-field` utility class from index.css.
- *
- * @example
- * <FormField
- *   label="Name"
- *   name="name"
- *   type="text"
- *   value={formData.name}
- *   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
- *   error={errors.name}
- * />
- */
 export function FormField({
   label,
   name,

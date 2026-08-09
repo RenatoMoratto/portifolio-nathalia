@@ -2,15 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { en } from './en';
 import { pt } from './pt';
 
-/**
- * Locale drift is invisible at runtime - i18next silently renders the key
- * itself when a translation is missing. This suite turns that into a CI
- * failure.
- *
- * It also catches the shape mismatch that shipped before: `contact.form.name.error`
- * was a string while the code read `contact.form.name.error.required`, so the
- * name field displayed the raw key instead of a message.
- */
+/** Catches locale drift that i18next would otherwise render as raw keys. */
 function flatten(value: unknown, prefix = ''): string[] {
   if (value === null || typeof value !== 'object' || Array.isArray(value)) {
     return [prefix];
@@ -50,7 +42,6 @@ describe('locale parity', () => {
 describe('locale key shapes the code depends on', () => {
   it.each(['en', 'pt'])('%s exposes nested field error messages', (lang) => {
     const bundle = lang === 'en' ? en.translation : pt.translation;
-    // These are read as `t('contact.form.<field>.error.<kind>')`.
     expect(typeof bundle.contact.form.name.error.required).toBe('string');
     expect(typeof bundle.contact.form.email.error.required).toBe('string');
     expect(typeof bundle.contact.form.email.error.invalid).toBe('string');

@@ -7,27 +7,14 @@ import { cn } from '../utils/cn';
 import { formatPeriod } from '../utils/date';
 import { ChevronRight } from 'lucide-react';
 
-/**
- * How long a card takes to grow or shrink, and the curve it uses. The rail
- * scroll runs on the same pair so the card growing and the rail travelling read
- * as a single movement rather than two.
- *
- * Keep in sync with the `duration-500 ease-out-quart` on the card wrapper.
- */
+// Keep in sync with the card wrapper's width transition.
 const EXPAND_MS = 500;
-const EXPAND_EASE = cubicBezier(0.25, 1, 0.5, 1); // --ease-out-quart
+const EXPAND_EASE = cubicBezier(0.25, 1, 0.5, 1);
 
-/** Scroll offset that puts `card` in the middle of the rail, at its current size. */
 function centeredScrollLeft(rail: HTMLElement, card: HTMLElement) {
   return card.offsetLeft - rail.offsetWidth / 2 + card.offsetWidth / 2;
 }
 
-/**
- * The card is a `<button>`, whose text the UA stylesheets make unselectable -
- * `select-text` on the card opts back in. Selecting by dragging then still ends
- * in a click on mouseup, which would expand/collapse the card the reader was
- * mid-selection on, so those clicks are ignored.
- */
 function hasSelectionInside(card: HTMLElement) {
   const selection = window.getSelection();
   if (!selection || selection.isCollapsed) return false;
@@ -41,20 +28,7 @@ interface ExperienceDetailsProps {
   children: React.ReactNode;
 }
 
-/**
- * The disclosure panel, height-animated by hand.
- *
- * Framer's `height: 'auto'` resolves the target by measuring once, when the
- * animation starts - and at that moment the card is still at its collapsed
- * width, so the details are laid out narrow and therefore tall. The panel grew
- * to that measurement and then snapped down to the real height the instant the
- * width transition finished.
- *
- * Re-measuring the content on every frame tracks the height *down* as the card
- * widens and the text reflows, so the panel arrives at the final height instead
- * of correcting to it. Handing the height back to `auto` at the end keeps later
- * reflows - a language switch, a resize - working on their own.
- */
+// Re-measure during width changes so text reflow does not snap the panel height.
 function ExperienceDetails({ id, isOpen, children }: ExperienceDetailsProps) {
   const shouldReduceMotion = useReducedMotion();
   const clipRef = useRef<HTMLDivElement | null>(null);
@@ -67,7 +41,6 @@ function ExperienceDetails({ id, isOpen, children }: ExperienceDetailsProps) {
     const content = contentRef.current;
     if (!clip || !content) return;
 
-    // Nothing to animate from on the first pass - just adopt the state.
     if (isFirstRun.current) {
       isFirstRun.current = false;
       clip.style.height = isOpen ? 'auto' : '0px';
@@ -80,8 +53,6 @@ function ExperienceDetails({ id, isOpen, children }: ExperienceDetailsProps) {
 
     const step = (now: number) => {
       const progress = duration === 0 ? 1 : Math.min((now - start) / duration, 1);
-      // `content` is clipped by this wrapper, never compressed by it, so its
-      // offsetHeight is the natural height at the width of the moment.
       const to = isOpen ? content.offsetHeight : 0;
 
       clip.style.height = `${from + (to - from) * EXPAND_EASE(progress)}px`;
@@ -104,8 +75,7 @@ function ExperienceDetails({ id, isOpen, children }: ExperienceDetailsProps) {
   }, [isOpen, shouldReduceMotion]);
 
   return (
-    // `h-0` is the pre-JS default so the details never flash open on first
-    // paint; the inline height set above wins from then on.
+    // Prevent details flashing open before the effect runs.
     <div id={id} ref={clipRef} className="h-0 overflow-hidden">
       <div
         ref={contentRef}
@@ -113,9 +83,7 @@ function ExperienceDetails({ id, isOpen, children }: ExperienceDetailsProps) {
         inert={!isOpen}
         className={cn(
           'transition-opacity ease-out-quart',
-          // Opening, the text waits for the box to have opened up rather than
-          // fading in while cramped; closing, it clears out first so the box is
-          // never seen shutting on top of readable text.
+          // Keep text hidden while the panel is cramped.
           isOpen ? 'opacity-100 duration-300 delay-150' : 'opacity-0 duration-150',
         )}
       >
@@ -128,7 +96,7 @@ function ExperienceDetails({ id, isOpen, children }: ExperienceDetailsProps) {
 export function Experience() {
   const { t, i18n } = useTranslation();
   const shouldReduceMotion = useReducedMotion();
-  // Referentially stable per language, and already ordered oldest -> newest.
+  // Stable per language and ordered oldest first.
   const orderedExperiences = useExperiences();
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
@@ -152,21 +120,7 @@ export function Experience() {
     }
   }, []);
 
-  /* --------------------------------------------
-   * CENTRALIZAR CARD
-   * ------------------------------------------ */
-  /**
-   * Expanding a card animates its width for `EXPAND_MS`, which moves the card's
-   * own centre for that whole time. A target computed once at click time is
-   * therefore only correct for the width the card had *before* it grew, so the
-   * card used to slide to that stale spot and then get dragged to its real one
-   * by a corrective second centring. Re-reading the geometry every frame keeps
-   * the card centred continuously as it grows, in one uninterrupted movement.
-   *
-   * Driving the frames ourselves also means opting out of the rail's
-   * `scroll-smooth`, which would otherwise turn every step into its own
-   * competing smooth scroll.
-   */
+  // Track changing card width so centering remains a single motion.
   const centerCard = useCallback(
     (id: number) => {
       const rail = scrollRef.current;
@@ -176,9 +130,7 @@ export function Experience() {
       cancelScroll();
 
       const from = rail.scrollLeft;
-      // Reduced motion still needs a frame: the width transition has not
-      // applied yet on the tick the card is clicked, so measuring now would
-      // land on the old width.
+      // Wait one frame for the new width before measuring.
       const duration = shouldReduceMotion ? 0 : EXPAND_MS;
       const start = performance.now();
 
@@ -200,9 +152,6 @@ export function Experience() {
     [cancelScroll, shouldReduceMotion],
   );
 
-  /* --------------------------------------------
-   * SNAP AUTOMÁTICO
-   * ------------------------------------------ */
   const snapToClosest = useCallback(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -227,9 +176,6 @@ export function Experience() {
     }
   }, [centerCard]);
 
-  /* --------------------------------------------
-   * SNAP
-   * ------------------------------------------ */
   const scheduleSnap = useCallback(() => {
     if (snapTimeout.current) window.clearTimeout(snapTimeout.current);
 
@@ -238,7 +184,6 @@ export function Experience() {
     }, 180);
   }, [snapToClosest]);
 
-  // Pending work must not outlive the component: it would scroll a detached node.
   useEffect(
     () => () => {
       if (snapTimeout.current) window.clearTimeout(snapTimeout.current);
@@ -247,14 +192,11 @@ export function Experience() {
     [cancelScroll],
   );
 
-  /* --------------------------------------------
-   * SCROLL INICIAL NO MAIS RECENTE
-   * ------------------------------------------ */
   useEffect(() => {
     if (!scrollRef.current || orderedExperiences.length === 0) return;
 
     const last = orderedExperiences[orderedExperiences.length - 1];
-    // Aguarda o layout com o padding dinâmico para centralizar o último card
+    // Wait for layout before centering the latest card.
     const id = requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         centerCard(last.id);
@@ -263,9 +205,6 @@ export function Experience() {
     return () => cancelAnimationFrame(id);
   }, [centerCard, orderedExperiences]);
 
-  /* --------------------------------------------
-   * CLICK FORA FECHA CARD
-   * ------------------------------------------ */
   useEffect(() => {
     if (expandedId === null) return;
 
@@ -280,9 +219,6 @@ export function Experience() {
     return () => document.removeEventListener('mousedown', onClickOutside);
   }, [expandedId]);
 
-  /* --------------------------------------------
-   * DRAG HORIZONTAL NATIVO
-   * ------------------------------------------ */
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
@@ -299,7 +235,6 @@ export function Experience() {
         clearTimeout(snapTimeout.current);
         snapTimeout.current = null;
       }
-      // The finger wins over anything still centring a card.
       cancelScroll();
 
       el.setPointerCapture(e.pointerId);
@@ -308,9 +243,6 @@ export function Experience() {
     const onPointerMove = (e: PointerEvent) => {
       if (!isDragging.current) return;
       const dx = e.pageX - startX.current;
-      // `behavior: instant` because the rail is `scroll-smooth`: a plain
-      // `scrollLeft` assignment would ease towards the finger instead of
-      // following it.
       el.scrollTo({ left: scrollLeft.current - dx, behavior: 'instant' });
     };
 
@@ -320,10 +252,6 @@ export function Experience() {
       if (expandedId === null) scheduleSnap();
     };
 
-    // A browser-run smooth scroll gets out of the way as soon as the reader
-    // scrolls themselves; a hand-driven one has to be told to. Only actual
-    // movement counts - a bare touchstart is the beginning of a tap on a card,
-    // which is what asked for the centring in the first place.
     el.addEventListener('pointerdown', onPointerDown);
     el.addEventListener('pointermove', onPointerMove);
     el.addEventListener('pointerup', onPointerUp);
@@ -341,20 +269,13 @@ export function Experience() {
     };
   }, [cancelScroll, expandedId, scheduleSnap]);
 
-  // Card width is a fraction of the rail, so a resize both moves and resizes
-  // every card and leaves the focused one off-centre. Re-centre whichever card
-  // is closest now; scheduleSnap already debounces the resize storm.
+  // Recenter after responsive card widths change.
   useEffect(() => {
     window.addEventListener('resize', scheduleSnap);
     return () => window.removeEventListener('resize', scheduleSnap);
   }, [scheduleSnap]);
 
-  /* --------------------------------------------
-   * CENTRALIZA AO ABRIR E AO FECHAR
-   * ------------------------------------------ */
-  // Collapsing shrinks the card by the same amount expanding grew it, so the
-  // card that is closing has to be tracked back to the centre too - otherwise
-  // it slides sideways as it shrinks.
+  // Keep the opening or closing card centered during its width transition.
   const previousExpandedId = useRef<number | null>(null);
   useEffect(() => {
     const target = expandedId ?? previousExpandedId.current;
@@ -427,7 +348,6 @@ export function Experience() {
               scrollbar-hide
             "
           >
-            {/* Start sentinel */}
             <span ref={timelineStartRef} aria-hidden className="w-px h-full shrink-0" />
             {orderedExperiences.map((exp) => {
               const isExpanded = expandedId === exp.id;
@@ -439,21 +359,17 @@ export function Experience() {
                   ref={(el) => {
                     if (!el) return;
                     cardsRef.current.set(exp.id, el);
-                    // Must delete on detach, otherwise the map keeps detached
-                    // nodes whose offsetLeft is 0 and skews the snap maths.
+                    // Avoid detached nodes skewing snap calculations.
                     return () => {
                       cardsRef.current.delete(exp.id);
                     };
                   }}
                   className={cn(
                     'shrink-0 transition-[width] duration-500 ease-out-quart relative',
-                    // Capped at the rail so an expanded card never grows past
-                    // the visible area - on a phone a flat 520px left both
-                    // edges cut off once `centerCard` centred it.
+                    // Keep expanded cards within the rail.
                     isExpanded ? 'w-[min(520px,var(--rail-width))]' : 'w-(--rail-card)',
                   )}
                 >
-                  {/* Timeline node + date */}
                   <div className="absolute -top-12 left-1/2 -translate-x-1/2 flex flex-col items-center">
                     <div
                       className={cn(
@@ -462,9 +378,6 @@ export function Experience() {
                         isExpanded
                           ? 'bg-primary-500 border-primary-500 scale-125'
                           : 'bg-primary-300 border-primary-400/50',
-                        // The role with no end date is the one she holds now:
-                        // a halo marks it without needing a second label, since
-                        // the period below already reads "... - Present".
                         isCurrent && 'ring-4 ring-primary-500/15',
                       )}
                     />
@@ -498,17 +411,10 @@ export function Experience() {
                     aria-controls={`experience-details-${exp.id}`}
                     className={cn(
                       'group w-full text-left rounded-2xl select-text cursor-pointer',
-                      // Padding lives here rather than on an inner box so the
-                      // whole card surface is the hit target. `min-h` lines the
-                      // collapsed cards up with each other, and `mt-auto` on the
-                      // footer keeps the affordance on the bottom edge whatever
-                      // the role and company happen to wrap to.
                       'flex flex-col min-h-44 p-5 sm:p-6 border',
                       'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
                       'focus-visible:ring-offset-2 dark:focus-visible:ring-offset-dark-bg',
-                      // Every property is named: `transition-all` would catch
-                      // `width` too and animate the card a second time, a beat
-                      // behind the wrapper that actually drives the expansion.
+                      // Exclude width, which the wrapper animates.
                       'transition-[background-color,border-color,box-shadow,transform] duration-500 ease-out-quart',
                       isExpanded
                         ? [
@@ -534,11 +440,7 @@ export function Experience() {
                       {exp.company}
                     </p>
 
-                    {/*
-                      The details sit above the footer rather than below it, so
-                      the affordance stays pinned to the bottom edge in both
-                      states instead of jumping up the card as the panel opens.
-                    */}
+                    {/* Keep the disclosure affordance at the card's bottom. */}
                     <ExperienceDetails
                       id={`experience-details-${exp.id}`}
                       isOpen={isExpanded}
@@ -576,9 +478,6 @@ export function Experience() {
                         aria-hidden="true"
                         className={cn(
                           'transition-transform duration-500 ease-out-quart',
-                          // Rotated rather than swapped for a down chevron, so
-                          // the marker turns with the panel instead of blinking
-                          // into a different glyph.
                           isExpanded && 'rotate-90',
                         )}
                       />
@@ -592,7 +491,6 @@ export function Experience() {
                 </div>
               );
             })}
-            {/* End sentinel */}
             <span ref={timelineEndRef} aria-hidden className="w-px h-full shrink-0" />
           </div>
         </div>

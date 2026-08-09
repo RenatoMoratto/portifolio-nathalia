@@ -1,13 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ORB_PHYSICS, OrbField, type OrbSpec } from './orbPhysics';
 
-/**
- * The orbs are a decoration nobody would file a bug against - they would just
- * look wrong. So what is pinned here is not the choreography (which is meant to
- * be tuned) but the properties that make the tuning safe: the simulation stays
- * finite, stays inside the viewport, settles when left alone, reacts the way
- * the geometry says it should, and cannot be driven unstable by input.
- */
+/** Tests safety invariants rather than tunable choreography. */
 
 const SPECS: readonly OrbSpec[] = [
   {
@@ -36,7 +30,7 @@ const SPECS: readonly OrbSpec[] = [
   },
 ];
 
-/** A 16:9 desktop hero, measured at the orbs' plane. */
+/** Desktop field half-extents at the orbs' plane. */
 const HALF_W = 7.36;
 const HALF_H = 4.14;
 const FRAME = 1 / 60;
@@ -70,8 +64,6 @@ describe('OrbField', () => {
   });
 
   it('starts clear of contact, so the field can actually come to rest', () => {
-    // Anchors that overlap would leave the contact springs fighting the anchor
-    // springs forever, and the orbs would never stop moving.
     const { bodies } = makeField();
 
     for (let i = 0; i < bodies.length; i += 1) {
@@ -97,7 +89,6 @@ describe('OrbField', () => {
       }
     });
 
-    // Idle motion is a slow breath, not a tour of the hero.
     expect(fastest).toBeLessThan(1);
   });
 
@@ -134,7 +125,6 @@ describe('OrbField', () => {
     run(field, 5);
     const before = peakSpeed(field);
 
-    // A first sighting in the far corner is a jump from nowhere, not a flick.
     field.setPointer(0.95, 0.95);
     run(field, 0.1);
 
@@ -150,7 +140,6 @@ describe('OrbField', () => {
       ORB_PHYSICS.pointerRadius + body.radius * ORB_PHYSICS.pointerRadiusFromSize;
     let biggestJump = 0;
 
-    // Walk the cursor in from well outside the interaction radius to the orb.
     run(field, 3, (time) => {
       const distance = reach * 1.5 * (1 - time / 3);
       field.setPointer((body.x + distance) / HALF_W, body.y / HALF_H);
@@ -159,8 +148,6 @@ describe('OrbField', () => {
       biggestJump = Math.max(biggestJump, Math.abs(speedOf(body) - before));
     });
 
-    // No frame may change an orb's speed by more than a whisker: crossing the
-    // edge of the radius has to be indistinguishable from any other frame.
     expect(biggestJump).toBeLessThan(0.05);
   });
 
@@ -168,8 +155,7 @@ describe('OrbField', () => {
     const field = makeField();
     run(field, 5);
 
-    // The smallest orb: the heaviest one is sluggish by design, and if it
-    // happens to be near an edge it has nowhere to flee to.
+    // Use the centered, lightest orb to avoid wall interference.
     const body = field.bodies[2];
     const from = { x: body.x, y: body.y };
     const at = { x: body.x / HALF_W, y: body.y / HALF_H };
@@ -189,7 +175,6 @@ describe('OrbField', () => {
 
     const body = field.bodies[2];
     const startX = body.x;
-    // Sweep left to right straight through the middle orb.
     run(field, 1, (time) => field.setPointer(-1 + time * 2, body.y / HALF_H));
 
     expect(body.x).toBeGreaterThan(startX);
@@ -207,7 +192,6 @@ describe('OrbField', () => {
     const after = field.bodies.map((body) => Math.hypot(body.x, body.y));
     for (let i = 0; i < after.length; i += 1) expect(after[i]).toBeGreaterThan(before[i]);
 
-    // The click was at the origin, so the nearest orb must have moved furthest.
     const nearest = before.indexOf(Math.min(...before));
     const moved = after.map((distance, i) => distance - before[i]);
     expect(moved[nearest]).toBe(Math.max(...moved));
@@ -222,7 +206,6 @@ describe('OrbField', () => {
     const launched = peakSpeed(field);
     expect(launched).toBeGreaterThan(1);
 
-    // The blast is over by now: whatever happens next is inherited momentum.
     const travelled = field.bodies.map((body) => ({ x: body.x, y: body.y }));
     run(field, 0.3);
     const coasted = field.bodies.some(
@@ -249,7 +232,6 @@ describe('OrbField', () => {
       }
     });
 
-    // And recovers on its own.
     run(field, 10);
     expect(peakSpeed(field)).toBeLessThan(1);
   });
@@ -258,8 +240,7 @@ describe('OrbField', () => {
     const field = makeField();
     run(field, 5);
 
-    // Furthest orb from the origin: too far to be shoved much directly, so what
-    // moves it is the wake of its neighbours.
+    // Minimize the direct impulse to isolate motion transferred by neighbors.
     const distances = field.bodies.map((body) => Math.hypot(body.x, body.y));
     const furthest = field.bodies[distances.indexOf(Math.max(...distances))];
     const from = { x: furthest.x, y: furthest.y };
@@ -274,7 +255,6 @@ describe('OrbField', () => {
     const field = makeField();
     const [a, b] = field.bodies;
 
-    // Fire them at each other and watch the contact take the closing speed out.
     a.x = -1.5;
     a.y = 0;
     a.vx = 4;
@@ -288,7 +268,6 @@ describe('OrbField', () => {
       deepest = Math.max(deepest, 1 - Math.hypot(b.x - a.x, b.y - a.y) / rest);
     });
 
-    // They squeeze, but neither swaps sides.
     expect(deepest).toBeLessThan(0.75);
     expect(b.x).toBeGreaterThan(a.x);
   });

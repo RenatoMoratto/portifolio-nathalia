@@ -2,11 +2,6 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
 import { useMobileMenu } from './useMobileMenu';
 
-/**
- * The hook drives real DOM nodes through refs, so the tests build the same
- * shape the Navbar renders: a toggle button outside the panel, links and a CV
- * button inside it.
- */
 function mountMenuDom() {
   const trigger = document.createElement('button');
   const panel = document.createElement('div');
@@ -20,8 +15,7 @@ function mountMenuDom() {
 }
 
 function pressKey(key: string, init: KeyboardEventInit = {}) {
-  // `cancelable` matters: without it `preventDefault` is a silent no-op and the
-  // assertions on `defaultPrevented` would pass for the wrong reason.
+  // Allow assertions on preventDefault.
   const event = new KeyboardEvent('keydown', {
     key,
     bubbles: true,
@@ -34,7 +28,6 @@ function pressKey(key: string, init: KeyboardEventInit = {}) {
   return event;
 }
 
-/** Wires the hook's refs to a freshly mounted DOM and opens the panel. */
 function renderOpenMenu(pathname = '/') {
   const dom = mountMenuDom();
   const view = renderHook(({ path }) => useMobileMenu(path), {
@@ -80,7 +73,6 @@ describe('useMobileMenu', () => {
     expect(result.current.isOpen).toBe(false);
   });
 
-  /** Browser chrome scrolling the page away under an open sheet is the bug. */
   it('locks body scroll while open and restores it on close', () => {
     document.body.style.overflow = 'auto';
     const { result } = renderOpenMenu();
@@ -116,10 +108,6 @@ describe('useMobileMenu', () => {
     expect(document.activeElement).toBe(other);
   });
 
-  /**
-   * The page behind the scrim is still focusable, so Tab has to stay inside the
-   * toggle-plus-panel cycle rather than walking into hidden content.
-   */
   it('wraps Tab from the last panel item back to the toggle', () => {
     const { trigger, resume } = renderOpenMenu();
     resume.focus();

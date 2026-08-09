@@ -1,12 +1,5 @@
 import type { ExperienceEntry } from './types';
 
-/**
- * Work history.
- *
- * Dates are calendar months (`YYYY-MM`) and are formatted with a pinned UTC
- * timezone - see `utils/date.ts` for why. Identity fields are declared once;
- * only role/description/highlights are localized.
- */
 export const EXPERIENCES: ExperienceEntry[] = [
   {
     id: 1,

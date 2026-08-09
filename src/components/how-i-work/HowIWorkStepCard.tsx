@@ -10,23 +10,10 @@ import { HowIWorkStepBack } from './HowIWorkStepBack';
 interface HowIWorkStepCardProps {
   step: HowIWorkStep;
   index: number;
-  /** Allow the timeline to pass layout classes. */
   className?: string;
 }
 
-/**
- * A step rendered as a flip card.
- *
- * The interactive element is a real `<button>` rather than a `div[role=button]`,
- * so it is focusable, announces its pressed state, and handles Enter/Space
- * natively. The face that is rotated away is marked `inert` + `aria-hidden`,
- * because a CSS backface transform does not remove content from the
- * accessibility tree - without it both faces are announced at once.
- *
- * The lock badge is a sibling of the flip button, never a child: a button
- * cannot be nested inside another button, and as a sibling it also stays
- * upright while the card rotates.
- */
+/** Prevents hidden faces from being announced and avoids nested buttons. */
 export function HowIWorkStepCard({ step, index, className }: HowIWorkStepCardProps) {
   const { t } = useTranslation();
   const {
@@ -59,8 +46,6 @@ export function HowIWorkStepCard({ step, index, className }: HowIWorkStepCardPro
         className={cn(
           'w-full text-left rounded-2xl preserve-3d',
           'grid grid-cols-1 grid-rows-1',
-          // Browsers make button text unselectable by default; the faces carry
-          // the readable content, so opt back in.
           'select-text',
           'transition-shadow duration-300',
           'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
@@ -86,8 +71,6 @@ export function HowIWorkStepCard({ step, index, className }: HowIWorkStepCardPro
               'bg-white dark:bg-dark-surface-elevated',
               'border border-light-border dark:border-dark-border',
               'text-primary-600 dark:text-primary-400',
-              // Same halo as the timeline nodes, so the badge reads as chrome
-              // sitting on the section rather than as part of either face.
               'ring-4 ring-slate-50 dark:ring-dark-surface shadow-sm',
               'transition-colors duration-200',
               'hover:bg-primary-50 dark:hover:bg-primary-900/30',
@@ -99,12 +82,7 @@ export function HowIWorkStepCard({ step, index, className }: HowIWorkStepCardPro
           >
             <Lock className="w-3.5 h-3.5" aria-hidden="true" />
 
-            {/*
-              The tooltip repeats the button's own `aria-label`, so it is hidden
-              from assistive tech - describing it as well would announce the
-              same sentence twice. It sits above the badge to keep the card
-              content clear, and never takes the pointer.
-            */}
+            {/* Hide duplicate tooltip text from assistive technology. */}
             <span
               aria-hidden="true"
               className={cn(

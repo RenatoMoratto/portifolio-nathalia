@@ -5,7 +5,7 @@ import { premiumEasing } from '../utils/animations';
 export function Home() {
   const shouldReduceMotion = useReducedMotion();
 
-  // The <main> landmark is owned by Layout; pages render a plain container.
+  // Layout owns the main landmark.
   return (
     <motion.div
       initial={shouldReduceMotion ? false : { opacity: 0 }}

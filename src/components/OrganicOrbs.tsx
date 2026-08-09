@@ -5,32 +5,12 @@ import * as THREE from 'three';
 import { useTheme } from '../providers';
 import { OrbField, type OrbSpec } from '../utils/orbPhysics';
 
-const ORB_COLORS_DARK = [
-  '#F3D1D4', // Very Soft Rose
-  '#C5B5A5', // Soft Taupe
-  '#E68A9A', // Muted Blush
-];
+const ORB_COLORS_DARK = ['#F3D1D4', '#C5B5A5', '#E68A9A'];
 
-const ORB_COLORS_LIGHT = [
-  '#E89CA4', // Rose (darker for visibility)
-  '#A09080', // Taupe (darker for contrast)
-  '#D66075', // Pink (vibrant accent)
-];
+// Darker tones maintain contrast on the light background.
+const ORB_COLORS_LIGHT = ['#E89CA4', '#A09080', '#D66075'];
 
-/**
- * Per-orb constants.
- *
- * These were `Math.random()` calls inside `useMemo`, which React's rules of
- * purity forbid: `useMemo` is a caching hint, not a guarantee, so the values
- * could be recomputed on a re-render and make the orbs visibly jump. Fixed
- * offsets give the same organic look and are reproducible.
- *
- * `home` is a fraction of the viewport rather than a world position so the
- * layout survives a resize; everything else is in world units. The anchors are
- * spread far enough that the three are *just* clear of contact at rest - if
- * they overlapped there, the contact springs would push against the anchor
- * springs forever and the field would never actually settle.
- */
+// Fixed phases avoid render jumps; separated anchors let the field settle.
 const ORB_SPECS: readonly OrbSpec[] = [
   {
     scale: 2.5,
@@ -58,20 +38,12 @@ const ORB_SPECS: readonly OrbSpec[] = [
   },
 ];
 
-/** How far each orb's surface wobbles. Purely cosmetic, so it stays out of the
- *  physics specs above. */
 const ORB_DISTORT = [0.5, 0.4, 0.6];
 
-/**
- * Plane the orbs are treated as living on. They actually straddle z -1 to -3;
- * measuring the field once in the middle keeps the cursor mapping and the
- * walls in agreement, and the parallax error over that depth is far smaller
- * than the 60px blur sitting on top of all this.
- */
+// Keep pointer mapping and bounds consistent across orb depths.
 const ORB_PLANE_Z = -2;
 
-/** Runs before the orbs read their bodies. Negative priorities do not take
- *  rendering away from R3F the way positive ones do. */
+// Simulate before meshes update without taking over rendering.
 const PHYSICS_PRIORITY = -1;
 
 interface OrbProps {
@@ -85,8 +57,6 @@ function MovingOrb({ color, distort, index, field }: OrbProps) {
   const meshRef = useRef<THREE.Mesh>(null);
   const body = field.bodies[index];
 
-  // Pure transcription: the frame this runs on has already been simulated by
-  // `Scene`, and nothing here writes back to React.
   useFrame(() => {
     const mesh = meshRef.current;
     if (!mesh) return;
@@ -118,24 +88,12 @@ function MovingOrb({ color, distort, index, field }: OrbProps) {
   );
 }
 
-/**
- * Feeds window pointer events into the field.
- *
- * R3F's own `state.pointer` is useless here: `OrbsBackdrop` puts the canvas
- * under `pointer-events: none` so the hero's text stays selectable, which also
- * means the canvas never receives an event of its own. Listening on the window
- * keeps both, and lets a click land through the headline onto the orbs behind
- * it.
- *
- * Handlers only stash coordinates - the world-space conversion and all the
- * smoothing happen inside the solver, on the frame clock.
- */
+// Listen on window because the backdrop canvas ignores pointer events.
 function usePointerInput(field: OrbField, canvas: HTMLCanvasElement) {
   useEffect(() => {
     let rect = canvas.getBoundingClientRect();
     let rectStale = false;
 
-    /** Canvas-normalised coordinates: -1..1 on each axis, y up. */
     const toField = (clientX: number, clientY: number) => {
       if (rectStale) {
         rect = canvas.getBoundingClientRect();
@@ -156,15 +114,13 @@ function usePointerInput(field: OrbField, canvas: HTMLCanvasElement) {
     const onDown = (event: PointerEvent) => {
       if (event.button !== 0) return;
       const point = toField(event.clientX, event.clientY);
-      // Only clicks over the hero itself; the field extends past the canvas
-      // for the cursor, but a click on some other section should not ripple.
       if (!point || Math.abs(point.x) > 1 || Math.abs(point.y) > 1) return;
       field.setPointer(point.x, point.y);
       field.impulse(point.x, point.y);
     };
 
     const onUp = (event: PointerEvent) => {
-      // Touch has no hover: once the finger is up there is no cursor to react to.
+      // Touch has no hover state to preserve.
       if (event.pointerType !== 'mouse') field.releasePointer();
     };
 
@@ -179,8 +135,6 @@ function usePointerInput(field: OrbField, canvas: HTMLCanvasElement) {
     window.addEventListener('pointercancel', onLeave, { passive: true });
     document.addEventListener('pointerleave', onLeave);
     window.addEventListener('blur', onLeave);
-    // The hero scrolls, so a cached rect goes stale; refresh lazily on the next
-    // event that actually needs it rather than measuring on every scroll tick.
     window.addEventListener('scroll', invalidateRect, { passive: true, capture: true });
     window.addEventListener('resize', invalidateRect, { passive: true });
 
@@ -204,7 +158,6 @@ function Scene({ isDark }: { isDark: boolean }) {
   const isMobile = viewport.width < 5;
   const colors = isDark ? ORB_COLORS_DARK : ORB_COLORS_LIGHT;
 
-  // One field shared by every orb - one simulation, one pointer listener.
   const fieldRef = useRef<OrbField>(null);
   fieldRef.current ??= new OrbField(ORB_SPECS);
   const field = fieldRef.current;
@@ -224,7 +177,6 @@ function Scene({ isDark }: { isDark: boolean }) {
       <pointLight position={[10, 10, 10]} intensity={1.5} color="#fff0f0" />
       <pointLight position={[-10, -10, -10]} intensity={0.5} color="#f0f0ff" />
 
-      {/* Driven off the field, so a mesh can never go missing from a body. */}
       {field.bodies.map((_, index) => (
         <MovingOrb
           key={index}
@@ -239,17 +191,10 @@ function Scene({ isDark }: { isDark: boolean }) {
 }
 
 interface OrganicOrbsProps {
-  /** Pause rendering entirely while the hero is off-screen. */
   active?: boolean;
 }
 
-/**
- * The animated 3D backdrop.
- *
- * Default-exported as well so it can be `React.lazy`-loaded - importing this
- * module pulls in three, @react-three/fiber and drei, which together dominate
- * the bundle and are needed by nothing else.
- */
+/** Default-exported for lazy loading. */
 export function OrganicOrbs({ active = true }: OrganicOrbsProps) {
   const { isDark } = useTheme();
 
@@ -258,7 +203,6 @@ export function OrganicOrbs({ active = true }: OrganicOrbsProps) {
       <Canvas
         camera={{ position: [0, 0, 8], fov: 45 }}
         dpr={[1, 2]}
-        // Stop burning GPU/battery at 60fps when the hero is scrolled away.
         frameloop={active ? 'always' : 'never'}
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       >

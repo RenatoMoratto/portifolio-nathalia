@@ -4,7 +4,6 @@ import { useTypewriter } from './useTypewriter';
 
 const ROLES = ['AB', 'CD'];
 
-/** Advance exactly one scheduled tick and flush the resulting render. */
 function step(ms: number) {
   act(() => {
     vi.advanceTimersByTime(ms);
@@ -29,20 +28,19 @@ describe('useTypewriter', () => {
   it('pauses, deletes, then advances to the next role', () => {
     const { result } = renderHook(() => useTypewriter(ROLES));
 
-    // Each tick must be advanced separately: the next timer is only scheduled
-    // once the state update from the previous one has re-run the effect.
-    step(150); // "A"
-    step(150); // "AB"
+    // Flush each state update before advancing the next timer.
+    step(150);
+    step(150);
     expect(result.current).toBe('AB');
 
-    step(2000); // hold, then switch to deleting
+    step(2000);
     step(100);
     expect(result.current).toBe('A');
 
     step(100);
     expect(result.current).toBe('');
 
-    step(0); // advance to the next role
+    step(0);
     step(150);
     expect(result.current).toBe('C');
   });
@@ -50,22 +48,21 @@ describe('useTypewriter', () => {
   it('wraps around to the first role', () => {
     const { result } = renderHook(() => useTypewriter(['A', 'B']));
 
-    step(150); // "A"
-    step(2000); // hold
-    step(100); // ""
-    step(0); // -> role 2
+    step(150);
+    step(2000);
+    step(100);
+    step(0);
     step(150);
     expect(result.current).toBe('B');
 
     step(2000);
     step(100);
-    step(0); // wrap back to role 1
+    step(0);
     step(150);
     expect(result.current).toBe('A');
   });
 
   it('returns an empty string for an empty roles list instead of throwing', () => {
-    // `roles[roleIndex].length` used to throw here.
     const { result } = renderHook(() => useTypewriter([]));
     expect(result.current).toBe('');
     act(() => void vi.advanceTimersByTime(5000));

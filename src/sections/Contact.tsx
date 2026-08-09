@@ -77,16 +77,7 @@ export function Contact() {
         : t('contact.form.failed')
       : null;
 
-  /*
-   * Explicit padding rather than `section-padding`: that utility's generous top
-   * is meant for sections stacked mid-page on Home, and this one only ever
-   * opens a route. The bottom keeps the utility's values so the gap down to the
-   * footer is unchanged.
-   *
-   * `grow` makes the section take the leftover height `Layout`'s flex column
-   * hands to `main`, so on a tall viewport the surface colour - not the page
-   * background - is what runs down to the footer.
-   */
+  // Use route-specific spacing and fill the height to the footer.
   return (
     <section
       id="contact"
@@ -139,7 +130,6 @@ export function Contact() {
                   placeholder={t('contact.form.message.placeholder')}
                 />
 
-                {/* Inline and announced, rather than a blocking alert() */}
                 {errorMessage && (
                   <p
                     role="alert"

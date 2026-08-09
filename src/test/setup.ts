@@ -6,10 +6,6 @@ afterEach(() => {
   cleanup();
 });
 
-/**
- * jsdom implements neither of these, and several components subscribe to them
- * on mount (reduced-motion queries, scroll reveals).
- */
 if (!window.matchMedia) {
   window.matchMedia = ((query: string) => ({
     matches: false,
@@ -23,12 +19,7 @@ if (!window.matchMedia) {
   })) as unknown as typeof window.matchMedia;
 }
 
-/**
- * jsdom's Storage is shadowed by the `localStorage` global Node ships (gated
- * behind `--localstorage-file`, which vitest passes no path for), leaving an
- * inert `{}` with none of the Storage methods. Anything persisting a preference
- * - the theme, for one - needs a real one.
- */
+// Replace an inert Node localStorage global with a working test double.
 if (typeof window.localStorage?.getItem !== 'function') {
   const store = new Map<string, string>();
   Object.defineProperty(window, 'localStorage', {

@@ -6,11 +6,7 @@ import { ScrollToTop } from './components/ScrollToTop';
 import { ThemeProvider } from './providers';
 import { DocumentLanguage } from './components/DocumentLanguage';
 
-/*
- * Home is eager: it is the landing route, and lazy-loading it would only add a
- * round trip before first paint. The rest are split so a visitor who never
- * opens them never downloads them.
- */
+// Keep the landing route eager; split routes visitors may never open.
 import { Home } from './pages/Home';
 
 const About = lazy(() => import('./pages/About').then((m) => ({ default: m.About })));
@@ -21,7 +17,7 @@ const ProjectPage = lazy(() =>
   import('./pages/ProjectPage').then((m) => ({ default: m.ProjectPage })),
 );
 
-/** Reserves vertical space so lazy routes do not collapse the layout. */
+/** Prevents lazy routes from collapsing the layout. */
 function RouteFallback() {
   return <div className="min-h-screen" aria-busy="true" />;
 }
@@ -30,11 +26,7 @@ function AppRoutes() {
   const location = useLocation();
 
   return (
-    /*
-     * `Routes` is keyed by pathname so it is a *new* child of AnimatePresence on
-     * every navigation. Without the key, AnimatePresence sees one child that
-     * never changes identity and the pages' `exit` animations never run.
-     */
+    // Key routes by path so exit animations receive a new child.
     <AnimatePresence mode="wait" initial={false}>
       <Routes location={location} key={location.pathname}>
         <Route
@@ -81,11 +73,6 @@ function App() {
   return (
     <ThemeProvider>
       <DocumentLanguage />
-      {/*
-       * `basename` comes from Vite's base, so the routes below stay declared as
-       * plain `/about`-style paths while the app is served from a subdirectory
-       * on GitHub Pages. It is `/` in dev and under a custom domain.
-       */}
       <BrowserRouter basename={import.meta.env.BASE_URL}>
         <AppRoutes />
       </BrowserRouter>

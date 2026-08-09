@@ -4,20 +4,8 @@ import type { ReactNode } from 'react';
 import { ThemeProvider } from './theme-provider';
 import { useTheme } from './useTheme';
 
-/**
- * Two things here are easy to break and invisible without cover:
- *
- * 1. A device with *no* colour-scheme preference matches neither media query.
- *    A `prefers-color-scheme: dark` check reports false for it, which silently
- *    handed those visitors light.
- * 2. Persisting the theme on mount rather than on choice. That stamped the
- *    detected value into storage on the first page view, so the site followed
- *    the device exactly once per visitor and never again.
- */
-
 type Preference = 'light' | 'dark' | 'none';
 
-/** Answer the colour-scheme queries as a device set to `preference` would. */
 function stubDevice(preference: Preference) {
   const listeners = new Set<() => void>();
   let current = preference;
@@ -41,7 +29,6 @@ function stubDevice(preference: Preference) {
   );
 
   return {
-    /** Flip the OS setting and notify subscribers, as a real theme switch does. */
     change(next: Preference) {
       current = next;
       act(() => listeners.forEach((listener) => listener()));
@@ -105,7 +92,6 @@ describe('following the device', () => {
   it('persists nothing until the visitor actually chooses', () => {
     stubDevice('light');
     mountTheme();
-    // The regression: writing here pins the visitor to light forever.
     expect(storedChoice()).toBeNull();
   });
 
