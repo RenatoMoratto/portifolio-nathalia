@@ -1,8 +1,9 @@
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { MeshDistortMaterial, Float } from '@react-three/drei';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { useTheme } from '../providers';
+import { OrbField, type OrbSpec } from '../utils/orbPhysics';
 
 const ORB_COLORS_DARK = [
   '#F3D1D4', // Very Soft Rose
@@ -17,139 +18,88 @@ const ORB_COLORS_LIGHT = [
 ];
 
 /**
- * Per-orb motion constants.
+ * Per-orb constants.
  *
  * These were `Math.random()` calls inside `useMemo`, which React's rules of
  * purity forbid: `useMemo` is a caching hint, not a guarantee, so the values
  * could be recomputed on a re-render and make the orbs visibly jump. Fixed
  * offsets give the same organic look and are reproducible.
+ *
+ * `home` is a fraction of the viewport rather than a world position so the
+ * layout survives a resize; everything else is in world units. The anchors are
+ * spread far enough that the three are *just* clear of contact at rest - if
+ * they overlapped there, the contact springs would push against the anchor
+ * springs forever and the field would never actually settle.
  */
-const ORB_MOTION = [
-  { timeOffset: 12.7, xFreq: 0.34, yFreq: 0.41 },
-  { timeOffset: 58.3, xFreq: 0.47, yFreq: 0.32 },
-  { timeOffset: 91.1, xFreq: 0.38, yFreq: 0.45 },
+const ORB_SPECS: readonly OrbSpec[] = [
+  {
+    scale: 2.5,
+    mobileScale: 1.5,
+    home: [0.42, 0.3],
+    depth: -1,
+    driftRate: 1,
+    phase: 12.7,
+  },
+  {
+    scale: 2.0,
+    mobileScale: 1.2,
+    home: [-0.42, -0.26],
+    depth: -2,
+    driftRate: 1.27,
+    phase: 58.3,
+  },
+  {
+    scale: 1.8,
+    mobileScale: 1.0,
+    home: [0, -0.06],
+    depth: -3,
+    driftRate: 0.83,
+    phase: 91.1,
+  },
 ];
 
-interface OrbPosition {
-  x: number;
-  y: number;
-  r: number;
-}
+/** How far each orb's surface wobbles. Purely cosmetic, so it stays out of the
+ *  physics specs above. */
+const ORB_DISTORT = [0.5, 0.4, 0.6];
 
 /**
- * Shared state the orbs use to avoid overlapping each other.
- *
- * Exposed as methods rather than a raw mutable ref prop: assigning into a ref
- * passed down as a prop is flagged by `react-hooks/immutability`, and a small
- * object with intent-revealing methods reads better anyway.
+ * Plane the orbs are treated as living on. They actually straddle z -1 to -3;
+ * measuring the field once in the middle keeps the cursor mapping and the
+ * walls in agreement, and the parallax error over that depth is far smaller
+ * than the 60px blur sitting on top of all this.
  */
-class OrbField {
-  private readonly positions: OrbPosition[] = [];
-  /** Normalized pointer position, shared by every orb. */
-  readonly pointer = { x: 9999, y: 9999 };
+const ORB_PLANE_Z = -2;
 
-  report(index: number, position: OrbPosition) {
-    this.positions[index] = position;
-  }
-
-  forEachOther(index: number, visit: (orb: OrbPosition) => void) {
-    for (let i = 0; i < this.positions.length; i++) {
-      if (i === index) continue;
-      const orb = this.positions[i];
-      if (orb) visit(orb);
-    }
-  }
-}
+/** Runs before the orbs read their bodies. Negative priorities do not take
+ *  rendering away from R3F the way positive ones do. */
+const PHYSICS_PRIORITY = -1;
 
 interface OrbProps {
   color: string;
-  position: [number, number, number];
-  scale: number;
-  speed: number;
   distort: number;
   index: number;
   field: OrbField;
 }
 
-function MovingOrb({ color, position, scale, speed, distort, index, field }: OrbProps) {
+function MovingOrb({ color, distort, index, field }: OrbProps) {
   const meshRef = useRef<THREE.Mesh>(null);
-  const hoverOffset = useRef({ x: 0, y: 0 });
-  const motion = ORB_MOTION[index] ?? ORB_MOTION[0];
+  const body = field.bodies[index];
 
-  useFrame((state) => {
-    if (!meshRef.current) return;
-    const { clock, viewport } = state;
-    const t = clock.getElapsedTime() * speed + motion.timeOffset;
+  // Pure transcription: the frame this runs on has already been simulated by
+  // `Scene`, and nothing here writes back to React.
+  useFrame(() => {
+    const mesh = meshRef.current;
+    if (!mesh) return;
 
-    // Lissajous-like curves covering a good portion of the viewport.
-    const width = viewport.width / 2.5;
-    const height = viewport.height / 2.5;
-
-    const baseX = Math.sin(t * motion.xFreq) * width + Math.cos(t * 0.5) * (width * 0.2);
-    const baseY =
-      Math.cos(t * motion.yFreq) * height + Math.sin(t * 0.3) * (height * 0.2);
-    const baseZ = Math.sin(t * 0.2) * 1 - 2;
-
-    // --- Mouse avoidance ---
-    const mouseX = field.pointer.x * (viewport.width / 2);
-    const mouseY = field.pointer.y * (viewport.height / 2);
-
-    const dx = baseX - mouseX;
-    const dy = baseY - mouseY;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-
-    const isMobile = viewport.width < 5;
-    const repulsionRadius = isMobile ? 3 : 5;
-    const maxRepulsion = isMobile ? 1.5 : 2.5;
-
-    let targetX = 0;
-    let targetY = 0;
-
-    if (dist < repulsionRadius) {
-      const strength = Math.pow(1 - dist / repulsionRadius, 2);
-      const force = strength * maxRepulsion;
-      const angle = Math.atan2(dy, dx);
-      targetX += Math.cos(angle) * force;
-      targetY += Math.sin(angle) * force;
-    }
-
-    // --- Collision avoidance (keep overlap under ~40%) ---
-    const myRadius = scale * 0.8;
-    field.forEachOther(index, (orb) => {
-      const cdx = baseX - orb.x;
-      const cdy = baseY - orb.y;
-      const cDist = Math.sqrt(cdx * cdx + cdy * cdy);
-      const minDist = (myRadius + orb.r) * 0.6;
-
-      if (cDist < minDist && cDist > 0.001) {
-        const overlap = minDist - cDist;
-        const angle = Math.atan2(cdy, cdx);
-        targetX += Math.cos(angle) * overlap * 1.5;
-        targetY += Math.sin(angle) * overlap * 1.5;
-      }
-    });
-
-    // Smooth damping for a fluid feel.
-    const damping = 0.05;
-    hoverOffset.current.x += (targetX - hoverOffset.current.x) * damping;
-    hoverOffset.current.y += (targetY - hoverOffset.current.y) * damping;
-
-    const finalX = baseX + hoverOffset.current.x;
-    const finalY = baseY + hoverOffset.current.y;
-
-    meshRef.current.position.x = finalX;
-    meshRef.current.position.y = finalY;
-    meshRef.current.position.z = baseZ;
-
-    field.report(index, { x: finalX, y: finalY, r: scale });
-
-    meshRef.current.rotation.x = t * 0.1;
-    meshRef.current.rotation.y = t * 0.15;
+    mesh.position.set(body.x, body.y, body.z);
+    mesh.scale.setScalar(body.radius * (1 + body.pulse));
+    mesh.rotation.x = body.spin * 0.6;
+    mesh.rotation.y = body.spin;
   });
 
   return (
     <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-      <mesh ref={meshRef} scale={scale} position={position}>
+      <mesh ref={meshRef} scale={body.radius} position={[body.x, body.y, body.z]}>
         <sphereGeometry args={[1, 64, 64]} />
         <MeshDistortMaterial
           color={color}
@@ -168,20 +118,105 @@ function MovingOrb({ color, position, scale, speed, distort, index, field }: Orb
   );
 }
 
+/**
+ * Feeds window pointer events into the field.
+ *
+ * R3F's own `state.pointer` is useless here: `OrbsBackdrop` puts the canvas
+ * under `pointer-events: none` so the hero's text stays selectable, which also
+ * means the canvas never receives an event of its own. Listening on the window
+ * keeps both, and lets a click land through the headline onto the orbs behind
+ * it.
+ *
+ * Handlers only stash coordinates - the world-space conversion and all the
+ * smoothing happen inside the solver, on the frame clock.
+ */
+function usePointerInput(field: OrbField, canvas: HTMLCanvasElement) {
+  useEffect(() => {
+    let rect = canvas.getBoundingClientRect();
+    let rectStale = false;
+
+    /** Canvas-normalised coordinates: -1..1 on each axis, y up. */
+    const toField = (clientX: number, clientY: number) => {
+      if (rectStale) {
+        rect = canvas.getBoundingClientRect();
+        rectStale = false;
+      }
+      if (rect.width === 0 || rect.height === 0) return null;
+      return {
+        x: ((clientX - rect.left) / rect.width) * 2 - 1,
+        y: -(((clientY - rect.top) / rect.height) * 2 - 1),
+      };
+    };
+
+    const onMove = (event: PointerEvent) => {
+      const point = toField(event.clientX, event.clientY);
+      if (point) field.setPointer(point.x, point.y);
+    };
+
+    const onDown = (event: PointerEvent) => {
+      if (event.button !== 0) return;
+      const point = toField(event.clientX, event.clientY);
+      // Only clicks over the hero itself; the field extends past the canvas
+      // for the cursor, but a click on some other section should not ripple.
+      if (!point || Math.abs(point.x) > 1 || Math.abs(point.y) > 1) return;
+      field.setPointer(point.x, point.y);
+      field.impulse(point.x, point.y);
+    };
+
+    const onUp = (event: PointerEvent) => {
+      // Touch has no hover: once the finger is up there is no cursor to react to.
+      if (event.pointerType !== 'mouse') field.releasePointer();
+    };
+
+    const onLeave = () => field.releasePointer();
+    const invalidateRect = () => {
+      rectStale = true;
+    };
+
+    window.addEventListener('pointermove', onMove, { passive: true });
+    window.addEventListener('pointerdown', onDown, { passive: true });
+    window.addEventListener('pointerup', onUp, { passive: true });
+    window.addEventListener('pointercancel', onLeave, { passive: true });
+    document.addEventListener('pointerleave', onLeave);
+    window.addEventListener('blur', onLeave);
+    // The hero scrolls, so a cached rect goes stale; refresh lazily on the next
+    // event that actually needs it rather than measuring on every scroll tick.
+    window.addEventListener('scroll', invalidateRect, { passive: true, capture: true });
+    window.addEventListener('resize', invalidateRect, { passive: true });
+
+    return () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerdown', onDown);
+      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointercancel', onLeave);
+      document.removeEventListener('pointerleave', onLeave);
+      window.removeEventListener('blur', onLeave);
+      window.removeEventListener('scroll', invalidateRect, { capture: true });
+      window.removeEventListener('resize', invalidateRect);
+    };
+  }, [field, canvas]);
+}
+
 function Scene({ isDark }: { isDark: boolean }) {
-  const { viewport } = useThree();
+  const viewport = useThree((state) => state.viewport);
+  const camera = useThree((state) => state.camera);
+  const canvas = useThree((state) => state.gl.domElement);
   const isMobile = viewport.width < 5;
   const colors = isDark ? ORB_COLORS_DARK : ORB_COLORS_LIGHT;
 
-  // One field shared by every orb - and one pointer listener instead of three.
+  // One field shared by every orb - one simulation, one pointer listener.
   const fieldRef = useRef<OrbField>(null);
-  fieldRef.current ??= new OrbField();
+  fieldRef.current ??= new OrbField(ORB_SPECS);
   const field = fieldRef.current;
 
-  useFrame(({ pointer }) => {
-    field.pointer.x = pointer.x;
-    field.pointer.y = pointer.y;
-  });
+  useEffect(() => {
+    const plane = viewport.getCurrentViewport(camera, [0, 0, ORB_PLANE_Z]);
+    field.resize(plane.width / 2, plane.height / 2, isMobile);
+  }, [field, viewport, camera, isMobile]);
+
+  usePointerInput(field, canvas);
+
+  useFrame((_, delta) => field.update(delta), PHYSICS_PRIORITY);
 
   return (
     <group>
@@ -189,33 +224,16 @@ function Scene({ isDark }: { isDark: boolean }) {
       <pointLight position={[10, 10, 10]} intensity={1.5} color="#fff0f0" />
       <pointLight position={[-10, -10, -10]} intensity={0.5} color="#f0f0ff" />
 
-      <MovingOrb
-        index={0}
-        color={colors[0]}
-        position={[2, 1, -1]}
-        scale={isMobile ? 1.5 : 2.5}
-        speed={0.2}
-        distort={0.5}
-        field={field}
-      />
-      <MovingOrb
-        index={1}
-        color={colors[1]}
-        position={[-2, -1, -2]}
-        scale={isMobile ? 1.2 : 2.0}
-        speed={0.25}
-        distort={0.4}
-        field={field}
-      />
-      <MovingOrb
-        index={2}
-        color={colors[2]}
-        position={[0, 0, -3]}
-        scale={isMobile ? 1.0 : 1.8}
-        speed={0.15}
-        distort={0.6}
-        field={field}
-      />
+      {/* Driven off the field, so a mesh can never go missing from a body. */}
+      {field.bodies.map((_, index) => (
+        <MovingOrb
+          key={index}
+          index={index}
+          color={colors[index % colors.length]}
+          distort={ORB_DISTORT[index % ORB_DISTORT.length]}
+          field={field}
+        />
+      ))}
     </group>
   );
 }
