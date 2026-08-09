@@ -44,6 +44,11 @@ export function Hero() {
             style={{ animationDelay: '350ms', animationFillMode: 'forwards' }}
           >
             <blockquote className="relative max-w-xl mx-auto">
+              <div
+                className="absolute -inset-x-10 -inset-y-8 -z-10 rounded-[2.5rem] bg-light-bg/80 dark:bg-dark-bg/70 blur-2xl"
+                aria-hidden="true"
+              />
+
               {/* Decorative quote mark */}
               <span
                 className="absolute -top-4 -left-2 text-6xl text-primary-200 dark:text-primary-800/50 font-serif leading-none select-none"
@@ -51,7 +56,7 @@ export function Hero() {
               >
                 "
               </span>
-              <div className="text-lg md:text-xl font-medium text-primary-600 dark:text-primary-400 leading-relaxed pl-4">
+              <div className="text-lg md:text-xl font-medium text-primary-700 dark:text-primary-400 leading-relaxed pl-4">
                 {t('manifest')
                   .split('\n')
                   .map((line, i) => (
@@ -59,7 +64,7 @@ export function Hero() {
                       {i === 0 ? (
                         <span className="font-semibold">{line}</span>
                       ) : (
-                        <span className="text-base md:text-lg text-primary-500/80 dark:text-primary-400/80 block mt-3">
+                        <span className="text-base md:text-lg text-primary-700/90 dark:text-primary-400/80 block mt-3">
                           {line}
                         </span>
                       )}
