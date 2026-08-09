@@ -492,7 +492,7 @@ export const PROJECTS: ProjectEntry[] = [
         ],
         slowLane: [
           {
-            heading: 'CONTEXTO DO PRODUTO',
+            heading: 'CONTEXTO',
             content: [
               'O projeto foi desenvolvido para um sistema mobile de rastreamento e gestão de frotas, utilizado por empresas para monitorar veículos, enviar comandos e analisar dados operacionais em tempo real.',
               'O produto principal era um software desktop estável, enquanto os aplicativos móveis funcionavam como extensão operacional.',
@@ -500,7 +500,7 @@ export const PROJECTS: ProjectEntry[] = [
             ],
           },
           {
-            heading: 'PROBLEMA DE PRODUTO',
+            heading: 'PROBLEMA',
             content: [
               'Android e iOS possuíam estruturas de navegação diferentes, regras inconsistentes e múltiplos caminhos para as mesmas ações.',
               'O mobile passou a concentrar lógica própria, porém fragmentada e difícil de manter.',
@@ -508,7 +508,7 @@ export const PROJECTS: ProjectEntry[] = [
             ],
           },
           {
-            heading: 'MEU PAPEL NO TIME',
+            heading: 'MEU PAPEL',
             content: [
               'Atuei como única Product Designer, responsável por toda a estratégia de UX: pesquisa, arquitetura de informação, definição de fluxos, prototipação e validação.',
               'Trabalhei em conjunto com um Product Manager e dois desenvolvedores, apresentando mapas e decisões diretamente ao cliente.',
@@ -523,7 +523,7 @@ export const PROJECTS: ProjectEntry[] = [
             ],
           },
           {
-            heading: 'PESQUISA COM USUÁRIOS',
+            heading: 'PESQUISA',
             content: [
               'Combinei desk research com avaliações da App Store e Play Store e entrevistas de profundidade com usuários.',
               'Foram entrevistados usuários de empresas de grande porte, com uso intenso do sistema, e de menor porte, com uso mais leve.',
@@ -539,7 +539,7 @@ export const PROJECTS: ProjectEntry[] = [
             ],
           },
           {
-            heading: 'NOVA ARQUITETURA DE INFORMAÇÃO',
+            heading: 'ARQUITETURA',
             content: [
               'Desenhei um novo sitemap unificado, estruturado por objetivos do usuário, e não pela herança do legado.',
               'A nova arquitetura reduziu profundidade de navegação, eliminou redundâncias e criou padrões reutilizáveis.',
@@ -641,7 +641,7 @@ export const PROJECTS: ProjectEntry[] = [
         ],
         slowLane: [
           {
-            heading: 'PRODUCT CONTEXT',
+            heading: 'CONTEXT',
             content: [
               'Project developed for a mobile fleet tracking/management system.',
               'Main product was stable desktop software; mobile apps were operational extensions.',
@@ -649,7 +649,7 @@ export const PROJECTS: ProjectEntry[] = [
             ],
           },
           {
-            heading: 'PRODUCT PROBLEM',
+            heading: 'PROBLEM',
             content: [
               'Android and iOS had different navigation structures/rules.',
               'Mobile concentrated its own fragmented logic.',
@@ -657,7 +657,7 @@ export const PROJECTS: ProjectEntry[] = [
             ],
           },
           {
-            heading: 'MY ROLE IN TEAM',
+            heading: 'MY ROLE',
             content: [
               'Sole Product Designer responsible for UX strategy: research, IA, flows, prototyping, validation.',
               'Worked with PM and 2 devs.',
@@ -672,7 +672,7 @@ export const PROJECTS: ProjectEntry[] = [
             ],
           },
           {
-            heading: 'USER RESEARCH',
+            heading: 'RESEARCH',
             content: [
               'Combined desk research, store reviews, user interviews.',
               'Feedbacks grouped into themes: maps, commands, reports, driver journey, permissions, performance.',
@@ -687,7 +687,7 @@ export const PROJECTS: ProjectEntry[] = [
             ],
           },
           {
-            heading: 'NEW INFORMATION ARCHITECTURE',
+            heading: 'ARCHITECTURE',
             content: [
               'Designed new unified sitemap structured by user objectives.',
               'Reduced depth, eliminated redundancies.',
