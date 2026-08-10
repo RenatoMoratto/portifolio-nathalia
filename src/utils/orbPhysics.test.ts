@@ -79,16 +79,24 @@ describe('OrbField', () => {
   it('drifts gently and stays inside the viewport for ten minutes', () => {
     const field = makeField();
     let fastest = 0;
+    let furthestX = 0;
+    let furthestY = 0;
+    let finite = true;
 
+    // Ten minutes is 36k frames, so track the extremes and assert once:
+    // per-frame matchers cost more than the simulation itself.
     run(field, 600, () => {
       fastest = Math.max(fastest, peakSpeed(field));
       for (const body of field.bodies) {
-        expect(Number.isFinite(body.x)).toBe(true);
-        expect(Math.abs(body.x)).toBeLessThan(HALF_W);
-        expect(Math.abs(body.y)).toBeLessThan(HALF_H);
+        finite &&= Number.isFinite(body.x) && Number.isFinite(body.y);
+        furthestX = Math.max(furthestX, Math.abs(body.x));
+        furthestY = Math.max(furthestY, Math.abs(body.y));
       }
     });
 
+    expect(finite).toBe(true);
+    expect(furthestX).toBeLessThan(HALF_W);
+    expect(furthestY).toBeLessThan(HALF_H);
     expect(fastest).toBeLessThan(1);
   });
 

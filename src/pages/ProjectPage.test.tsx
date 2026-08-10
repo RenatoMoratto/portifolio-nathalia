@@ -1,9 +1,16 @@
 import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import i18n from '../i18n';
 import { ProjectPage } from './ProjectPage';
 import { PROJECTS } from '../content/projects';
+
+/** A language switch re-renders every mounted subscriber, so React wants act(). */
+async function setLanguage(language: 'pt' | 'en') {
+  await act(async () => {
+    await i18n.changeLanguage(language);
+  });
+}
 
 function renderAt(path: string) {
   return render(
@@ -19,7 +26,7 @@ const firstProject = PROJECTS[0];
 
 describe('ProjectPage', () => {
   it('renders a known project with its title and metadata', async () => {
-    await i18n.changeLanguage('pt');
+    await setLanguage('pt');
     renderAt(`/projects/${firstProject.slug}`);
 
     expect(
@@ -28,7 +35,7 @@ describe('ProjectPage', () => {
   });
 
   it('renders section headings from the fast lane by default', async () => {
-    await i18n.changeLanguage('pt');
+    await setLanguage('pt');
     renderAt(`/projects/${firstProject.slug}`);
 
     const firstHeading = firstProject.locales.pt.fastLane[0].heading;
@@ -36,18 +43,18 @@ describe('ProjectPage', () => {
   });
 
   it('renders the localized title after switching language', async () => {
-    await i18n.changeLanguage('en');
+    await setLanguage('en');
     renderAt(`/projects/${firstProject.slug}`);
 
     expect(
       screen.getByRole('heading', { level: 1, name: firstProject.locales.en.title }),
     ).toBeInTheDocument();
 
-    await i18n.changeLanguage('pt');
+    await setLanguage('pt');
   });
 
   it('shows a translated not-found state for an unknown slug', async () => {
-    await i18n.changeLanguage('pt');
+    await setLanguage('pt');
     renderAt('/projects/does-not-exist');
 
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
@@ -56,7 +63,7 @@ describe('ProjectPage', () => {
   });
 
   it('does not leak an untranslated i18n key into the not-found state', async () => {
-    await i18n.changeLanguage('pt');
+    await setLanguage('pt');
     const { container } = renderAt('/projects/does-not-exist');
     expect(container.textContent).not.toContain('projects.notFound');
   });
